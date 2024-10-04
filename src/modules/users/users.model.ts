@@ -39,6 +39,10 @@ const userSchema: Schema = new Schema(
       type: String,
       default: null,
     },
+    email_verified: {
+      type: Boolean,
+      default: false,
+    },
     account_status: {
       type: String,
       enum: ['active', 'suspended', 'deactivated'],
