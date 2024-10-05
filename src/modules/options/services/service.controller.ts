@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import amenitiesModel from './amenities.model';
+import servicesModel from './services.model';
 
-export default class AmenitiesController {
-  private model = amenitiesModel;
+
+export default class ServiceController {
+  private model = servicesModel;
 
   public create = async (req: Request, res: Response, next: NextFunction) => {
     try {
