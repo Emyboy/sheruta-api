@@ -10,7 +10,7 @@ import { isEmpty } from '@utils/util';
 import userSecretsModel, { UserSecrets } from '@/modules/users/users-secrets/user-secrets.model';
 import * as crypto from 'crypto';
 import { sendEmail } from '@utils/email';
-import { activateEmailContent, welcomeEmailContent } from '@/modules/auth/auth.content';
+import { welcomeEmailContent } from '@/modules/auth/auth.content';
 
 class AuthService {
   public users = userModel;
@@ -46,7 +46,7 @@ class AuthService {
   public async login(userData: CreateUserDto): Promise<{ cookie: string; user: { email: string; _id: string } }> {
     if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
 
-    const findUser: User = await this.users.findOne({ email: userData.email.trim() }).populate('password');
+    const findUser: User = await this.users.findOne({ email: userData.email.trim() });
     if (!findUser) throw new HttpException(409, `Invalid email or password`);
 
     const userSecret: UserSecrets = await this.userSecrets.findOne({ user: findUser._id }).populate('password');

@@ -1,13 +1,19 @@
-import { model, Schema, Document } from 'mongoose';
+import { model, Schema, Document, SchemaDefinitionProperty } from 'mongoose';
 
-export interface Location {
+export interface Locations {
   _id: string;
   name: string;
   is_published: boolean;
   slug: string;
+  state: SchemaDefinitionProperty<string>;
+  has_group: boolean;
+  image_url: string | null;
+  longitude: string | null;
+  latitude: string | null;
+  rank: number;
 }
 
-const stateSchema: Schema = new Schema<Location>(
+const stateSchema: Schema = new Schema<Locations>(
   {
     name: {
       type: String,
@@ -26,12 +32,37 @@ const stateSchema: Schema = new Schema<Location>(
       lowercase: true,
       trim: true,
     },
+    state: {
+      type: Schema.Types.ObjectId,
+      ref: 'States',
+      required: true,
+    },
+    has_group: {
+      type: Boolean,
+      default: false,
+    },
+    image_url: {
+      type: String,
+      default: null,
+    },
+    longitude: {
+      type: String,
+      default: null,
+    },
+    latitude: {
+      type: String,
+      default: null,
+    },
+    rank: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
   },
 );
 
-const locationModel = model<Location & Document>('Locations', stateSchema);
+const locationModel = model<Locations & Document>('Locations', stateSchema);
 
 export default locationModel;
