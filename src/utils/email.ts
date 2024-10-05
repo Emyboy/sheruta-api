@@ -55,5 +55,3 @@ export const useDefaultEmailLayout = (children: string, heading = 'Hello!') => {
     </div>
   `;
 };
-
-

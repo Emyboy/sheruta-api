@@ -36,8 +36,8 @@ class AuthService {
       // html: activateEmailContent({ activation_token: activationToken, user: createUserData }),
       to: createUserData.email.trim().toLowerCase(),
       html: welcomeEmailContent({
-        user: createUserData
-      })
+        user: createUserData,
+      }),
     });
 
     return createUserData;
