@@ -1,7 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 import { User } from '@/modules/users/users.interface';
 
-const userSchema: Schema = new Schema(
+const userSchema: Schema = new Schema<User>(
   {
     first_name: {
       type: String,
@@ -26,11 +26,6 @@ const userSchema: Schema = new Schema(
       required: true,
       unique: true,
     },
-    password: {
-      type: String,
-      required: true,
-      select: false,
-    },
     last_seen: {
       type: Date,
       default: Date.now,
@@ -47,6 +42,11 @@ const userSchema: Schema = new Schema(
       type: String,
       enum: ['active', 'suspended', 'deactivated'],
       default: 'active',
+    },
+    auth_provider: {
+      type: String,
+      enum: ['google', 'facebook', 'local'],
+      default: 'local',
     },
   },
   {
