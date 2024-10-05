@@ -1,120 +1,96 @@
 tags:
-- name: users
-  description: users API
+  - name: auth
+    description: Authentication API
 
 paths:
-# [GET] users
-  /users:
-    get:
-      tags:
-      - users
-      summary: Find All Users
-      responses:
-        200:
-          description: 'OK'
-        500:
-          description: 'Server Error'
-
-# [POST] users
+  # [POST] auth/register
+  /auth/register:
     post:
       tags:
-      - users
-      summary: Add User
+        - auth
+      summary: Register New User
       parameters:
-      - name: body
-        in: body
-        description: user Data
-        required: true
-        schema:
-          $ref: '#/definitions/users'
+        - name: body
+          in: body
+          description: User Registration Data
+          required: true
+          schema:
+            $ref: '#/definitions/userRegistration'
       responses:
         201:
           description: 'Created'
         400:
           description: 'Bad Request'
         409:
-          description: 'Conflict'
+          description: 'Conflict - Email already exists'
         500:
           description: 'Server Error'
 
-# [GET] users/id
-  /users/{id}:
-    get:
+  # [POST] auth/login
+  /auth/login:
+    post:
       tags:
-      - users
-      summary: Find User By Id
+        - auth
+      summary: User Login
       parameters:
-      - name: id
-        in: path
-        description: User Id
-        required: true
-      responses:
-        200:
-          description: 'OK'
-        409:
-          description: 'Conflict'
-        500:
-          description: 'Server Error'
-
-# [PUT] users/id
-    put:
-      tags:
-      - users
-      summary: Update User By Id
-      parameters:
-      - name: id
-        in: path
-        description: user Id
-        required: true
-      - name: body
-        in: body
-        description: user Data
-        required: true
-        schema:
-          $ref: '#/definitions/users'
+        - name: body
+          in: body
+          description: User Login Data
+          required: true
+          schema:
+            $ref: '#/definitions/userLogin'
       responses:
         200:
           description: 'OK'
         400:
           description: 'Bad Request'
-        409:
-          description: 'Conflict'
-        500:
-          description: 'Server Error'
-
-# [DELETE] users/id
-    delete:
-      tags:
-      - users
-      summary: Delete User By Id
-      parameters:
-      - name: id
-        in: path
-        description: user Id
-        required: true
-      responses:
-        200:
-          description: 'OK'
-        409:
-          description: 'Conflict'
+        401:
+          description: 'Wrong credentials'
         500:
           description: 'Server Error'
 
 # definitions
 definitions:
-  users:
+  userRegistration:
     type: object
     required:
-        - email
-        - password
+      - email
+      - password
+      - first_name
+      - last_name
     properties:
       email:
         type: string
-        description: user Email
+        description: User Email
+        example: user@example.com
       password:
         type: string
-        description: user Password
+        description: User Password (6-20 characters)
+        example: password123
+      first_name:
+        type: string
+        description: User First Name (2-50 characters, letters only)
+        example: John
+      last_name:
+        type: string
+        description: User Last Name (2-50 characters, letters only)
+        example: Doe
+
+  userLogin:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        description: User Email
+        example: user@example.com
+      password:
+        type: string
+        description: User Password
+        example: password123
 
 schemes:
- - https
- - http
+  - https
+  - http

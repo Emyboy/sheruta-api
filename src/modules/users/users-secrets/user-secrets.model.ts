@@ -33,7 +33,7 @@ const userSecretsSchema: Schema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const userSecretsModel = model<UserSecrets>('UserSecrets', userSecretsSchema);
