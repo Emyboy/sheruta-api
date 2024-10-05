@@ -10,7 +10,7 @@ import { isEmpty } from '@utils/util';
 import userSecretsModel, { UserSecrets } from '@/modules/users/users-secrets/user-secrets.model';
 import * as crypto from 'crypto';
 import { sendEmail } from '@utils/email';
-import { activateEmailContent } from '@/modules/auth/auth.content';
+import { activateEmailContent, welcomeEmailContent } from '@/modules/auth/auth.content';
 
 class AuthService {
   public users = userModel;
@@ -33,8 +33,11 @@ class AuthService {
 
     await sendEmail({
       subject: 'Verify your email',
-      html: activateEmailContent({ activation_token: activationToken, user: createUserData }),
+      // html: activateEmailContent({ activation_token: activationToken, user: createUserData }),
       to: createUserData.email.trim().toLowerCase(),
+      html: welcomeEmailContent({
+        user: createUserData
+      })
     });
 
     return createUserData;
