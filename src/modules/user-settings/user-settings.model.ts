@@ -12,7 +12,14 @@ export interface UserSettings {
 
 const userSettingsSchema: Schema = new Schema<UserSettings>(
     {
-
+        receive_marketing_updates: {
+            type: Boolean,
+            default: true
+        },
+        receive_platform_updates: {
+            type: Boolean,
+            default: true
+        },
         user: {
             type: Schema.Types.ObjectId,
             ref: 'Users',
