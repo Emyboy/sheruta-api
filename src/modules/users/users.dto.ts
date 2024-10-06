@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, Matches, IsNumber } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
@@ -65,4 +65,11 @@ export class UserLoginDto {
   @MinLength(6)
   @MaxLength(20)
   public password: string;
+}
+
+export class VerifyTokenDto {
+  @IsString()
+  @MinLength(6)
+  @MaxLength(6)
+  public token: number;
 }

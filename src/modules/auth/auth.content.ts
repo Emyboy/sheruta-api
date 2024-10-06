@@ -18,6 +18,34 @@ export const activateEmailContent = ({ activation_token, user }: { activation_to
   return useDefaultEmailLayout(content, `Hi, ${user.first_name}!`);
 };
 
+export const sendTokenEmailContent = ({ token, user }: { token: string; user: User }) => {
+  const content = `
+    <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
+      Hi, ${user.first_name}! Thank you for signing up with us. To verify your account, please use the verification code provided below.
+    </p>
+
+    <h2 style="color: #0AA365; font-size: 24px; text-align: center;">Your Verification Code</h2>
+    <div style="text-align: center; font-size: 20px; color: #0AA365; font-weight: bold;">
+      ${token}
+    </div>
+
+    <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
+      Please enter this code on the verification page to complete your registration. The code is valid for 15 minutes.
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
+      If you did not request this, please ignore this email or contact our support team for help.
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
+      Best regards,<br>
+      The Sheruta NG Team
+    </p>
+  `;
+
+  return useDefaultEmailLayout(content, `Verify Your Account, ${user.first_name}`);
+};
+
 export const welcomeEmailContent = ({ user }: { user: User }) => {
   const content = `
     <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">

@@ -29,6 +29,19 @@ class AuthController {
       next(error);
     }
   };
+
+  public verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { token } = req.body;
+      await this.authService.verifyToken(token);
+
+      res.status(200).json({
+        message: 'Verification Successful',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default AuthController;

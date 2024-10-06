@@ -10,11 +10,25 @@ import { isEmpty } from '@utils/util';
 import userSecretsModel, { UserSecrets } from '@/modules/users/users-secrets/user-secrets.model';
 import * as crypto from 'crypto';
 import { sendEmail } from '@utils/email';
-import { activateEmailContent, welcomeEmailContent } from '@/modules/auth/auth.content';
+import { activateEmailContent, welcomeEmailContent, sendTokenEmailContent } from '@/modules/auth/auth.content';
 
 class AuthService {
   public users = userModel;
   public userSecrets = userSecretsModel;
+
+  public generateToken(length = 6): string {
+    try {
+      const buffer = crypto.randomBytes(length);
+
+      const token = parseInt(buffer.toString('hex'), 16).toString().slice(0, length);
+
+      const numericToken = token.padStart(6, '0');
+
+      return numericToken;
+    } catch (error) {
+      throw new HttpException(500, 'Error generating token');
+    }
+  }
 
   public async signup(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
@@ -22,21 +36,25 @@ class AuthService {
     const findUser: User = await this.users.findOne({ email: userData.email.trim().toLowerCase() });
     if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
 
+    const token = this.generateToken();
     const activationToken = crypto.randomBytes(32).toString('hex');
     const hashedPassword = await hash(userData.password, 10);
-    const createUserData: User = await this.users.create({ ...userData });
+    const createUserData: User = await this.users.create({ ...userData, token });
+
     await this.userSecrets.create({
       password: hashedPassword,
       user: createUserData._id,
       activation_token: activationToken,
+      token,
     });
 
     await sendEmail({
       subject: 'Verify your email',
       // html: activateEmailContent({ activation_token: activationToken, user: createUserData }),
       to: createUserData.email.trim().toLowerCase(),
-      html: welcomeEmailContent({
+      html: sendTokenEmailContent({
         user: createUserData,
+        token,
       }),
     });
 
@@ -46,7 +64,7 @@ class AuthService {
   public async login(userData: CreateUserDto): Promise<{ cookie: string; user: { email: string; _id: string } }> {
     if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
 
-    const findUser: User = await this.users.findOne({ email: userData.email.trim() }).populate('password');
+    const findUser: User = await this.users.findOne({ email: userData.email.trim() });
     if (!findUser) throw new HttpException(409, `Invalid email or password`);
 
     const userSecret: UserSecrets = await this.userSecrets.findOne({ user: findUser._id }).populate('password');
@@ -64,6 +82,22 @@ class AuthService {
         _id: findUser._id,
       },
     };
+  }
+
+  public async verifyToken(token: string): Promise<void> {
+    if (isEmpty(token)) throw new HttpException(400, 'request is empty');
+
+    const findUser = await this.users.findOne({ token });
+    if (!findUser) throw new HttpException(404, 'Token is invalid');
+
+    if (!findUser?.token_expiry) throw new HttpException(400, 'Validation token has expired');
+
+    findUser.email_verified = true;
+    findUser.token = null;
+
+    await findUser.save();
+
+    return findUser;
   }
 
   public createToken(user: User): TokenData {

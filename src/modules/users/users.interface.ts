@@ -9,4 +9,6 @@ export interface User {
   avatar_url?: string;
   auth_provider: 'google' | 'facebook' | 'local';
   account_status: 'active' | 'suspended' | 'deactivated';
+  token: string;
+  token_expiry: Date;
 }

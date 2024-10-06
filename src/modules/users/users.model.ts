@@ -38,6 +38,15 @@ const userSchema: Schema = new Schema<User>(
       type: Boolean,
       default: false,
     },
+    token: {
+      type: String,
+      default: null,
+    },
+    token_expiry: {
+      type: Date,
+      default: Date.now,
+      expires: 3600, // expires after 1hr
+    },
     account_status: {
       type: String,
       enum: ['active', 'suspended', 'deactivated'],
@@ -53,6 +62,13 @@ const userSchema: Schema = new Schema<User>(
     timestamps: true,
   },
 );
+
+userSchema.pre('save', function (next) {
+  if (this.isModified('token')) {
+    this.token_expiry = Date.now();
+  }
+  next();
+});
 
 const userModel = model<User & Document>('Users', userSchema);
 
