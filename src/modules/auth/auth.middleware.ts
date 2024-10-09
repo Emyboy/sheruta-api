@@ -16,7 +16,7 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
       const findUser = await userModel.findById(userId);
 
       if (findUser) {
-        req.user = findUser;
+        req._user = findUser;
         next();
       } else {
         next(new HttpException(401, 'Wrong authentication token'));
@@ -26,6 +26,18 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
     }
   } catch (error) {
     next(new HttpException(401, 'Session expired'));
+  }
+};
+
+export const adminMiddleware = (req: RequestWithUser, res: Response, next: NextFunction) => {
+  try {
+    if (req._user && req._user.email.includes('@sheruta.ng')) {
+      next();
+    } else {
+      next(new HttpException(401, 'Unauthorized'));
+    }
+  } catch (error) {
+    next(new HttpException(500, 'Internal Server Error'));
   }
 };
 

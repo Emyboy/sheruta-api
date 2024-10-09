@@ -20,12 +20,14 @@ class AuthController {
 
   public logIn = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("GOT CALLED:::", req.body);
       const userData: CreateUserDto = req.body;
       const { cookie, user } = await this.authService.login(userData);
 
       res.setHeader('Set-Cookie', [cookie]);
       res.status(200).json({ data: { user, token: cookie }, message: 'login' });
     } catch (error) {
+      console.log('LOGIN ERROR::::', error);
       next(error);
     }
   };

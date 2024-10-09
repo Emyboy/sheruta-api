@@ -10,7 +10,7 @@ import { isEmpty } from '@utils/util';
 import userSecretsModel, { UserSecrets } from '@/modules/users/users-secrets/user-secrets.model';
 import * as crypto from 'crypto';
 import { sendEmail } from '@utils/email';
-import { activateEmailContent, welcomeEmailContent, sendTokenEmailContent } from '@/modules/auth/auth.content';
+import { sendTokenEmailContent } from '@/modules/auth/auth.content';
 
 class AuthService {
   public users = userModel;
@@ -84,7 +84,7 @@ class AuthService {
     };
   }
 
-  public async verifyToken(token: string): Promise<void> {
+  public async verifyToken(token: string): Promise<User> {
     if (isEmpty(token)) throw new HttpException(400, 'request is empty');
 
     const findUser = await this.users.findOne({ token });

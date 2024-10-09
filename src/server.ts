@@ -11,6 +11,7 @@ import LocationsRoute from './modules/flat-share/options/locations/locations.rou
 import PropertyTypesRoute from './modules/flat-share/options/property_types/property_types.route';
 import ServiceRoute from './modules/flat-share/options/services/service.route';
 import StateRoute from './modules/flat-share/options/state/state.route';
+import WorkIndustriesRoute from './modules/flat-share/options/work_industry/work-industry.route';
 
 validateEnv();
 
@@ -25,7 +26,8 @@ const app = new App([
     new LocationsRoute(),
     new PropertyTypesRoute(),
     new ServiceRoute(),
-    new StateRoute()
+    new StateRoute(),
+    new WorkIndustriesRoute()
 ]);
 
 app.listen();

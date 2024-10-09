@@ -71,5 +71,5 @@ export class VerifyTokenDto {
   @IsString()
   @MinLength(6)
   @MaxLength(6)
-  public token: number;
+  public token: string;
 }
