@@ -81,3 +81,19 @@ export const welcomeEmailContent = ({ user }: { user: User }) => {
 
   return useDefaultEmailLayout(content, `Welcome to Sheruta NG, ${user.first_name}!`);
 };
+
+export const passwordResetEmailContent = ({ token, user }: { token: string; user: User }) => {
+  const content = `
+    <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
+      Hi, ${user.first_name}! We received a request to reset your password. Please click the button below to reset your password.
+    </p>
+    <div style="text-align: center;">
+      <a href="${CLIENT_URL}/auth/reset-password/${token}"
+         style="display: inline-block; padding: 15px 25px; margin-top: 20px; font-size: 16px; background-color: #0AA365; color: #ffffff; text-decoration: none; border-radius: 5px;">
+        Reset Password
+      </a>
+    </div>
+  `;
+
+  return useDefaultEmailLayout(content, `Password Reset Request, ${user.first_name}`);
+}

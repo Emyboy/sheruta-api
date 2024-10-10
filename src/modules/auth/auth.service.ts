@@ -9,8 +9,9 @@ import userModel from '@/modules/users/users.model';
 import { isEmpty } from '@utils/util';
 import userSecretsModel, { UserSecrets } from '@/modules/users/users-secrets/user-secrets.model';
 import { sendEmail } from '@utils/email';
-import { sendTokenEmailContent } from '@/modules/auth/auth.content';
+import { passwordResetEmailContent, sendTokenEmailContent, welcomeEmailContent } from '@/modules/auth/auth.content';
 import { generateOTP } from '@/utils/random';
+import crypto from 'crypto';
 
 class AuthService {
   public users = userModel;
@@ -30,7 +31,7 @@ class AuthService {
       user: createUserData._id,
     });
 
-    this.sendOTP(createUserData._id);
+    this.sendOTP(createUserData.email);
 
     return createUserData;
   }
@@ -58,11 +59,16 @@ class AuthService {
     };
   }
 
-  public sendOTP = async (user_id: string) => {
+  public sendOTP = async (email: string) => {
     const otp = generateOTP();
-    const user = await this.users.findById(user_id);
+    const user = await this.users.findOne({ email: email?.toLocaleLowerCase()?.trim() });
 
-    if(user){
+    if (user) {
+      await this.userSecrets.findOneAndUpdate({ user: user._id }, {
+        otp,
+        otp_expiry: new Date(Date.now() + 15 * 60 * 1000),
+      });
+
       await sendEmail({
         subject: 'Verify your email',
         to: user.email.trim().toLowerCase(),
@@ -70,12 +76,6 @@ class AuthService {
           user: user,
           token: otp,
         }),
-      });
-
-
-      await this.userSecrets.findOneAndUpdate({ user: user_id }, {
-        otp,
-        otp_expiry: new Date(Date.now() + 15 * 60 * 1000),
       });
     } else {
       throw new HttpException(404, 'User not found');
@@ -98,6 +98,14 @@ class AuthService {
     await findUser.save();
     await userSecret.save();
 
+    sendEmail({
+      subject: 'Welcome to the Sheruta Community',
+      to: findUser.email.trim().toLowerCase(),
+      html: welcomeEmailContent({
+        user: findUser,
+      }),
+    })
+
     return findUser;
   }
 
@@ -112,6 +120,45 @@ class AuthService {
   public createCookie(tokenData: TokenData): string {
     // return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
     return tokenData.token;
+  }
+
+  public async requestPasswordReset(email: string){
+    const user = await this.users.findOne({ email: email?.toLocaleLowerCase()?.trim() });
+    const reset_token = crypto.randomBytes(20).toString('hex');
+
+    if (user) {
+      await this.userSecrets.findOneAndUpdate({ user: user._id }, {
+        reset_token
+      });
+
+      await sendEmail({
+        subject: 'Password Reset',
+        to: user.email.trim().toLowerCase(),
+        html: passwordResetEmailContent({
+          token: reset_token,
+          user: user
+        }),
+      });
+    } else {
+      throw new HttpException(404, 'User not found');
+    }
+  }
+
+  public async resetPassword(reset_token: string, password: string){
+    const userSecret = await this.userSecrets.findOne({ reset_token }).populate('user');
+
+    if (!userSecret) throw new HttpException(404, 'Token is invalid');
+
+    const user = await this.users.findById({ _id: userSecret.user._id });
+    const hashedPassword = await hash(password, 10);
+
+    userSecret.reset_token = null;
+    userSecret.password = hashedPassword;
+
+    await userSecret.save();
+    await user.save();
+
+    return user;
   }
 }
 

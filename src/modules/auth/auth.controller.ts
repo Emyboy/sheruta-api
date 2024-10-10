@@ -49,6 +49,64 @@ class AuthController {
       next(error);
     }
   };
+
+  public sendOTP = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email } = req.body;
+
+      if(!email) {
+        return res.status(400).json({ message: 'Email is required' });
+      }
+
+      await this.authService.sendOTP(email?.toLocaleLowerCase()?.trim());
+
+      res.status(200).json({
+        message: 'OTP sent successfully',
+      });
+    } catch (error) {
+      logger.error('SEND OTP ERROR::::', error);
+      next(error);
+    }
+  }
+
+  public passwordResetRequest = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email } = req.body;
+
+      if(!email) {
+        return res.status(400).json({ message: 'Email is required' });
+      }
+
+      await this.authService.requestPasswordReset(email?.toLocaleLowerCase()?.trim());
+
+      res.status(200).json({
+        message: 'Request sent successfully',
+      });
+    } catch (error) {
+      logger.error('SEND PASSWORD Request ERROR::::', error);
+      next(error);
+    }
+  }
+
+  public resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { token, password } = req.body;
+
+      if(!token || !password) {
+        return res.status(400).json({ message: 'Token and password are required' });
+      }
+
+      await this.authService.resetPassword(token, password);
+
+      res.status(200).json({
+        message: 'Password reset successful',
+      });
+    } catch (error) {
+      logger.error('RESET PASSWORD ERROR::::', error);
+      next(error);
+    }
+  }
+
 }
 
 export default AuthController;

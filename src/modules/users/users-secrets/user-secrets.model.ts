@@ -36,6 +36,7 @@ const userSecretsSchema: Schema = new Schema<UserSecrets>(
     otp: {
       type: String,
       default: null,
+      expires: 3600,
     },
     otp_expiry: {
       type: Date,
