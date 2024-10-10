@@ -60,14 +60,18 @@ class UsersController {
 
 
       res.status(200).json({
-        user,
-        user_settings,
-        user_info,
-        flat_share_profile,
-        locations,
-        states,
-        amenities,
-        services
+        user: {
+          user,
+          user_settings,
+          user_info,
+          flat_share_profile,
+        },
+        options: {
+          locations,
+          states,
+          amenities,
+          services
+        }
       });
     } catch (error) {
       console.log(error)
