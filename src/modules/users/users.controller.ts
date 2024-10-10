@@ -44,28 +44,43 @@ class UsersController {
   public getUserDependencies = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
-      const secretKey: string = SECRET_KEY;
-      const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
-      const userId = new mongoose.Types.ObjectId(verificationResponse._id);
 
-      const [user, userSettings, userInfo, flatShareProfile, locations, states, amenities, services] = await Promise.all([
-        this.user.findById(userId),
-        this.userSettings.findOne({ user: userId }),
-        this.userInfo.findOne({ user: userId }),
-        this.flatShareProfile.findOne({ user: userId }),
+      let response:any = {
+        user_data: null,
+        options: null
+      }
+
+      if(Authorization) {
+        const secretKey: string = SECRET_KEY;
+        const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
+        const userId = new mongoose.Types.ObjectId(verificationResponse._id);
+
+        const [user, userSettings, userInfo, flatShareProfile] = await Promise.all([
+          this.user.findById(userId),
+          this.userSettings.findOne({ user: userId }),
+          this.userInfo.findOne({ user: userId }),
+          this.flatShareProfile.findOne({ user: userId }),
+        ]);
+        response.user_data = {
+          user,
+          user_settings: userSettings,
+          user_info: userInfo,
+          flat_share_profile: flatShareProfile,
+        }
+      }
+
+
+      const [locations, states, amenities, services] = await Promise.all([
         this.location.find(),
         this.state.find(),
         this.amenities.find(),
         this.services.find(),
       ]);
 
+
+
       res.status(200).json({
-        user_data: {
-          user,
-          user_settings: userSettings,
-          user_info: userInfo,
-          flat_share_profile: flatShareProfile,
-        },
+        ...response,
         options: {
           locations,
           states,
