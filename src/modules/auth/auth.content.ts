@@ -24,8 +24,8 @@ export const sendTokenEmailContent = ({ token, user }: { token: string; user: Us
       Hi, ${user.first_name}! Thank you for signing up with us. To verify your account, please use the verification code provided below.
     </p>
 
-    <h2 style="color: #0AA365; font-size: 24px; text-align: center;">Your Verification Code</h2>
-    <div style="text-align: center; font-size: 20px; color: #0AA365; font-weight: bold;">
+    <h2 style="color: #0AA365; font-size: 20px; text-align: center;">Your Verification Code</h2>
+    <div style="text-align: center; font-size: 45px; color: #0AA365; font-weight: bold;">
       ${token}
     </div>
 

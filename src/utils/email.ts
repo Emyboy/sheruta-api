@@ -14,6 +14,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmail = async ({ to, html, subject }: { to: string; subject: string; html: string }) => {
   try {
+    logger.info(`\n Sending email to ${to}`);
     const mailOptions = {
       from: `"Emeka from Sheruta" <${SMTP_USER}>`,
       to,

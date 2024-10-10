@@ -3,6 +3,7 @@ import { CreateUserDto } from '@/modules/users/users.dto';
 // import { RequestWithUser } from '@/modules/auth/auth.interface';
 import { User } from '@/modules/users/users.interface';
 import AuthService from '@/modules/auth/auth.service';
+import { logger } from '@/utils/logger';
 
 class AuthController {
   public authService = new AuthService();
@@ -14,6 +15,7 @@ class AuthController {
 
       res.status(201).json({ data: signUpUserData, message: 'signup' });
     } catch (error) {
+      logger.error('SIGNUP ERROR::::', error);
       next(error);
     }
   };
@@ -27,20 +29,23 @@ class AuthController {
       res.setHeader('Set-Cookie', [cookie]);
       res.status(200).json({ data: { user, token: cookie }, message: 'login' });
     } catch (error) {
-      console.log('LOGIN ERROR::::', error);
+      console.log('LOGIN ERROR:::', error);
+      logger.error('LOGIN ERROR::::', error);
       next(error);
     }
   };
 
-  public verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+  public verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { token } = req.body;
-      await this.authService.verifyToken(token);
+      await this.authService.verifyOTP(token);
 
       res.status(200).json({
         message: 'Verification Successful',
       });
     } catch (error) {
+      console.log("verifyOTP ERROR:::", error);
+      logger.error('VERIFY OTP ERROR::::', error);
       next(error);
     }
   };

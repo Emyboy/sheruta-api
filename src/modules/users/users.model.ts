@@ -38,15 +38,7 @@ const userSchema: Schema = new Schema<User>(
       type: Boolean,
       default: false,
     },
-    token: {
-      type: String,
-      default: null,
-    },
-    token_expiry: {
-      type: Date,
-      default: Date.now,
-      expires: 3600, // expires after 1hr
-    },
+
     account_status: {
       type: String,
       enum: ['active', 'suspended', 'deactivated'],

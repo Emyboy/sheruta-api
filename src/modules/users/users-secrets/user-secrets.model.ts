@@ -5,10 +5,12 @@ export interface UserSecrets extends Document {
   activation_token: string;
   reset_token: string;
   password: string;
-  user: User['_id'];
+  user: User;
+  otp: string;
+  otp_expiry: Date;
 }
 
-const userSecretsSchema: Schema = new Schema(
+const userSecretsSchema: Schema = new Schema<UserSecrets>(
   {
     activation_token: {
       type: String,
@@ -29,6 +31,16 @@ const userSecretsSchema: Schema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Users',
       required: true,
+      select: false
+    },
+    otp: {
+      type: String,
+      default: null,
+    },
+    otp_expiry: {
+      type: Date,
+      default: Date.now,
+      expires: 3600,
     },
   },
   {

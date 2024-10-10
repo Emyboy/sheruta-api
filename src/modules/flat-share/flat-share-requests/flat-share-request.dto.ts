@@ -1,5 +1,3 @@
-
-
 import {
   IsString,
   MinLength,
@@ -9,7 +7,6 @@ import { Transform } from 'class-transformer';
 
 
 export class CreateSeekerRequestDTO {
-
   @IsString()
   @MinLength(10)
   @MaxLength(500)

@@ -8,27 +8,13 @@ import { User } from '@/modules/users/users.interface';
 import userModel from '@/modules/users/users.model';
 import { isEmpty } from '@utils/util';
 import userSecretsModel, { UserSecrets } from '@/modules/users/users-secrets/user-secrets.model';
-import * as crypto from 'crypto';
 import { sendEmail } from '@utils/email';
 import { sendTokenEmailContent } from '@/modules/auth/auth.content';
+import { generateOTP } from '@/utils/random';
 
 class AuthService {
   public users = userModel;
   public userSecrets = userSecretsModel;
-
-  public generateToken(length = 6): string {
-    try {
-      const buffer = crypto.randomBytes(length);
-
-      const token = parseInt(buffer.toString('hex'), 16).toString().slice(0, length);
-
-      const numericToken = token.padStart(6, '0');
-
-      return numericToken;
-    } catch (error) {
-      throw new HttpException(500, 'Error generating token');
-    }
-  }
 
   public async signup(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
@@ -36,27 +22,15 @@ class AuthService {
     const findUser: User = await this.users.findOne({ email: userData.email.trim().toLowerCase() });
     if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
 
-    const token = this.generateToken();
-    const activationToken = crypto.randomBytes(32).toString('hex');
     const hashedPassword = await hash(userData.password, 10);
-    const createUserData: User = await this.users.create({ ...userData, token });
+    const createUserData: User = await this.users.create({ ...userData });
 
     await this.userSecrets.create({
       password: hashedPassword,
       user: createUserData._id,
-      activation_token: activationToken,
-      token,
     });
 
-    await sendEmail({
-      subject: 'Verify your email',
-      // html: activateEmailContent({ activation_token: activationToken, user: createUserData }),
-      to: createUserData.email.trim().toLowerCase(),
-      html: sendTokenEmailContent({
-        user: createUserData,
-        token,
-      }),
-    });
+    this.sendOTP(createUserData._id);
 
     return createUserData;
   }
@@ -65,7 +39,7 @@ class AuthService {
     if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
 
     const findUser: User = await this.users.findOne({ email: userData.email.trim() });
-    if (!findUser) throw new HttpException(409, `Invalid email or password`);
+    if (!findUser || !findUser.email_verified) throw new HttpException(409, `Invalid email or password`);
 
     const userSecret: UserSecrets = await this.userSecrets.findOne({ user: findUser._id }).populate('password');
 
@@ -84,18 +58,45 @@ class AuthService {
     };
   }
 
-  public async verifyToken(token: string): Promise<User> {
-    if (isEmpty(token)) throw new HttpException(400, 'request is empty');
+  public sendOTP = async (user_id: string) => {
+    const otp = generateOTP();
+    const user = await this.users.findById(user_id);
 
-    const findUser = await this.users.findOne({ token });
-    if (!findUser) throw new HttpException(404, 'Token is invalid');
+    if(user){
+      await sendEmail({
+        subject: 'Verify your email',
+        to: user.email.trim().toLowerCase(),
+        html: sendTokenEmailContent({
+          user: user,
+          token: otp,
+        }),
+      });
 
-    if (!findUser?.token_expiry) throw new HttpException(400, 'Validation token has expired');
+
+      await this.userSecrets.findOneAndUpdate({ user: user_id }, {
+        otp,
+        otp_expiry: new Date(Date.now() + 15 * 60 * 1000),
+      });
+    } else {
+      throw new HttpException(404, 'User not found');
+    }
+  }
+
+  public async verifyOTP(otp: string): Promise<User> {
+    if (isEmpty(otp)) throw new HttpException(400, 'request is empty');
+
+    const userSecret = await this.userSecrets.findOne({ otp }).populate('user');
+    if (!userSecret) throw new HttpException(404, 'Token is invalid');
+
+    const findUser = await this.users.findById({ _id: userSecret.user._id });
+
+    if (!userSecret?.otp) throw new HttpException(400, 'Validation token has expired');
 
     findUser.email_verified = true;
-    findUser.token = null;
+    userSecret.otp = null;
 
     await findUser.save();
+    await userSecret.save();
 
     return findUser;
   }
