@@ -60,7 +60,7 @@ class UsersController {
 
 
       res.status(200).json({
-        user: {
+        user_data: {
           user,
           user_settings,
           user_info,
