@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import UsersController from '@/modules/users/users.controller';
-import { CreateUserDto } from '@/modules/users/users.dto';
 import { Routes } from '@interfaces/routes.interface';
-import validationMiddleware from '@middlewares/validation.middleware';
 
 class UsersRoute implements Routes {
   public path = '/users';
@@ -15,6 +13,7 @@ class UsersRoute implements Routes {
 
   private initializeRoutes() {
     this.router.put(`${this.path}`, this.usersController.updateUser);
+    this.router.get(`${this.path}/dependencies`, this.usersController.getUserDependencies);
   }
 }
 
