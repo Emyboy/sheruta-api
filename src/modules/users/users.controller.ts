@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import userService from '@/modules/users/users.service';
-import { RequestWithUser } from '../auth/auth.interface';
+import { DataStoredInToken, RequestWithUser } from '../auth/auth.interface';
 import userSettingModel from '../user-settings/user-settings.model';
 import userModel from './users.model';
 import userInfoModel from '../user-info/user-info.model';
@@ -9,6 +9,10 @@ import amenitiesModel from '../flat-share/options/amenities/amenities.model';
 import servicesModel from '../flat-share/options/services/services.model';
 import locationModel from '../flat-share/options/locations/locations.model';
 import stateModel from '../flat-share/options/state/state.model';
+import { SECRET_KEY } from '@/config';
+import { verify } from 'jsonwebtoken';
+import mongoose from 'mongoose';
+
 
 class UsersController {
   public userService = new userService();
@@ -39,46 +43,41 @@ class UsersController {
 
   public getUserDependencies = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const { _user } = req;
+      const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
+      const secretKey: string = SECRET_KEY;
+      const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
+      const userId = new mongoose.Types.ObjectId(verificationResponse._id);
 
-      let user = null;
-      let user_settings = null;
-      let user_info = null;
-      let flat_share_profile = null;
-
-      if (_user) {
-        user = await this.user.findById(_user._id);
-        user_settings = await this.userSettings.findOne({ user: _user._id });
-        user_info = await this.userInfo.findOne({ user: _user._id });
-        flat_share_profile = await this.flatShareProfile.findOne({ user: _user._id });
-      }
-
-      const locations = await this.location.find();
-      const states = await this.state.find();
-      const amenities = await this.amenities.find();
-      const services = await this.services.find();
-
+      const [user, userSettings, userInfo, flatShareProfile, locations, states, amenities, services] = await Promise.all([
+        this.user.findById(userId),
+        this.userSettings.findOne({ user: userId }),
+        this.userInfo.findOne({ user: userId }),
+        this.flatShareProfile.findOne({ user: userId }),
+        this.location.find(),
+        this.state.find(),
+        this.amenities.find(),
+        this.services.find(),
+      ]);
 
       res.status(200).json({
         user_data: {
           user,
-          user_settings,
-          user_info,
-          flat_share_profile,
+          user_settings: userSettings,
+          user_info: userInfo,
+          flat_share_profile: flatShareProfile,
         },
         options: {
           locations,
           states,
           amenities,
-          services
-        }
+          services,
+        },
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       next(error);
-
     }
-  }
+  };
 
 }
 
