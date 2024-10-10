@@ -5,6 +5,7 @@ export interface UserSecrets extends Document {
   activation_token: string;
   reset_token: string;
   password: string;
+  nin: string;
   user: User;
   otp: string;
 }
@@ -17,6 +18,11 @@ const userSecretsSchema: Schema = new Schema<UserSecrets>(
       default: null,
     },
     reset_token: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    nin: {
       type: String,
       required: false,
       default: null,

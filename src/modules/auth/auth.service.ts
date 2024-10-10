@@ -12,10 +12,16 @@ import { sendEmail } from '@utils/email';
 import { passwordResetEmailContent, sendTokenEmailContent, welcomeEmailContent } from '@/modules/auth/auth.content';
 import { generateOTP } from '@/utils/random';
 import crypto from 'crypto';
+import userSettingModel from '../user-settings/user-settings.model';
+import userInfoModel from '../user-info/user-info.model';
+import flatShareProfileModel from '../flat-share/flat-share-profile/flat-share-profile.model';
 
 class AuthService {
   public users = userModel;
   public userSecrets = userSecretsModel;
+  public userSettings = userSettingModel;
+  public userInfo = userInfoModel;
+  public flatShareProfile = flatShareProfileModel;
 
   public async signup(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
@@ -97,13 +103,7 @@ class AuthService {
     await findUser.save();
     await userSecret.save();
 
-    sendEmail({
-      subject: 'Welcome to the Sheruta Community',
-      to: findUser.email.trim().toLowerCase(),
-      html: welcomeEmailContent({
-        user: findUser,
-      }),
-    })
+    await this.onboardUser(findUser._id);
 
     return findUser;
   }
@@ -121,7 +121,7 @@ class AuthService {
     return tokenData.token;
   }
 
-  public async requestPasswordReset(email: string){
+  public async requestPasswordReset(email: string) {
     const user = await this.users.findOne({ email: email?.toLocaleLowerCase()?.trim() });
     const reset_token = crypto.randomBytes(20).toString('hex');
 
@@ -143,13 +143,13 @@ class AuthService {
     }
   }
 
-  public async resetPassword(reset_token: string, password: string){
+  public async resetPassword(reset_token: string, password: string) {
     const userSecret = await this.userSecrets.findOne({ reset_token }).populate('user');
 
     if (!userSecret) throw new HttpException(404, 'Token is invalid');
 
     const user = await this.users.findById({ _id: userSecret.user._id });
-    const hashedPassword = await hash(password, 10);
+    const hashedPassword = await hash(password.trim(), 10);
 
     userSecret.reset_token = null;
     userSecret.password = hashedPassword;
@@ -158,6 +158,31 @@ class AuthService {
     await user.save();
 
     return user;
+  }
+
+  public async onboardUser({ type, user_id }: { user_id: string; type: 'flat_share' | 'others' }) {
+    const findUser = await this.users.findById(user_id);
+
+    if (!findUser) throw new HttpException(404, 'User not found');
+
+    await this.userSettings.create({ user: findUser._id });
+    await this.userInfo.create({ user: findUser._id });
+
+    switch (type) {
+      case 'flat_share':
+        await this.flatShareProfile.create({ user: findUser._id });
+        await sendEmail({
+          subject: 'Welcome to the Sheruta Community',
+          to: findUser.email.trim().toLowerCase(),
+          html: welcomeEmailContent({
+            user: findUser,
+          }),
+        })
+        break;
+      // for any other platform the user signs up for
+      default:
+        break;
+    }
   }
 }
 

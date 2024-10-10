@@ -73,3 +73,60 @@ export class VerifyTokenDto {
   @MaxLength(6)
   public token: string;
 }
+
+export class UpdateUserDTO {
+  @IsString()
+  @Matches(/^[a-zA-Z\s-]+$/, {
+    message: 'First name can only contain letters, spaces, and hyphens',
+  })
+  @Transform(({ value }) => {
+    if (!value) return value;
+
+    value = value.toLowerCase().trim();
+    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    value = value.split(' ')[0];
+
+    return value;
+  })
+  @MinLength(2)
+  @MaxLength(50)
+  public first_name: string;
+
+
+  @IsString()
+  @Matches(/^[a-zA-Z\s-]+$/, {
+    message: 'First name can only contain letters, spaces, and hyphens',
+  })
+  @Transform(({ value }) => {
+    if (!value) return value;
+
+    value = value.toLowerCase().trim();
+    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    value = value.split(' ')[0];
+
+    return value;
+  })
+  @MinLength(2)
+  @MaxLength(50)
+  public middle_name: string;
+
+  @IsString()
+  @Matches(/^[a-zA-Z\s-]+$/, {
+    message: 'First name can only contain letters, spaces, and hyphens',
+  })
+  @Transform(({ value }) => {
+    if (!value) return value;
+
+    value = value.toLowerCase().trim();
+    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    value = value.split(' ')[0];
+
+    return value;
+  })
+  @MinLength(2)
+  @MaxLength(50)
+  public last_name: string;
+}

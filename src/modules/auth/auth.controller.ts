@@ -22,7 +22,6 @@ class AuthController {
 
   public logIn = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("GOT CALLED:::", req.body);
       const userData: CreateUserDto = req.body;
       const { cookie, user } = await this.authService.login(userData);
 

@@ -123,6 +123,7 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     },
     seeking: {
       type: Boolean,
+      default: null
     },
     verified: {
       type: Boolean,

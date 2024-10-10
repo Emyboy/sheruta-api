@@ -5,6 +5,8 @@ export interface UserSettings {
 
     receive_marketing_updates: boolean;
     receive_platform_updates: boolean;
+    hide_profile: boolean;
+    hide_phone_number: boolean;
 
     user_info: SchemaDefinitionProperty<string>;
     user: SchemaDefinitionProperty<string>;
@@ -19,6 +21,14 @@ const userSettingsSchema: Schema = new Schema<UserSettings>(
         receive_platform_updates: {
             type: Boolean,
             default: true
+        },
+        hide_profile: {
+            type: Boolean,
+            default: false
+        },
+        hide_phone_number: {
+            type: Boolean,
+            default: false
         },
         user: {
             type: Schema.Types.ObjectId,
