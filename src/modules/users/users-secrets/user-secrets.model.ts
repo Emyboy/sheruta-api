@@ -7,7 +7,6 @@ export interface UserSecrets extends Document {
   password: string;
   user: User;
   otp: string;
-  otp_expiry: Date;
 }
 
 const userSecretsSchema: Schema = new Schema<UserSecrets>(
@@ -36,13 +35,7 @@ const userSecretsSchema: Schema = new Schema<UserSecrets>(
     otp: {
       type: String,
       default: null,
-      expires: 3600,
-    },
-    otp_expiry: {
-      type: Date,
-      default: Date.now,
-      expires: 3600,
-    },
+    }
   },
   {
     timestamps: true,

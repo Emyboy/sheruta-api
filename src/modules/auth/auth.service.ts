@@ -45,7 +45,7 @@ class AuthService {
     const userSecret: UserSecrets = await this.userSecrets.findOne({ user: findUser._id }).populate('password');
 
     const isPasswordMatching: boolean = await compare(userData.password.trim(), userSecret.password.trim());
-    if (!isPasswordMatching) throw new HttpException(409, 'Password is not matching');
+    if (!isPasswordMatching) throw new HttpException(409, 'Incorrect email or password');
 
     const tokenData = this.createToken(findUser);
     const cookie = this.createCookie(tokenData);
@@ -66,7 +66,6 @@ class AuthService {
     if (user) {
       await this.userSecrets.findOneAndUpdate({ user: user._id }, {
         otp,
-        otp_expiry: new Date(Date.now() + 15 * 60 * 1000),
       });
 
       await sendEmail({
