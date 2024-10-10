@@ -54,12 +54,19 @@ class App {
   }
 
   private async connectToDatabase() {
-    set('strictQuery', false);
-    if (this.env !== 'production') {
-      set('debug', true);
-    }
+    try {
+      if (this.env !== 'production') {
+        set('debug', true);
+      } else {
+        set('strictQuery', false);
+      }
 
-    await connect(dbConnection.url);
+      console.log('Connecting to MongoDB', dbConnection);
+
+      await connect(dbConnection.url);
+    } catch (error) {
+      console.log('DB CONNECTION ERROR:::', error);
+    }
   }
 
   private initializeMiddlewares() {
