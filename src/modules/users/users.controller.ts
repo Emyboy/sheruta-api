@@ -47,7 +47,6 @@ class UsersController {
 
       let response:any = {
         user_data: null,
-        options: null
       }
 
       if(Authorization) {

@@ -12,22 +12,24 @@ import PropertyTypesRoute from './modules/flat-share/options/property_types/prop
 import ServiceRoute from './modules/flat-share/options/services/service.route';
 import StateRoute from './modules/flat-share/options/state/state.route';
 import WorkIndustriesRoute from './modules/flat-share/options/work_industry/work-industry.route';
+import UserInfoRoute from './modules/user-info/user-info.route';
 
 validateEnv();
 
 const app = new App([
-    new IndexRoute(), 
-    new UsersRoute(), 
-    new AuthRoute(), 
-    new AmenitiesRoute(), 
-    new CategoriesRoute(), 
-    new HabitRoute(),
-    new InterestRoute(),
-    new LocationsRoute(),
-    new PropertyTypesRoute(),
-    new ServiceRoute(),
-    new StateRoute(),
-    new WorkIndustriesRoute()
+  new IndexRoute(),
+  new UsersRoute(),
+  new AuthRoute(),
+  new AmenitiesRoute(),
+  new CategoriesRoute(),
+  new HabitRoute(),
+  new InterestRoute(),
+  new LocationsRoute(),
+  new PropertyTypesRoute(),
+  new ServiceRoute(),
+  new StateRoute(),
+  new WorkIndustriesRoute(),
+  new UserInfoRoute()
 ]);
 
 app.listen();
