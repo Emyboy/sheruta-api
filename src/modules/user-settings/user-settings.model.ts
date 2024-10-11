@@ -8,7 +8,6 @@ export interface UserSettings {
     hide_profile: boolean;
     hide_phone_number: boolean;
 
-    user_info: SchemaDefinitionProperty<string>;
     user: SchemaDefinitionProperty<string>;
 }
 
@@ -35,12 +34,6 @@ const userSettingsSchema: Schema = new Schema<UserSettings>(
             ref: 'Users',
             required: true,
         },
-        user_info: {
-            type: Schema.Types.ObjectId,
-            ref: 'UserInfos',
-            required: true,
-        },
-
     },
     {
         timestamps: true,

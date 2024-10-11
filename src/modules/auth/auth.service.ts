@@ -16,6 +16,8 @@ import userSettingModel from '../user-settings/user-settings.model';
 import userInfoModel from '../user-info/user-info.model';
 import flatShareProfileModel from '../flat-share/flat-share-profile/flat-share-profile.model';
 
+//todo: fix user settings and info not creating
+
 class AuthService {
   public users = userModel;
   public userSecrets = userSecretsModel;
@@ -103,7 +105,10 @@ class AuthService {
     await findUser.save();
     await userSecret.save();
 
-    await this.onboardUser(findUser._id);
+    await this.onboardUser({
+      type: 'flat_share',
+      user_id: findUser._id,
+    });
 
     return findUser;
   }
@@ -165,12 +170,17 @@ class AuthService {
 
     if (!findUser) throw new HttpException(404, 'User not found');
 
-    await this.userSettings.create({ user: findUser._id });
-    await this.userInfo.create({ user: findUser._id });
+    await this.userSettings.create({
+      user: findUser._id,
+    })
+
+    const userInfo = await this.userInfo.create({
+      user: findUser._id,
+    })
 
     switch (type) {
       case 'flat_share':
-        await this.flatShareProfile.create({ user: findUser._id });
+        await this.flatShareProfile.create({ user: findUser._id, user_info: userInfo._id });
         await sendEmail({
           subject: 'Welcome to the Sheruta Community',
           to: findUser.email.trim().toLowerCase(),

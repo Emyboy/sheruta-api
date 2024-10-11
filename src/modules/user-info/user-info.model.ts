@@ -5,13 +5,12 @@ import { UserSettings } from '../user-settings/user-settings.model';
 export interface UserInfo extends Document {
   date_of_birth: Date;
   done_kyc: boolean;
-  gender: "male" | "female";
+  gender: "male" | "female" | null;
   is_verified: boolean;
   phone_number_verified: boolean;
   primary_phone_number: string;
   whatsapp_phone_number: string;
   user: User;
-  user_setting: UserSettings;
 }
 
 const userInfoSchema: Schema = new Schema<UserInfo>(
@@ -21,13 +20,9 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
       ref: 'Users',
       required: true,
     },
-    user_setting: {
-      type: Schema.Types.ObjectId,
-      ref: 'UserSettings',
-      required: true,
-    },
     date_of_birth: {
       type: Date,
+      default: null
     },
     done_kyc: {
       type: Boolean,
@@ -35,7 +30,8 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
     },
     gender: {
       type: String,
-      enum: ["male", "female"],
+      enum: ["male", "female", null],
+      default: null
     },
     is_verified: {
       type: Boolean,
@@ -47,11 +43,12 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
     },
     primary_phone_number: {
       type: String,
-      required: true,
       unique: true,
+      default: null
     },
     whatsapp_phone_number: {
       type: String,
+      default: null
     },
   },
   {
