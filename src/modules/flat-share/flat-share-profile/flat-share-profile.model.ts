@@ -1,16 +1,24 @@
 import { User } from '@/modules/users/users.interface';
 import { model, Schema, Document, SchemaDefinitionProperty } from 'mongoose';
+import { WorkIndustries } from '../options/work_industry/work-industry.model';
+import { Locations } from '../options/locations/locations.model';
+import { Interests } from '../options/interests/interests.model';
+import { Habits } from '../options/habits/habits.model';
+import { UserInfo } from '@/modules/user-info/user-info.model';
+import { States } from '../options/state/state.model';
 
 export enum EmploymentStatus {
   EMPLOYED = 'employed',
   STUDENT = 'student',
   UNEMPLOYED = 'unemployed',
   SELF_EMPLOYED = 'self_employed',
+  NULL = null
 }
 
 export enum GenderPreference {
   MALE = 'male',
-  FEMALE = 'female'
+  FEMALE = 'female',
+  NULL = null
 }
 
 export enum PaymentType {
@@ -27,6 +35,7 @@ export enum Religion {
   TRADITIONAL = 'traditional',
   ATHEIST = 'atheist',
   OTHER = 'other',
+  NULL = null
 }
 
 export interface FlatShareProfile extends Document {
@@ -47,13 +56,13 @@ export interface FlatShareProfile extends Document {
   religion: Religion | null;
   seeking: boolean | null;
   verified: boolean;
-  work_industry: string | null;
-  location: SchemaDefinitionProperty<string>;
-  interests: SchemaDefinitionProperty<string>[];
-  habits: SchemaDefinitionProperty<string>[];
-  user_info: SchemaDefinitionProperty<string>;
+  work_industry: WorkIndustries | null;
+  location: Locations;
+  interests: Interests[];
+  habits: Habits[];
+  user_info: UserInfo;
   user: User;
-  state: SchemaDefinitionProperty<string>;
+  state: States;
   tiktok: string | null;
   twitter: string | null;
 }
@@ -75,10 +84,12 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     bio: {
       type: String,
       maxlength: 500,
+      default: null
     },
     budget: {
       type: Number,
       min: 0,
+      default: 0
     },
     done_kyc: {
       type: Boolean,
@@ -87,25 +98,32 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     employment_status: {
       type: String,
       enum: Object.values(EmploymentStatus),
+      default: null
     },
     facebook: {
       type: String,
+      default: null
     },
     instagram: {
       type: String,
+      default: null
     },
     linkedin: {
       type: String,
+      default: null
     },
     occupation: {
       type: String,
+      default: null
     },
     gender_preference: {
       type: String,
       enum: Object.values(GenderPreference),
+      default: null
     },
     payment_type: {
       type: [{ type: String, enum: Object.values(PaymentType) }],
+      default: []
     },
     age_preference: {
       type: {
@@ -120,6 +138,7 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     religion: {
       type: String,
       enum: Object.values(Religion),
+      default: null
     },
     seeking: {
       type: Boolean,
@@ -130,27 +149,35 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
       default: false,
     },
     work_industry: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'WorkIndustries',
+      default: null
     },
     location: {
       type: Schema.Types.ObjectId,
       ref: 'Locations',
+      default: null
     },
     interests: {
       type: [{ type: Schema.Types.ObjectId, ref: 'Interests' }],
+      default: []
     },
     habits: {
       type: [{ type: Schema.Types.ObjectId, ref: 'Habits' }],
+      default: []
     },
     state: {
       type: Schema.Types.ObjectId,
       ref: 'States',
+      default: null
     },
     tiktok: {
       type: String,
+      default: null
     },
     twitter: {
       type: String,
+      default: null
     },
   },
   {

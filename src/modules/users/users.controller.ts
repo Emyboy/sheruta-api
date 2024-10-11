@@ -12,6 +12,7 @@ import stateModel from '../flat-share/options/state/state.model';
 import { SECRET_KEY } from '@/config';
 import { verify } from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import workIndustryModel from '../flat-share/options/work_industry/work-industry.model';
 
 
 class UsersController {
@@ -26,6 +27,7 @@ class UsersController {
   public services = servicesModel;
   public location = locationModel;
   public state = stateModel;
+  public workIndustry = workIndustryModel;
 
   public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
@@ -74,6 +76,7 @@ class UsersController {
         this.state.find(),
         this.amenities.find(),
         this.services.find(),
+        this.workIndustry.find(),
       ]);
 
 

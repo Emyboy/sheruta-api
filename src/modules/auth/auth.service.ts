@@ -16,7 +16,6 @@ import userSettingModel from '../user-settings/user-settings.model';
 import userInfoModel from '../user-info/user-info.model';
 import flatShareProfileModel from '../flat-share/flat-share-profile/flat-share-profile.model';
 
-//todo: fix user settings and info not creating
 
 class AuthService {
   public users = userModel;

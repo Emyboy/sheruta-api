@@ -13,6 +13,7 @@ import ServiceRoute from './modules/flat-share/options/services/service.route';
 import StateRoute from './modules/flat-share/options/state/state.route';
 import WorkIndustriesRoute from './modules/flat-share/options/work_industry/work-industry.route';
 import UserInfoRoute from './modules/user-info/user-info.route';
+import FlatShareProfileRoute from './modules/flat-share/flat-share-profile/flat-share-profile.route';
 
 validateEnv();
 
@@ -29,7 +30,8 @@ const app = new App([
   new ServiceRoute(),
   new StateRoute(),
   new WorkIndustriesRoute(),
-  new UserInfoRoute()
+  new UserInfoRoute(),
+  new FlatShareProfileRoute(),
 ]);
 
 app.listen();

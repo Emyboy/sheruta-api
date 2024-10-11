@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, MaxLength, Matches, IsNumber } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, Matches, IsNumber, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
@@ -110,6 +110,7 @@ export class UpdateUserDTO {
   })
   @MinLength(2)
   @MaxLength(50)
+  @IsOptional()
   public middle_name: string;
 
   @IsString()

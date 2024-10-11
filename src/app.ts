@@ -55,10 +55,9 @@ class App {
 
   private async connectToDatabase() {
     try {
+      set('strictQuery', false);
       if (this.env !== 'production') {
         set('debug', true);
-      } else {
-        set('strictQuery', false);
       }
 
       console.log('Connecting to MongoDB', dbConnection);
