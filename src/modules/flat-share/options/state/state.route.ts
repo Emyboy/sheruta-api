@@ -3,11 +3,10 @@ import { Routes } from '@interfaces/routes.interface';
 import authMiddleware from '@/modules/auth/auth.middleware';
 import validationMiddleware from '@middlewares/validation.middleware';
 import { OptionsDTO } from '../options.dto';
-import LocationsController from './state.controller';
 import StateController from './state.controller';
 
 class StateRoute implements Routes {
-  public path = '/options/state';
+  public path = '/options/states';
   public router = Router();
   public controller = new StateController();
 

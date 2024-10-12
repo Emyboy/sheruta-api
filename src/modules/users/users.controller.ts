@@ -14,6 +14,7 @@ import { verify } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import workIndustryModel from '../flat-share/options/work_industry/work-industry.model';
 import walletModel from '../wallet/wallet.model';
+import categoriesModel from '../flat-share/options/categories/categories.model';
 
 
 class UsersController {
@@ -30,6 +31,7 @@ class UsersController {
   public location = locationModel;
   public state = stateModel;
   public workIndustry = workIndustryModel;
+  public categories = categoriesModel;
 
   public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
@@ -85,12 +87,13 @@ class UsersController {
       }
 
 
-      const [locations, states, amenities, services] = await Promise.all([
+      const [locations, states, amenities, services, categories] = await Promise.all([
         this.location.find(),
         this.state.find(),
         this.amenities.find(),
         this.services.find(),
         this.workIndustry.find(),
+        this.categories.find(),
       ]);
 
 
@@ -102,6 +105,7 @@ class UsersController {
           states,
           amenities,
           services,
+          categories
         },
       });
     } catch (error) {
