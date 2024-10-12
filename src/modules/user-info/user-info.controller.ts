@@ -14,6 +14,7 @@ export default class UserInfoController {
 
       res.status(200).json({ message: "User info updated successfully" });
     } catch (error) {
+      console.log('UPDATE USER INFO ERROR', error);
       next(error);
     }
   }

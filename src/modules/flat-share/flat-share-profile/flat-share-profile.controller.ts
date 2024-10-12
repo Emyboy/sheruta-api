@@ -14,6 +14,7 @@ export default class FlatShareProfileController {
 
       res.status(200).json({ message: "Flat share profile updated successfully" });
     } catch (error) {
+      console.log('UPDATE FLAT SHARE PROFILE ERROR', error);
       next(error);
     }
   }

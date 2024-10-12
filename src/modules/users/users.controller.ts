@@ -92,20 +92,17 @@ class UsersController {
         }
       }
 
-
-      const [locations, states, amenities, services, categories, interests, habits, property_types] = await Promise.all([
+      const [locations, states, amenities, services, categories, interests, habits, property_types, work_industries] = await Promise.all([
         this.location.find(),
         this.state.find(),
         this.amenities.find(),
         this.services.find(),
-        this.workIndustry.find(),
         this.categories.find(),
         this.interests.find(),
         this.habits.find(),
-        this.propertyTypes.find()
+        this.propertyTypes.find(),
+        this.workIndustry.find(),
       ]);
-
-
 
       res.status(200).json({
         ...response,
@@ -117,7 +114,8 @@ class UsersController {
           categories,
           interests,
           habits,
-          property_types
+          property_types,
+          work_industries
         },
       });
     } catch (error) {
