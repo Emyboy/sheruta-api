@@ -43,6 +43,16 @@ class UsersController {
     }
   };
 
+  public getUserProfile = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const { user_id } = req.params;
+      const user = await this.userService.getUserProfile(user_id);
+      res.status(200).json({ user });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public getUserDependencies = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);

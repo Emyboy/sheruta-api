@@ -15,6 +15,7 @@ class AuthController {
 
       res.status(201).json({ data: signUpUserData, message: 'signup' });
     } catch (error) {
+      console.log(error)
       logger.error('SIGNUP ERROR::::', error);
       next(error);
     }
@@ -63,6 +64,7 @@ class AuthController {
         message: 'OTP sent successfully',
       });
     } catch (error) {
+      console.log(error)
       logger.error('SEND OTP ERROR::::', error);
       next(error);
     }
@@ -82,6 +84,7 @@ class AuthController {
         message: 'Request sent successfully',
       });
     } catch (error) {
+      console.log(error)
       logger.error('SEND PASSWORD Request ERROR::::', error);
       next(error);
     }
@@ -101,6 +104,7 @@ class AuthController {
         message: 'Password reset successful',
       });
     } catch (error) {
+      console.log(error)
       logger.error('RESET PASSWORD ERROR::::', error);
       next(error);
     }

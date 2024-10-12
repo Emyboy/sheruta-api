@@ -1,5 +1,5 @@
 import { User } from '@/modules/users/users.interface';
-import { model, Schema, Document, SchemaDefinitionProperty } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 import { WorkIndustries } from '../options/work_industry/work-industry.model';
 import { Locations } from '../options/locations/locations.model';
 import { Interests } from '../options/interests/interests.model';

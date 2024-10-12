@@ -1,5 +1,5 @@
 import { IsOptional, IsString, IsNumber, IsBoolean, IsEnum, ValidateNested, ArrayMinSize, ArrayMaxSize, IsArray, Min, Max, MaxLength } from 'class-validator';
-import { Type } from 'class-transformer';
+// import { Type } from 'class-transformer';
 import { EmploymentStatus, GenderPreference, PaymentType, Religion } from './flat-share-profile.model';
 // import { EmploymentStatus, GenderPreference, PaymentType, Religion } from './enum';
 

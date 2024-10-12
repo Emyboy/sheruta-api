@@ -14,6 +14,7 @@ import StateRoute from './modules/flat-share/options/state/state.route';
 import WorkIndustriesRoute from './modules/flat-share/options/work_industry/work-industry.route';
 import UserInfoRoute from './modules/user-info/user-info.route';
 import FlatShareProfileRoute from './modules/flat-share/flat-share-profile/flat-share-profile.route';
+import UserSettingsRoute from './modules/user-settings/user-settings.route';
 
 validateEnv();
 
@@ -32,6 +33,7 @@ const app = new App([
   new WorkIndustriesRoute(),
   new UserInfoRoute(),
   new FlatShareProfileRoute(),
+  new UserSettingsRoute()
 ]);
 
 app.listen();
