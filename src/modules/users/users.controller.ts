@@ -15,6 +15,8 @@ import mongoose from 'mongoose';
 import workIndustryModel from '../flat-share/options/work_industry/work-industry.model';
 import walletModel from '../wallet/wallet.model';
 import categoriesModel from '../flat-share/options/categories/categories.model';
+import habitsModel from '../flat-share/options/habits/habits.model';
+import interestModel from '../flat-share/options/interests/interests.model';
 
 
 class UsersController {
@@ -24,6 +26,8 @@ class UsersController {
   public userInfo = userInfoModel;
   public flatShareProfile = flatShareProfileModel;
   private wallet = walletModel;
+  private habits = habitsModel;
+  private interests = interestModel;
 
   //options
   public amenities = amenitiesModel;
@@ -87,13 +91,15 @@ class UsersController {
       }
 
 
-      const [locations, states, amenities, services, categories] = await Promise.all([
+      const [locations, states, amenities, services, categories, interests, habits] = await Promise.all([
         this.location.find(),
         this.state.find(),
         this.amenities.find(),
         this.services.find(),
         this.workIndustry.find(),
         this.categories.find(),
+        this.interests.find(),
+        this.habits.find()
       ]);
 
 
@@ -105,7 +111,9 @@ class UsersController {
           states,
           amenities,
           services,
-          categories
+          categories,
+          interests,
+          habits
         },
       });
     } catch (error) {
