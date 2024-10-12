@@ -4,6 +4,7 @@ export interface FlatShareRequest extends Document {
   bedrooms: number;
   bathrooms: number;
   toilets: number;
+  rent: number;
   description: string;
   house_rules: string[];
   living_rooms: number;
@@ -25,14 +26,17 @@ export interface FlatShareRequest extends Document {
 
 const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
   {
+    rent: {
+      type: Number,
+      min: 2000,
+      required: true,
+    },
     bedrooms: {
       type: Number,
-      min: 1,
       default: 0
     },
     bathrooms: {
       type: Number,
-      min: 1,
       default: 0
     },
     video_url: {
@@ -41,12 +45,10 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     },
     toilets: {
       type: Number,
-      min: 1,
       default: 0
     },
     living_rooms: {
       type: Number,
-      min: 1,
       default: 0
     },
     description: {
@@ -65,7 +67,6 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     },
     seeking: {
       type: Boolean,
-      default: null,
       required: true,
     },
     service_charge: {
@@ -105,12 +106,10 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     category: {
       type: Schema.Types.ObjectId,
       ref: 'Categories',
-      required: true
     },
     amenities: {
       type: Schema.Types.ObjectId,
       ref: 'Amenities',
-      required: true
     },
     property_type: {
       type: Schema.Types.ObjectId,

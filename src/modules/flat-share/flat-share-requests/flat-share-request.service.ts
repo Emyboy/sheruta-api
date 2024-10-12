@@ -20,20 +20,20 @@ export default class FlatShareRequestService {
       throw new HttpException(404, "Incomplete user data");
     }
 
-
     const flatShareRequest = await this.flatShareRequest.create({
       ...data,
       user: user._id,
       flat_share_profile: flatShareProfile._id,
       user_info: userInfo._id,
+      seeking: true
     });
 
-    this.broadcastFlat(flatShareRequest._id);
+    this.broadcastRequest(flatShareRequest._id);
 
     return flatShareRequest;
   }
 
-  public broadcastFlat = async (request_id: string) => {
+  public broadcastRequest = async (request_id: string) => {
     try {
       const request = await this.flatShareRequest.findById(request_id);
 
@@ -66,7 +66,7 @@ export default class FlatShareRequestService {
         })
           .populate('user')
           .populate('location')
-        logger.info(`Broadcasting flat to ${seekers.length} seekers`);
+        console.info(`\n\n Broadcasting flat to ${seekers.length} seekers\n\n`);
 
         seekers.forEach(async (seeker) => {
           // email seekers

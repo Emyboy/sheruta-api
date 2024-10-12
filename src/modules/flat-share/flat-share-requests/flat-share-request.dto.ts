@@ -1,7 +1,9 @@
 import {
   IsString,
   MinLength,
-  MaxLength
+  MaxLength,
+  IsNumber,
+  Min
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -36,9 +38,14 @@ export class CreateSeekerRequestDTO {
   public category: string;
 
   @IsString()
-  @MinLength(2)
-  @MaxLength(100)
   public property_type: string;
+
+  @IsString()
+  public service: string;
+
+  @IsNumber()
+  @Min(2000)
+  public rent: number;
 
   @IsString()
   @MinLength(2)
@@ -49,9 +56,4 @@ export class CreateSeekerRequestDTO {
   @MinLength(2)
   @MaxLength(100)
   public location: string;
-
-  @IsString()
-  @MinLength(2)
-  @MaxLength(100)
-  public availability_status: string;
 }
