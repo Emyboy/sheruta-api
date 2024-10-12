@@ -4,6 +4,7 @@ import { Transform } from 'class-transformer';
 export enum Gender {
   MALE = 'male',
   FEMALE = 'female',
+  NULL = null
 }
 
 export class UpdateUserInfoDTO {
