@@ -65,7 +65,8 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     },
     seeking: {
       type: Boolean,
-      default: false,
+      default: null,
+      required: true,
     },
     service_charge: {
       type: Number,
@@ -74,6 +75,7 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     },
     image_urls: {
       type: [String],
+      default: []
     },
     user: {
       type: Schema.Types.ObjectId,
@@ -83,34 +85,42 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     user_info: {
       type: Schema.Types.ObjectId,
       ref: 'UserInfos',
+      required: true,
     },
     flat_share_profile: {
       type: Schema.Types.ObjectId,
       ref: 'FlatShareProfiles',
+      required: true
     },
     location: {
       type: Schema.Types.ObjectId,
       ref: 'Locations',
+      required: true
     },
     service: {
       type: Schema.Types.ObjectId,
       ref: 'Services',
+      required: true
     },
     category: {
       type: Schema.Types.ObjectId,
       ref: 'Categories',
+      required: true
     },
     amenities: {
       type: Schema.Types.ObjectId,
       ref: 'Amenities',
+      required: true
     },
     property_type: {
       type: Schema.Types.ObjectId,
       ref: 'PropertyTypes',
+      required: true
     },
     state: {
       type: Schema.Types.ObjectId,
       ref: 'States',
+      required: true
     },
   },
   {

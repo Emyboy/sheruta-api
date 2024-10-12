@@ -21,6 +21,7 @@ export class UpdateUserInfoDTO {
   // })
   @MinLength(8)
   @MaxLength(15)
+  @IsOptional()
   @Transform(({ value }) => {
     if (!value) return value;
     return value.trim();

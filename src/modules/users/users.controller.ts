@@ -13,6 +13,7 @@ import { SECRET_KEY } from '@/config';
 import { verify } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import workIndustryModel from '../flat-share/options/work_industry/work-industry.model';
+import walletModel from '../wallet/wallet.model';
 
 
 class UsersController {
@@ -21,6 +22,7 @@ class UsersController {
   public user = userModel;
   public userInfo = userInfoModel;
   public flatShareProfile = flatShareProfileModel;
+  private wallet = walletModel;
 
   //options
   public amenities = amenitiesModel;
@@ -66,17 +68,19 @@ class UsersController {
         const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
         const userId = new mongoose.Types.ObjectId(verificationResponse._id);
 
-        const [user, userSettings, userInfo, flatShareProfile] = await Promise.all([
+        const [user, userSettings, userInfo, flatShareProfile, wallet] = await Promise.all([
           this.user.findById(userId),
           this.userSettings.findOne({ user: userId }),
           this.userInfo.findOne({ user: userId }),
           this.flatShareProfile.findOne({ user: userId }),
+          this.wallet.findOne({ user : userId }),
         ]);
         response.user_data = {
           user,
           user_settings: userSettings,
           user_info: userInfo,
           flat_share_profile: flatShareProfile,
+          wallet,
         }
       }
 

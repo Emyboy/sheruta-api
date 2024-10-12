@@ -6,10 +6,10 @@ import { Response } from "express";
 export default class FlatShareRequestController {
   public flatShareRequestService = new FlatShareRequestService();
 
-  public createRequest = async (req: RequestWithUser, res:Response, next) => {
+  public createSeekerRequest = async (req: RequestWithUser, res:Response, next) => {
     try {
       const { _user } = req;
-      const result = await this.flatShareRequestService.create({
+      const result = await this.flatShareRequestService.createSeekerRequest({
         data: req.body,
         user: _user
       });

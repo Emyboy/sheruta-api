@@ -15,14 +15,16 @@ import crypto from 'crypto';
 import userSettingModel from '../user-settings/user-settings.model';
 import userInfoModel from '../user-info/user-info.model';
 import flatShareProfileModel from '../flat-share/flat-share-profile/flat-share-profile.model';
+import walletModel from '../wallet/wallet.model';
 
 
 class AuthService {
-  public users = userModel;
-  public userSecrets = userSecretsModel;
-  public userSettings = userSettingModel;
-  public userInfo = userInfoModel;
-  public flatShareProfile = flatShareProfileModel;
+  private users = userModel;
+  private userSecrets = userSecretsModel;
+  private userSettings = userSettingModel;
+  private userInfo = userInfoModel;
+  private flatShareProfile = flatShareProfileModel;
+  private wallet = walletModel;
 
   public async signup(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
@@ -171,7 +173,8 @@ class AuthService {
 
     await this.userSettings.create({
       user: findUser._id,
-    })
+    });
+    await this.wallet.create({ user: findUser._id });
 
     const userInfo = await this.userInfo.create({
       user: findUser._id,

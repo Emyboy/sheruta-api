@@ -12,7 +12,7 @@ export default class FlatShareRequestService {
   private flatShareProfile = flatShareProfileModel;
   private userInfo = userInfoModel;
 
-  public create = async ({ data, user }: { data: CreateSeekerRequestDTO, user: User }): Promise<FlatShareRequest> => {
+  public createSeekerRequest = async ({ data, user }: { data: CreateSeekerRequestDTO, user: User }): Promise<FlatShareRequest> => {
     const flatShareProfile = await this.flatShareProfile.findOne({ user: user._id });
     const userInfo = await this.userInfo.findOne({ user: user._id });
 

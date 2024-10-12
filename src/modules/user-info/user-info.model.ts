@@ -19,6 +19,7 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
       type: Schema.Types.ObjectId,
       ref: 'Users',
       required: true,
+      select: false
     },
     date_of_birth: {
       type: Date,
