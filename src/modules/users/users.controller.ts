@@ -17,6 +17,7 @@ import walletModel from '../wallet/wallet.model';
 import categoriesModel from '../flat-share/options/categories/categories.model';
 import habitsModel from '../flat-share/options/habits/habits.model';
 import interestModel from '../flat-share/options/interests/interests.model';
+import propertyTypesModel from '../flat-share/options/property_types/property-types.model';
 
 
 class UsersController {
@@ -36,6 +37,7 @@ class UsersController {
   public state = stateModel;
   public workIndustry = workIndustryModel;
   public categories = categoriesModel;
+  public propertyTypes = propertyTypesModel;
 
   public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
@@ -91,7 +93,7 @@ class UsersController {
       }
 
 
-      const [locations, states, amenities, services, categories, interests, habits] = await Promise.all([
+      const [locations, states, amenities, services, categories, interests, habits, property_types] = await Promise.all([
         this.location.find(),
         this.state.find(),
         this.amenities.find(),
@@ -99,7 +101,8 @@ class UsersController {
         this.workIndustry.find(),
         this.categories.find(),
         this.interests.find(),
-        this.habits.find()
+        this.habits.find(),
+        this.propertyTypes.find()
       ]);
 
 
@@ -113,7 +116,8 @@ class UsersController {
           services,
           categories,
           interests,
-          habits
+          habits,
+          property_types
         },
       });
     } catch (error) {
