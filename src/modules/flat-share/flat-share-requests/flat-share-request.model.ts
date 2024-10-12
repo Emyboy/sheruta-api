@@ -1,4 +1,13 @@
 import { model, Schema, Document, SchemaDefinitionProperty } from 'mongoose';
+import { Locations } from '../options/locations/locations.model';
+import { User } from '@/modules/users/users.interface';
+import { UserInfo } from '@/modules/user-info/user-info.model';
+import { FlatShareProfile } from '../flat-share-profile/flat-share-profile.model';
+
+export enum AvailabilityStatus {
+  AVAILABLE = 'available',
+  UNAVAILABLE = 'unavailable'
+}
 
 export interface FlatShareRequest extends Document {
   bedrooms: number;
@@ -13,10 +22,10 @@ export interface FlatShareRequest extends Document {
   service_charge: number;
   image_urls: string[];
   video_url: string;
-  user: SchemaDefinitionProperty<string>;
-  user_info: SchemaDefinitionProperty<string>;
-  flat_share_profile: SchemaDefinitionProperty<string>;
-  location: SchemaDefinitionProperty<string>;
+  user: User;
+  user_info: UserInfo;
+  flat_share_profile: FlatShareProfile;
+  location: Locations;
   service: SchemaDefinitionProperty<string>;
   category: SchemaDefinitionProperty<string>;
   amenities: SchemaDefinitionProperty<string>;
@@ -62,8 +71,8 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     },
     availability_status: {
       type: String,
-      enum: ['available', 'unavailable'],
-      default: 'available',
+      enum: AvailabilityStatus,
+      default: AvailabilityStatus.AVAILABLE,
     },
     seeking: {
       type: Boolean,
@@ -72,7 +81,7 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     service_charge: {
       type: Number,
       min: 0,
-      default: null
+      default: 0
     },
     image_urls: {
       type: [String],

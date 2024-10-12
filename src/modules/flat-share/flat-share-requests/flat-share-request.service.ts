@@ -1,7 +1,7 @@
 import { HttpException } from "@/exceptions/HttpException";
 import flatShareProfileModel from "../flat-share-profile/flat-share-profile.model";
-import { CreateSeekerRequestDTO } from "./flat-share-request.dto";
-import FlatShareRequestModel, { FlatShareRequest } from "./flat-share-request.model";
+import { CreateHostRequestDTO, CreateSeekerRequestDTO } from "./flat-share-request.dto";
+import FlatShareRequestModel, { AvailabilityStatus, FlatShareRequest } from "./flat-share-request.model";
 import { User } from "@/modules/users/users.interface";
 import userInfoModel from "@/modules/user-info/user-info.model";
 import { sendEmail } from "@/utils/email";
@@ -33,9 +33,31 @@ export default class FlatShareRequestService {
     return flatShareRequest;
   }
 
+  public createHostRequest = async ({ data, user }: { data: CreateHostRequestDTO, user: User }): Promise<FlatShareRequest> => {
+    const flatShareProfile = await this.flatShareProfile.findOne({ user: user._id });
+    const userInfo = await this.userInfo.findOne({ user: user._id });
+
+    if (!flatShareProfile || !userInfo) {
+      throw new HttpException(404, "Incomplete user data");
+    }
+
+    const flatShareRequest = await this.flatShareRequest.create({
+      ...data,
+      user: user._id,
+      flat_share_profile: flatShareProfile._id,
+      user_info: userInfo._id,
+      seeking: false,
+      availability_status: AvailabilityStatus.AVAILABLE
+    });
+
+    this.broadcastRequest(flatShareRequest._id);
+
+    return flatShareRequest;
+  }
+
   public broadcastRequest = async (request_id: string) => {
     try {
-      const request = await this.flatShareRequest.findById(request_id);
+      const request = await this.flatShareRequest.findById(request_id).populate('user').populate('location');
 
       if (!request) {
         throw new HttpException(404, "Request not found");
@@ -48,7 +70,7 @@ export default class FlatShareRequestService {
           .populate('user')
           .populate('location')
 
-        logger.info(`Broadcasting request to ${hosts.length} hosts`);
+        logger.info(`\n\n Broadcasting request to ${hosts.length} hosts\n\n`);
 
         hosts.forEach(async (host) => {
           // email hosts
@@ -56,7 +78,7 @@ export default class FlatShareRequestService {
             sendEmail({
               to: host.user.email,
               subject: 'Flat Share Request',
-              html: `${(request.user as any).first_name || 'Someone'} is looking for a flat in ${(request.location as any).name || 'Nigeria'}`,
+              html: `${request.user.first_name || 'Someone'} is looking for a flat in ${(request.location.name as any).name || 'Nigeria'}`,
             })
           }
         });
@@ -73,8 +95,8 @@ export default class FlatShareRequestService {
           if (seeker.user.email) {
             sendEmail({
               to: seeker.user.email,
-              subject: `Available flat in ${request.location as string || 'Nigeria'}`,
-              html: `${(request.user as any).first_name || 'Someone'} has a flat in ${request.location as string || 'Nigeria'}`,
+              subject: `Available flat in ${request.location.name as string || 'Nigeria'}`,
+              html: `${(request.user as any).first_name || 'Someone'} has a flat in ${request.location.name as string || 'Nigeria'}`,
             })
           }
         });

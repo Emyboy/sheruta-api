@@ -16,7 +16,22 @@ export default class FlatShareRequestController {
 
       return res.status(201).json({ data: result, message: "Request created" });
     } catch (error) {
-      logger.error("CREATE REQUEST ERROR::::", error)
+      logger.error("CREATE SEEKER REQUEST ERROR::::", error)
+      next(error);
+    }
+  }
+
+  public createHostRequest = async (req: RequestWithUser, res:Response, next) => {
+    try {
+      const { _user } = req;
+      const result = await this.flatShareRequestService.createHostRequest({
+        data: req.body,
+        user: _user
+      });
+
+      return res.status(201).json({ data: result, message: "Request created" });
+    } catch (error) {
+      logger.error("CREATE HOST REQUEST ERROR::::", error)
       next(error);
     }
   }
