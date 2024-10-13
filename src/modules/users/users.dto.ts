@@ -91,6 +91,7 @@ export class UpdateUserDTO {
   })
   @MinLength(2)
   @MaxLength(50)
+  @IsOptional()
   public first_name: string;
 
 
