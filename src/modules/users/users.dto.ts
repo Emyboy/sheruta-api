@@ -89,8 +89,6 @@ export class UpdateUserDTO {
 
     return value;
   })
-  @MinLength(2)
-  @MaxLength(50)
   @IsOptional()
   public first_name: string;
 
@@ -109,8 +107,6 @@ export class UpdateUserDTO {
 
     return value;
   })
-  @MinLength(2)
-  @MaxLength(50)
   @IsOptional()
   public middle_name: string;
 
@@ -128,8 +124,6 @@ export class UpdateUserDTO {
 
     return value;
   })
-  @MinLength(2)
-  @MaxLength(50)
   public last_name: string;
 
   @IsString()
