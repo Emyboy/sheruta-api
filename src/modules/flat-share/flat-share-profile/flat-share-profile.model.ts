@@ -6,6 +6,7 @@ import { Interests } from '../options/interests/interests.model';
 import { Habits } from '../options/habits/habits.model';
 import { UserInfo } from '@/modules/user-info/user-info.model';
 import { States } from '../options/state/state.model';
+import { UserSettings } from '@/modules/user-settings/user-settings.model';
 
 export enum EmploymentStatus {
   EMPLOYED = 'employed',
@@ -57,11 +58,12 @@ export interface FlatShareProfile extends Document {
   seeking: boolean | null;
   verified: boolean;
   work_industry: WorkIndustries | null;
-  location: Locations;
+  location?: Locations;
   interests: Interests[];
   habits: Habits[];
-  user_info: UserInfo;
-  user: User;
+  user_info?: UserInfo;
+  user_settings?: UserSettings;
+  user?: User;
   state: States;
   tiktok: string | null;
   twitter: string | null;
@@ -78,6 +80,12 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     user_info: {
       type: Schema.Types.ObjectId,
       ref: 'UserInfos',
+      required: true,
+      select: false
+    },
+    user_settings: {
+      type: Schema.Types.ObjectId,
+      ref: 'UserSettings',
       required: true,
       select: false
     },

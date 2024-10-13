@@ -171,19 +171,19 @@ class AuthService {
 
     if (!findUser) throw new HttpException(404, 'User not found');
 
-    await this.userSettings.create({
-      user: findUser._id,
-    });
-    await this.wallet.create({ user: findUser._id });
-
     const userInfo = await this.userInfo.create({
       user: findUser._id,
     })
 
+    await this.wallet.create({ user: findUser._id });
+
     switch (type) {
       case 'flat_share':
-        await this.flatShareProfile.create({ user: findUser._id, user_info: userInfo._id });
-        await sendEmail({
+        let settings = await this.userSettings.create({
+          user: findUser._id,
+        });
+        await this.flatShareProfile.create({ user: findUser._id, user_info: userInfo._id, user_settings: settings._id });
+        sendEmail({
           subject: 'Welcome to the Sheruta Community',
           to: findUser.email.trim().toLowerCase(),
           html: welcomeEmailContent({

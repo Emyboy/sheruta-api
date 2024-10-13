@@ -66,7 +66,7 @@ export default class FlatShareRequestController {
   public getRequestDetails = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const { request_id } = req.params;
-      const result = await this.flatShareRequestService.getRequestDetails(request_id);
+      const result = await this.flatShareRequestService.getRequestDetails(request_id, req?._user?._id);
 
       return res.status(200).json({ data: result, message: "Request retrieved successfully" });
     } catch (error) {

@@ -3,8 +3,9 @@ import { model, Schema, Document, SchemaDefinitionProperty } from 'mongoose';
 export interface UserSettings {
     _id: string;
 
-    receive_marketing_updates: boolean;
-    receive_platform_updates: boolean;
+    news_letter_updates: boolean;
+    flat_share_updates: boolean;
+
     hide_profile: boolean;
     hide_phone_number: boolean;
 
@@ -13,11 +14,11 @@ export interface UserSettings {
 
 const userSettingsSchema: Schema = new Schema<UserSettings>(
     {
-        receive_marketing_updates: {
+        news_letter_updates: {
             type: Boolean,
             default: true
         },
-        receive_platform_updates: {
+        flat_share_updates: {
             type: Boolean,
             default: true
         },

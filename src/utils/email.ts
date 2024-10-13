@@ -13,22 +13,24 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async ({ to, html, subject }: { to: string; subject: string; html: string }) => {
-  try {
-    logger.info(`\n Sending email to ${to}`);
-    const mailOptions = {
-      from: `"Emeka from Sheruta" <${SMTP_USER}>`,
-      to,
-      subject,
-      html,
-    };
+  if(to){
+    try {
+      logger.info(`\n Sending email to ${to}`);
+      const mailOptions = {
+        from: `"Emeka from Sheruta" <${SMTP_USER}>`,
+        to: to.toLocaleLowerCase().trim(),
+        subject,
+        html,
+      };
 
-    const info = await transporter.sendMail(mailOptions);
-    logger.info('Email sent: %s', info.messageId);
-    return info;
-  } catch (error) {
-    logger.error('Error sending email:', error);
-    console.log(error)
-    throw error;
+      const info = await transporter.sendMail(mailOptions);
+      logger.info('Email sent: %s', info.messageId);
+      return info;
+    } catch (error) {
+      logger.error('Error sending email:', error);
+      console.log(error)
+      throw error;
+    }
   }
 };
 
