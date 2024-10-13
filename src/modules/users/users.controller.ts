@@ -18,6 +18,7 @@ import categoriesModel from '../flat-share/options/categories/categories.model';
 import habitsModel from '../flat-share/options/habits/habits.model';
 import interestModel from '../flat-share/options/interests/interests.model';
 import propertyTypesModel from '../flat-share/options/property_types/property-types.model';
+import notificationsModel from '../notifications/notifications.model';
 
 
 class UsersController {
@@ -29,6 +30,7 @@ class UsersController {
   private wallet = walletModel;
   private habits = habitsModel;
   private interests = interestModel;
+  private notifications = notificationsModel;
 
   //options
   public amenities = amenitiesModel;
@@ -76,12 +78,13 @@ class UsersController {
         const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
         const userId = new mongoose.Types.ObjectId(verificationResponse._id);
 
-        const [user, userSettings, userInfo, flatShareProfile, wallet] = await Promise.all([
+        const [user, userSettings, userInfo, flatShareProfile, wallet, notifications] = await Promise.all([
           this.user.findById(userId),
           this.userSettings.findOne({ user: userId }),
           this.userInfo.findOne({ user: userId }),
           this.flatShareProfile.findOne({ user: userId }),
           this.wallet.findOne({ user : userId }),
+          this.notifications.find({ receiver: userId, read: false }),
         ]);
         response.user_data = {
           user,
@@ -89,6 +92,7 @@ class UsersController {
           user_info: userInfo,
           flat_share_profile: flatShareProfile,
           wallet,
+          notifications
         }
       }
 
