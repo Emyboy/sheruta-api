@@ -10,8 +10,9 @@ export default class FlatShareProfileController {
       const user = req._user;
       const data = req.body;
 
-      console.log('UPDATE FLAT SHARE PROFILE', user, data);
+      console.log('\n\nUPDATE FLAT SHARE PROFILE', user, data);
       await this.flatShareProfileService.update({ user_id: user._id, data });
+      console.log('\n\nAFTER UPDATE')
 
       res.status(200).json({ message: "Flat share profile updated successfully" });
     } catch (error) {

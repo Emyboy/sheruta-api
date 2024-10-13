@@ -45,7 +45,6 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
     primary_phone_number: {
       type: String,
       unique: true,
-      default: null
     },
     whatsapp_phone_number: {
       type: String,
