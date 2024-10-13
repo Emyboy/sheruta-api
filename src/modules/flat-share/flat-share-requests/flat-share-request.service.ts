@@ -74,6 +74,9 @@ export default class FlatShareRequestService {
 
         hosts.forEach(async (host) => {
           // email hosts
+          if (request.user.email.trim() == host.user.email) {
+            return;
+          }
           if (host.user.email) {
             sendEmail({
               to: host.user.email,
@@ -92,6 +95,9 @@ export default class FlatShareRequestService {
 
         seekers.forEach(async (seeker) => {
           // email seekers
+          if (request.user.email.trim() == seeker.user.email) {
+            return;
+          }
           if (seeker.user.email) {
             sendEmail({
               to: seeker.user.email,
