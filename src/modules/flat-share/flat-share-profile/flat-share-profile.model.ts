@@ -97,8 +97,8 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     },
     employment_status: {
       type: String,
-      enum: Object.values(EmploymentStatus),
-      default: null
+      enum: [...Object.values(EmploymentStatus), null],
+      default: null,
     },
     facebook: {
       type: String,
@@ -118,7 +118,7 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     },
     gender_preference: {
       type: String,
-      enum: Object.values(GenderPreference),
+      enum: [...Object.values(GenderPreference), null],
       default: null
     },
     payment_type: {
@@ -137,7 +137,7 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     },
     religion: {
       type: String,
-      enum: Object.values(Religion),
+      enum: [...Object.values(Religion), null],
       default: null
     },
     seeking: {

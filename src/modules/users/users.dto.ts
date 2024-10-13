@@ -78,50 +78,51 @@ export class VerifyTokenDto {
 
 export class UpdateUserDTO {
   @IsString()
-  @Matches(/^[a-zA-Z\s-]+$/, {
-    message: 'First name can only contain letters, spaces, and hyphens',
-  })
+  @IsOptional()
+  // @Matches(/^[a-zA-Z\s-]+$/, {
+  //   message: 'First name can only contain letters, spaces, and hyphens',
+  // })
   @Transform(({ value }) => {
     if (!value) return value;
 
     value = value.toLowerCase().trim();
     value = value.replace(/\s+/g, ' ');
-    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     value = value.split(' ')[0];
 
     return value;
   })
-  @IsOptional()
   public first_name: string;
 
 
   @IsString()
-  @Matches(/^[a-zA-Z\s-]+$/, {
-    message: 'First name can only contain letters, spaces, and hyphens',
-  })
+  @IsOptional()
+  // @Matches(/^[a-zA-Z\s-]+$/, {
+  //   message: 'First name can only contain letters, spaces, and hyphens',
+  // })
   @Transform(({ value }) => {
     if (!value) return value;
 
     value = value.toLowerCase().trim();
     value = value.replace(/\s+/g, ' ');
-    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     value = value.split(' ')[0];
 
     return value;
   })
-  @IsOptional()
   public middle_name: string;
 
   @IsString()
-  @Matches(/^[a-zA-Z\s-]+$/, {
-    message: 'First name can only contain letters, spaces, and hyphens',
-  })
+  @IsOptional()
+  // @Matches(/^[a-zA-Z\s-]+$/, {
+  //   message: 'First name can only contain letters, spaces, and hyphens',
+  // })
   @Transform(({ value }) => {
     if (!value) return value;
 
     value = value.toLowerCase().trim();
     value = value.replace(/\s+/g, ' ');
-    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     value = value.split(' ')[0];
 
     return value;
