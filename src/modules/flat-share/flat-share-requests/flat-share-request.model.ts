@@ -1,8 +1,9 @@
-import { model, Schema, Document, SchemaDefinitionProperty } from 'mongoose';
+import { model, Schema, Document, SchemaDefinitionProperty, PaginateModel } from 'mongoose';
 import { Locations } from '../options/locations/locations.model';
 import { User } from '@/modules/users/users.interface';
 import { UserInfo } from '@/modules/user-info/user-info.model';
 import { FlatShareProfile } from '../flat-share-profile/flat-share-profile.model';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 export enum AvailabilityStatus {
   AVAILABLE = 'available',
@@ -136,7 +137,11 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
   },
 );
 
+flatShareRequestSchema.plugin(mongoosePaginate);
 
-const FlatShareRequestModel = model<FlatShareRequest>('FlatShareRequests', flatShareRequestSchema);
+// const FlatShareRequestModel = model<FlatShareRequest>('FlatShareRequests', flatShareRequestSchema);
+const FlatShareRequestModel = model<FlatShareRequest, PaginateModel<FlatShareRequest>>('FlatShareRequests', flatShareRequestSchema);
+
+
 
 export default FlatShareRequestModel;

@@ -22,7 +22,7 @@ export class CreateUserDto {
   @Transform(({ value }) => {
     if (!value) return value;
 
-    value = value.toLowerCase().trim();
+    // value = value.toLowerCase().trim();
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     value = value.split(' ')[0];
@@ -40,7 +40,7 @@ export class CreateUserDto {
   @Transform(({ value }) => {
     if (!value) return value;
 
-    value = value.toLowerCase().trim();
+    // value = value.toLowerCase().trim();
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     value = value.split(' ')[0];

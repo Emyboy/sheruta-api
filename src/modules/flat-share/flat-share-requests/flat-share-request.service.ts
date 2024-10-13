@@ -6,6 +6,7 @@ import { User } from "@/modules/users/users.interface";
 import userInfoModel from "@/modules/user-info/user-info.model";
 import { sendEmail } from "@/utils/email";
 import { logger } from "@/utils/logger";
+import { hostToSeekerContent, seekerToHostContent } from "./flat-share-request.content";
 
 export default class FlatShareRequestService {
   private flatShareRequest = FlatShareRequestModel;
@@ -74,20 +75,20 @@ export default class FlatShareRequestService {
 
         hosts.forEach(async (host) => {
           // email hosts
-          if (request.user.email.trim() == host.user.email) {
-            return;
-          }
+          // if (request.user.email.trim() == host.user.email) {
+          //   return;
+          // }
           if (host.user.email) {
             sendEmail({
               to: host.user.email,
-              subject: 'Flat Share Request',
-              html: `${request.user.first_name || 'Someone'} is looking for a flat in ${(request.location.name as any).name || 'Nigeria'}`,
+              subject: `New ${request.location.name} Flat Share Request`,
+              html: seekerToHostContent({requestData: request, seekerData: request.user})
             })
           }
         });
       } else {
         const seekers = await this.flatShareProfile.find({
-          seeking: false
+          seeking: true
         })
           .populate('user')
           .populate('location')
@@ -95,14 +96,14 @@ export default class FlatShareRequestService {
 
         seekers.forEach(async (seeker) => {
           // email seekers
-          if (request.user.email.trim() == seeker.user.email) {
-            return;
-          }
+          // if (request.user.email.trim() == seeker.user.email) {
+          //   return;
+          // }
           if (seeker.user.email) {
             sendEmail({
               to: seeker.user.email,
               subject: `Available flat in ${request.location.name as string || 'Nigeria'}`,
-              html: `${(request.user as any).first_name || 'Someone'} has a flat in ${request.location.name as string || 'Nigeria'}`,
+              html: hostToSeekerContent({requestData: request, hostData: request.user})
             })
           }
         });
@@ -112,6 +113,25 @@ export default class FlatShareRequestService {
       return Promise.reject(error);
     }
 
+  }
+
+  public getRequestDetails = async (request_id: string): Promise<FlatShareRequest> => {
+    const request = await this.flatShareRequest.findById(request_id)
+      .populate('user')
+      .populate('user_info')
+      .populate('flat_share_profile')
+      .populate('location')
+      .populate('service')
+      .populate('category')
+      .populate('amenities')
+      .populate('property_type')
+      .populate('state');
+
+    if (!request) {
+      throw new HttpException(404, "Request not found");
+    }
+
+    return request;
   }
 
 }
