@@ -23,7 +23,6 @@ export class UpdateFlatShareProfileDTO {
 
   @IsOptional()
   @IsNumber()
-  @Min(0)
   budget: number;
 
   @IsOptional()
@@ -52,8 +51,8 @@ export class UpdateFlatShareProfileDTO {
 
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(5)
+  // @ArrayMinSize(1)
+  // @ArrayMaxSize(5)
   @IsEnum(PaymentType, { each: true })
   payment_type: PaymentType[];
 
@@ -80,15 +79,15 @@ export class UpdateFlatShareProfileDTO {
 
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(10)
+  // @ArrayMinSize(1)
+  // @ArrayMaxSize(10)
   @IsString({ each: true })
   interests: string[];
 
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(10)
+  // @ArrayMinSize(1)
+  // @ArrayMaxSize(10)
   @IsString({ each: true })
   habits: string[];
 
