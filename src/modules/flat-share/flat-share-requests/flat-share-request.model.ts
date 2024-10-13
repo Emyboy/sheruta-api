@@ -32,6 +32,7 @@ export interface FlatShareRequest extends Document {
   amenities: SchemaDefinitionProperty<string>;
   property_type: SchemaDefinitionProperty<string>;
   state: SchemaDefinitionProperty<string>;
+  view_count: number;
 }
 
 const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
@@ -131,6 +132,10 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
       ref: 'States',
       required: true
     },
+    view_count: {
+      type: Number,
+      default: 0
+    }
   },
   {
     timestamps: true,

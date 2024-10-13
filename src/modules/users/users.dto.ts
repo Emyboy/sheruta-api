@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, MaxLength, Matches, IsNumber, IsOptional } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, Matches, IsNumber, IsOptional, IsUrl } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
@@ -130,4 +130,9 @@ export class UpdateUserDTO {
   @MinLength(2)
   @MaxLength(50)
   public last_name: string;
+
+  @IsString()
+  @IsUrl()
+  @IsOptional()
+  public avatar_url: string;
 }

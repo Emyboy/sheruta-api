@@ -127,6 +127,8 @@ export default class FlatShareRequestService {
       .populate('property_type')
       .populate('state');
 
+      await this.flatShareRequest.findByIdAndUpdate(request_id, { $inc: { view_count: 1 } });
+
     if (!request) {
       throw new HttpException(404, "Request not found");
     }
