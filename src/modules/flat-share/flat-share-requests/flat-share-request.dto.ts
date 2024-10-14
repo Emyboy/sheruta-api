@@ -43,6 +43,7 @@ export class CreateSeekerRequestDTO {
   public category: string;
 
   @IsString()
+  @IsOptional()
   public property_type: string;
 
   @IsString()
