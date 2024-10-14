@@ -19,4 +19,16 @@ export default class UserInfoController {
     }
   }
 
+  public completeKYC = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const user = req._user;
+      await this.userInfoService.completeKYC({ user_id: user._id });
+
+      res.status(200).json({ message: "KYC completed successfully" });
+    } catch (error) {
+      console.log('COMPLETE KYC ERROR', error);
+      next(error);
+    }
+  }
+
 }

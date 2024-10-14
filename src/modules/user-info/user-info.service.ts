@@ -17,5 +17,16 @@ export default class UserInfoService {
 
   }
 
+  public completeKYC = async ({ user_id }: { user_id: string; }) => {
+    let user = await this.user.findById(user_id);
+    let userInfo = await this.userInfo.findOne({ user: user_id });
+
+    if (!user || !userInfo) throw new HttpException(404, 'User not found');
+
+    let update = await this.userInfo.findOneAndUpdate({ user: user_id }, { done_kyc: true }, { new: true });
+
+    return update
+  }
+
 }
 
