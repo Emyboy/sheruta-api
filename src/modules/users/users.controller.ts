@@ -84,7 +84,7 @@ class UsersController {
           this.userInfo.findOne({ user: userId }),
           this.flatShareProfile.findOne({ user: userId }),
           this.wallet.findOne({ user : userId }),
-          this.notifications.find({ receiver: userId, read: false }),
+          this.notifications.find({ receiver: userId, read: false }).limit(20).sort({ createdAt: -1 }),
         ]);
         response.user_data = {
           user,

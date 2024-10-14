@@ -58,4 +58,14 @@ export default class NotificationService {
         return ' You have a new notification';
     }
   }
+
+  public markAllAsSeen = async (receiver_id: string) => {
+    try {
+      await this.notifications.updateMany({ receiver: receiver_id }, { seen: true });
+    } catch (error) {
+      console.log('\n\nMARK ALL AS SEEN ERROR:::', error);
+      throw new HttpException(500, 'Mark all as seen failed');
+    }
+  }
+
 }

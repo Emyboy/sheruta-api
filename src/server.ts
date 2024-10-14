@@ -16,6 +16,7 @@ import UserInfoRoute from './modules/user-info/user-info.route';
 import FlatShareProfileRoute from './modules/flat-share/flat-share-profile/flat-share-profile.route';
 import UserSettingsRoute from './modules/user-settings/user-settings.route';
 import FlatShareRequestRoute from './modules/flat-share/flat-share-requests/flat-share-request.route';
+import NotificationsRoute from './modules/notifications/notifications.route';
 
 validateEnv();
 
@@ -35,7 +36,8 @@ const app = new App([
   new UserInfoRoute(),
   new FlatShareProfileRoute(),
   new FlatShareRequestRoute(),
-  new UserSettingsRoute()
+  new UserSettingsRoute(),
+  new NotificationsRoute()
 ]);
 
 app.listen();
