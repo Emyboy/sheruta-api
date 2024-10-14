@@ -58,8 +58,8 @@ export class UpdateFlatShareProfileDTO {
 
   @IsOptional()
   // @Type(() => AgePreferenceDTO)
-  @ValidateNested()
-  age_preference: AgePreferenceDTO;
+  // @ValidateNested()
+  age_preference: any;
 
   @IsOptional()
   @IsEnum(Religion)
@@ -102,4 +102,6 @@ export class UpdateFlatShareProfileDTO {
   @IsOptional()
   @IsString()
   twitter: string;
+
+
 }
