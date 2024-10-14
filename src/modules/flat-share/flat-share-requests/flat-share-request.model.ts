@@ -4,6 +4,11 @@ import { User } from '@/modules/users/users.interface';
 import { UserInfo } from '@/modules/user-info/user-info.model';
 import { FlatShareProfile } from '../flat-share-profile/flat-share-profile.model';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import { States } from '../options/state/state.model';
+import { PropertyTypes } from '../options/property_types/property-types.model';
+import { Amenities } from '../options/amenities/amenities.model';
+import { Categories } from '../options/categories/categories.model';
+import { Services } from '../options/services/services.model';
 
 export enum AvailabilityStatus {
   AVAILABLE = 'available',
@@ -27,12 +32,17 @@ export interface FlatShareRequest extends Document {
   user_info: UserInfo;
   flat_share_profile: FlatShareProfile;
   location: Locations;
-  service: SchemaDefinitionProperty<string>;
-  category: SchemaDefinitionProperty<string>;
-  amenities: SchemaDefinitionProperty<string>;
-  property_type: SchemaDefinitionProperty<string>;
-  state: SchemaDefinitionProperty<string>;
+  service: Services;
+  category: Categories;
+  amenities: Amenities[];
+  property_type: PropertyTypes;
+  state: States;
   view_count: number;
+  call_count: number;
+  question_count: number;
+  google_location_object: any;
+  google_location_text: string;
+
 }
 
 const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
@@ -118,10 +128,10 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
       type: Schema.Types.ObjectId,
       ref: 'Categories',
     },
-    amenities: {
+    amenities: [{
       type: Schema.Types.ObjectId,
       ref: 'Amenities',
-    },
+    }],
     property_type: {
       type: Schema.Types.ObjectId,
       ref: 'PropertyTypes',
@@ -135,7 +145,24 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     view_count: {
       type: Number,
       default: 0
-    }
+    },
+    // add the remaining fields
+    google_location_object: {
+      type: Object,
+      required: true
+    },
+    google_location_text: {
+      type: String,
+      required: true
+    },
+    call_count: {
+      type: Number,
+      default: 0
+    },
+    question_count: {
+      type: Number,
+      default: 0
+    },
   },
   {
     timestamps: true,

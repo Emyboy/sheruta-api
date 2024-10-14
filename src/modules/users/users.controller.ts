@@ -78,6 +78,8 @@ class UsersController {
         const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
         const userId = new mongoose.Types.ObjectId(verificationResponse._id);
 
+        this.user.findOneAndUpdate({ _id: userId }, { last_seen: new Date().toJSON() })
+
         const [user, userSettings, userInfo, flatShareProfile, wallet, notifications] = await Promise.all([
           this.user.findById(userId),
           this.userSettings.findOne({ user: userId }),

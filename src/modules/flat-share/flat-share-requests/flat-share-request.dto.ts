@@ -6,13 +6,11 @@ import {
   Min,
   IsArray,
   ArrayMaxSize,
-  IsEnum,
-  IsBoolean,
   IsOptional,
-  ArrayMinSize
+  ArrayMinSize,
+  IsObject
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { AvailabilityStatus } from './flat-share-request.model';
 
 
 export class CreateSeekerRequestDTO {
@@ -63,9 +61,16 @@ export class CreateSeekerRequestDTO {
   @MinLength(2)
   @MaxLength(100)
   public location: string;
+
+  @IsObject()
+  public google_location_object: Object;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
+  public google_location_text: string;
+
 }
-
-
 
 
 export class CreateHostRequestDTO {
