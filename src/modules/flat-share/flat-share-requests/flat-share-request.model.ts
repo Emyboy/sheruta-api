@@ -23,7 +23,7 @@ export interface FlatShareRequest extends Document {
   description: string;
   house_rules: string[];
   living_rooms: number;
-  availability_status: 'available' | 'unavailable';
+  availability_status: 'available' | 'unavailable' | 'reserved';
   seeking: boolean;
   service_charge: number;
   image_urls: string[];
