@@ -12,7 +12,8 @@ import { Services } from '../options/services/services.model';
 
 export enum AvailabilityStatus {
   AVAILABLE = 'available',
-  UNAVAILABLE = 'unavailable'
+  UNAVAILABLE = 'unavailable',
+  RESERVED = 'reserved'
 }
 
 export interface FlatShareRequest extends Document {
