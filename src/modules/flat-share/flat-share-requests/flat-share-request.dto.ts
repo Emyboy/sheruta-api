@@ -73,6 +73,10 @@ export class CreateSeekerRequestDTO {
   @MaxLength(100)
   public google_location_text: string;
 
+  @IsString()
+  @IsEnum(PaymentType)
+  payment_type: string;
+
 }
 
 
