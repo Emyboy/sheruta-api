@@ -8,7 +8,7 @@ export class OptionsDTO {
   @Transform(({ value }) => {
     if (!value) return value;
 
-    value = value.trim().toLowerCase();
+    value = value.trim();
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

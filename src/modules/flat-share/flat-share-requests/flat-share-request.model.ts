@@ -1,4 +1,4 @@
-import { model, Schema, Document, SchemaDefinitionProperty, PaginateModel } from 'mongoose';
+import { model, Schema, Document, PaginateModel } from 'mongoose';
 import { Locations } from '../options/locations/locations.model';
 import { User } from '@/modules/users/users.interface';
 import { UserInfo } from '@/modules/user-info/user-info.model';
@@ -16,6 +16,13 @@ export enum AvailabilityStatus {
   RESERVED = 'reserved'
 }
 
+export enum PaymentType {
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly',
+  WEEKLY = 'weekly',
+  DAILY = 'daily'
+}
+
 export interface FlatShareRequest extends Document {
   bedrooms: number;
   bathrooms: number;
@@ -24,7 +31,7 @@ export interface FlatShareRequest extends Document {
   description: string;
   house_rules: string[];
   living_rooms: number;
-  availability_status: 'available' | 'unavailable' | 'reserved';
+  availability_status: AvailabilityStatus;
   seeking: boolean;
   service_charge: number;
   image_urls: string[];
@@ -43,7 +50,7 @@ export interface FlatShareRequest extends Document {
   question_count: number;
   google_location_object: any;
   google_location_text: string;
-
+  payment_type: PaymentType;
 }
 
 const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(

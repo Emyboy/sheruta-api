@@ -8,9 +8,11 @@ import {
   ArrayMaxSize,
   IsOptional,
   ArrayMinSize,
-  IsObject
+  IsObject,
+  IsEnum
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { PaymentType } from './flat-share-request.model';
 
 
 export class CreateSeekerRequestDTO {
@@ -135,4 +137,8 @@ export class CreateHostRequestDTO {
   @IsString()
   @IsOptional()
   public state: string;
+
+  @IsString()
+  @IsEnum(PaymentType)
+  payment_type: string;
 }
