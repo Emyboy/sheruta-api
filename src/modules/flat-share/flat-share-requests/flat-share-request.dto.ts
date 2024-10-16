@@ -71,10 +71,10 @@ export class CreateHostRequestDTO {
   // @Min(1)
   public bedrooms: number;
 
-  @IsNumber()
-  // @Min(1)
-  @IsOptional()
-  public bathrooms: number;
+  // @IsNumber()
+  // // @Min(1)
+  // @IsOptional()
+  // public bathrooms: number;
 
   @IsNumber()
   // @Min(1)
