@@ -28,9 +28,9 @@ export interface FlatShareRequest extends Document {
   bathrooms: number;
   toilets: number;
   rent: number;
+  living_rooms: number;
   description: string;
   house_rules: string[];
-  living_rooms: number;
   availability_status: AvailabilityStatus;
   seeking: boolean;
   service_charge: number;

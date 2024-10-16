@@ -131,5 +131,9 @@ export class CreateHostRequestDTO {
 
   @IsString()
   @IsEnum(PaymentType)
-  payment_type: string;
+  public payment_type: string;
+
+  @IsNumber()
+  @IsOptional()
+  public living_rooms: number;
 }
