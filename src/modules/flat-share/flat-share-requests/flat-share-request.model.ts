@@ -142,8 +142,7 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
     }],
     property_type: {
       type: Schema.Types.ObjectId,
-      ref: 'PropertyTypes',
-      required: true
+      ref: 'PropertyTypes'
     },
     state: {
       type: Schema.Types.ObjectId,
