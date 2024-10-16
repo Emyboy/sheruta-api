@@ -96,7 +96,6 @@ export class CreateHostRequestDTO {
   // public availability_status: AvailabilityStatus;
 
   @IsNumber()
-  @Min(0)
   @IsOptional()
   public service_charge: number;
 
