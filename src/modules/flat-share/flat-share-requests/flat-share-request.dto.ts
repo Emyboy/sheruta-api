@@ -31,20 +31,6 @@ export class CreateSeekerRequestDTO {
   public description: string;
 
   @IsString()
-  @MinLength(2)
-  @MaxLength(100)
-  @Transform(({ value }) => {
-    if (!value) return value;
-
-    value = value.trim().toLowerCase();
-    value = value.replace(/\s+/g, '-');
-    value = value.replace(/[^a-z0-9-]/g, '');
-
-    return value;
-  })
-  public category: string;
-
-  @IsString()
   @IsOptional()
   public property_type: string;
 
