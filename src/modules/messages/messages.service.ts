@@ -5,7 +5,7 @@ export default class MessageService {
   private messages = MessageModel;
   private conversations = ConversationModel;
 
-  public createMessage = async ({ receiver_id, sender_id, content }: { sender_id: string; receiver_id: string; content: string; }) => {
+  public sendDirectMessage = async ({ receiver_id, sender_id, content }: { sender_id: string; receiver_id: string; content: string; }) => {
 
     const conversation = await this.conversations.findOne({
       members: { $all: [sender_id, receiver_id] }

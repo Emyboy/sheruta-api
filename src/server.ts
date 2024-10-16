@@ -17,6 +17,8 @@ import FlatShareProfileRoute from './modules/flat-share/flat-share-profile/flat-
 import UserSettingsRoute from './modules/user-settings/user-settings.route';
 import FlatShareRequestRoute from './modules/flat-share/flat-share-requests/flat-share-request.route';
 import NotificationsRoute from './modules/notifications/notifications.route';
+import ConversationRoute from './modules/messages/conversations/conversations.route';
+import MessagesRoute from './modules/messages/messages.route';
 
 validateEnv();
 
@@ -37,7 +39,9 @@ const app = new App([
   new FlatShareProfileRoute(),
   new FlatShareRequestRoute(),
   new UserSettingsRoute(),
-  new NotificationsRoute()
+  new NotificationsRoute(),
+  new ConversationRoute(),
+  // new MessagesRoute()
 ]);
 
 app.listen();

@@ -10,7 +10,7 @@ export default class MessagesController {
       const user = req._user;
       const { receiver_id, content } = req.body;
 
-      await this.messages.createMessage({ sender_id: user._id, receiver_id, content });
+      await this.messages.sendDirectMessage({ sender_id: user._id, receiver_id, content });
 
       res.status(200).json({ message: "Message sent successfully" });
     } catch (error) {

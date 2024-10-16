@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { PaginateModel, Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 
@@ -31,6 +31,7 @@ const conversationSchema = new Schema<Conversation>(
 
 conversationSchema.plugin(mongoosePaginate);
 
-const ConversationModel = mongoose.model<Conversation>('Conversations', conversationSchema);
+const ConversationModel = mongoose.model<Conversation, PaginateModel<Conversation>>('Conversations', conversationSchema);
+
 
 export default ConversationModel;
