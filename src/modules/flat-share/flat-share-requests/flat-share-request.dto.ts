@@ -30,10 +30,6 @@ export class CreateSeekerRequestDTO {
   })
   public description: string;
 
-  // @IsString()
-  // @IsOptional()
-  // public property_type: string;
-
   @IsString()
   public service: string;
 
@@ -68,13 +64,14 @@ export class CreateSeekerRequestDTO {
 
 export class CreateHostRequestDTO {
   @IsNumber()
+  @IsOptional()
   // @Min(1)
   public bedrooms: number;
 
-  // @IsNumber()
-  // // @Min(1)
-  // @IsOptional()
-  // public bathrooms: number;
+  @IsNumber()
+  // @Min(1)
+  @IsOptional()
+  public bathrooms: number;
 
   @IsNumber()
   // @Min(1)
@@ -136,4 +133,12 @@ export class CreateHostRequestDTO {
   @IsNumber()
   @IsOptional()
   public living_rooms: number;
+
+  @IsObject()
+  public google_location_object: Object;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
+  public google_location_text: string;
 }
