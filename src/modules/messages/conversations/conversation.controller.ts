@@ -43,8 +43,6 @@ export default class ConversationsController {
         return res.status(200).json({ data: conversation });
       }
 
-      console.log('MEMBERS:::', [user._id, receiver_id]);
-
       await this.conversations.create({
         host: user._id,
         members: [user._id, receiver_id]

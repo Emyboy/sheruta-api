@@ -75,6 +75,7 @@ export class CreateHostRequestDTO {
 
   @IsNumber()
   // @Min(1)
+  @IsOptional()
   public toilets: number;
 
   @IsNumber()
@@ -88,6 +89,7 @@ export class CreateHostRequestDTO {
 
   @IsArray()
   @ArrayMaxSize(30)
+  @IsOptional()
   public house_rules: string[];
 
   // @IsEnum(AvailabilityStatus)
