@@ -73,6 +73,7 @@ export class CreateHostRequestDTO {
 
   @IsNumber()
   // @Min(1)
+  @IsOptional()
   public bathrooms: number;
 
   @IsNumber()
