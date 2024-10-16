@@ -42,7 +42,7 @@ export enum Religion {
 export interface FlatShareProfile extends Document {
   bio: string;
   budget: number | null;
-  done_kyc: boolean;
+
   employment_status: EmploymentStatus;
   facebook: string | null;
   instagram: string | null;
@@ -98,10 +98,6 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
       type: Number,
       min: 0,
       default: 0
-    },
-    done_kyc: {
-      type: Boolean,
-      default: false,
     },
     employment_status: {
       type: String,
