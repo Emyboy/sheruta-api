@@ -30,9 +30,9 @@ export class CreateSeekerRequestDTO {
   })
   public description: string;
 
-  @IsString()
-  @IsOptional()
-  public property_type: string;
+  // @IsString()
+  // @IsOptional()
+  // public property_type: string;
 
   @IsString()
   public service: string;
