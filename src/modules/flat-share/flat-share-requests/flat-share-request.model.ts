@@ -174,7 +174,7 @@ const flatShareRequestSchema: Schema = new Schema<FlatShareRequest>(
       type: String,
       enum: PaymentType,
       required: true
-    }
+    },
   },
   {
     timestamps: true,
