@@ -32,7 +32,7 @@ export enum PaymentType {
 
 export enum Religion {
   CHRISTIANITY = 'christian',
-  ISLAM = 'islam',
+  ISLAM = 'muslim',
   TRADITIONAL = 'traditional',
   ATHEIST = 'atheist',
   OTHER = 'other',

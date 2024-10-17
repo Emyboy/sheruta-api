@@ -1,5 +1,5 @@
 import { HttpException } from "@/exceptions/HttpException";
-import flatShareProfileModel, { FlatShareProfile } from "../flat-share-profile/flat-share-profile.model";
+import flatShareProfileModel from "../flat-share-profile/flat-share-profile.model";
 import { CreateHostRequestDTO, CreateSeekerRequestDTO } from "./flat-share-request.dto";
 import FlatShareRequestModel, { AvailabilityStatus, FlatShareRequest } from "./flat-share-request.model";
 import { User } from "@/modules/users/users.interface";
@@ -7,7 +7,6 @@ import userInfoModel from "@/modules/user-info/user-info.model";
 import { sendEmail } from "@/utils/email";
 import { logger } from "@/utils/logger";
 import { hostToSeekerContent, seekerToHostContent } from "./flat-share-request.content";
-import notificationsModel from "@/modules/notifications/notifications.model";
 import NotificationService from "@/modules/notifications/notifications.service";
 import { NotificationTypes } from "@/config";
 
@@ -122,7 +121,7 @@ export default class FlatShareRequestService {
   };
 
 
-  public getRequestDetails = async (request_id: string, user_id?:string | undefined): Promise<FlatShareRequest> => {
+  public getRequestDetails = async (request_id: string, user_id?: string | undefined): Promise<FlatShareRequest> => {
     const request = await this.flatShareRequest.findById(request_id)
       .populate('user')
       .populate('user_info')
@@ -135,21 +134,33 @@ export default class FlatShareRequestService {
       .populate('state');
 
 
-      if (!request) {
-        throw new HttpException(404, "Request not found");
-      }
+    if (!request) {
+      throw new HttpException(404, "Request not found");
+    }
 
-      await this.flatShareRequest.findByIdAndUpdate(request_id, { $inc: { view_count: 1 } });
+    await this.flatShareRequest.findByIdAndUpdate(request_id, { $inc: { view_count: 1 } });
 
-      if(user_id) {
-        this.notifications.create({
-          sender_id: user_id,
-          receiver_id: request.user._id,
-          type: NotificationTypes.REQUEST_VIEW
-        })
-      }
+    if (user_id) {
+      this.notifications.create({
+        sender_id: user_id,
+        receiver_id: request.user._id,
+        type: NotificationTypes.REQUEST_VIEW
+      })
+    }
 
     return request;
+  }
+
+  public updateSeekerRequest = async ({ request_id, data }: { request_id: string, data: CreateSeekerRequestDTO }): Promise<FlatShareRequest> => {
+    const request = await this.flatShareRequest.findById(request_id);
+
+    if (!request) {
+      throw new HttpException(404, "Request not found");
+    }
+
+    await this.flatShareRequest.findByIdAndUpdate(request_id, data);
+
+    return this.flatShareRequest.findById(request_id);
   }
 
 }

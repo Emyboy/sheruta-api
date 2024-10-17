@@ -75,4 +75,16 @@ export default class FlatShareRequestController {
     }
   }
 
+  public updateSeekerRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const { request_id } = req.params;
+      const result = await this.flatShareRequestService.updateSeekerRequest({request_id, data: req.body});
+
+      return res.status(200).json({ data: result, message: "Request updated successfully" });
+    } catch (error) {
+      logger.error('UPDATE SEEKER REQUEST ERROR:::', error);
+      next(error);
+    }
+  }
+
 }
