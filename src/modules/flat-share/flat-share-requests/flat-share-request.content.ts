@@ -30,7 +30,7 @@ export const hostToSeekerContent = ({ hostData, requestData }: { requestData: Fl
   const flatImage = requestData.image_urls.length > 0 ? requestData.image_urls[0] : '';
   const content = `
     <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
-      Hi ${hostData.first_name}, we have a new flat available for sharing in ${requestData.location.name} that matches your preferences.
+      Hi there, <strong>${hostData.first_name}</strong> just posted a space for hare in ${requestData.location.name} that matches your preferences.
     </p>
     <div style="text-align: center; margin-bottom: 20px;">
       <div style="border-radius: 8px; width: 100%; height: 250px; background-image: url(${flatImage}); background-size: cover;" />
