@@ -7,7 +7,7 @@ import FlatShareRequestModel from "./flat-share-request.model";
 export default class FlatShareRequestController {
   public flatShareRequestService = new FlatShareRequestService();
 
-  public createSeekerRequest = async (req: RequestWithUser, res:Response, next) => {
+  public createSeekerRequest = async (req: RequestWithUser, res: Response, next) => {
     try {
       const { _user } = req;
       const result = await this.flatShareRequestService.createSeekerRequest({
@@ -22,7 +22,7 @@ export default class FlatShareRequestController {
     }
   }
 
-  public createHostRequest = async (req: RequestWithUser, res:Response, next) => {
+  public createHostRequest = async (req: RequestWithUser, res: Response, next) => {
     try {
       const { _user } = req;
       const result = await this.flatShareRequestService.createHostRequest({
@@ -78,12 +78,24 @@ export default class FlatShareRequestController {
   public updateSeekerRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const { request_id } = req.params;
-      const result = await this.flatShareRequestService.updateSeekerRequest({request_id, data: req.body});
+      const result = await this.flatShareRequestService.updateSeekerRequest({ request_id, data: req.body, user_id: req?._user?._id });
 
       return res.status(200).json({ data: result, message: "Request updated successfully" });
     } catch (error) {
       logger.error('UPDATE SEEKER REQUEST ERROR:::', error);
       next(error);
+    }
+  }
+
+  public updateHostRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const { request_id } = req.params;
+      const result = await this.flatShareRequestService.updateHostRequest({ request_id, data: req.body, user_id: req?._user?._id });
+
+      return res.status(200).json({ data: result, message: "Request updated successfully" });
+    } catch (error) {
+      logger.error('UPDATE HOST REQUEST ERROR:::', error);
+      next(error)
     }
   }
 

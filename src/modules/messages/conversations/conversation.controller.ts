@@ -11,9 +11,13 @@ export default class ConversationsController {
       const user = req._user;
       const { receiver_id } = req.params;
 
+      let populate = '_id first_name last_seen avatar_url account_status'
+
       const conversation = await this.conversations.findOne({
         members: { $all: [user._id, receiver_id] }
-      });
+      })
+        .populate('host', populate)
+        .populate('members', populate);
 
       if (!conversation || receiver_id === user._id) {
         return res.status(200).json({ message: "Please try again", data: null });
@@ -67,7 +71,8 @@ export default class ConversationsController {
       const options = {
         page: parseInt(page as string, 10),
         limit: parseInt(limit as string, 10),
-        sort: { createdAt: -1 }
+        sort: { createdAt: -1 },
+        populate: ['members', 'host']
       };
 
       const conversations = await this.conversations.paginate(

@@ -131,8 +131,8 @@ export default class FlatShareRequestService {
       .populate('category')
       .populate('amenities')
       .populate('property_type')
+      .populate('payment_type')
       .populate('state');
-
 
     if (!request) {
       throw new HttpException(404, "Request not found");
@@ -151,8 +151,24 @@ export default class FlatShareRequestService {
     return request;
   }
 
-  public updateSeekerRequest = async ({ request_id, data }: { request_id: string, data: CreateSeekerRequestDTO }): Promise<FlatShareRequest> => {
-    const request = await this.flatShareRequest.findById(request_id);
+  public updateSeekerRequest = async ({ request_id, data, user_id }: { request_id: string, data: CreateSeekerRequestDTO, user_id: string; }): Promise<FlatShareRequest> => {
+    const request = await this.flatShareRequest.findOne({
+      _id: request_id, user: user_id
+    }).populate('user');
+
+    if (!request) {
+      throw new HttpException(404, "Request not found");
+    }
+
+    await this.flatShareRequest.findByIdAndUpdate(request_id, data);
+
+    return this.flatShareRequest.findById(request_id);
+  }
+
+  public updateHostRequest = async ({ request_id, data, user_id }: { request_id: string, data: CreateHostRequestDTO, user_id: string; }): Promise<FlatShareRequest> => {
+    const request = await this.flatShareRequest.findOne({
+      _id: request_id, user: user_id
+    }).populate('user');
 
     if (!request) {
       throw new HttpException(404, "Request not found");

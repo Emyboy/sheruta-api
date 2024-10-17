@@ -17,6 +17,7 @@ export default class FlatShareRequestRoute implements Routes {
   private initializeRoutes() {
     this.router.post(`${this.path}/seeker`, authMiddleware, validationMiddleware(CreateSeekerRequestDTO, 'body'), this.flatShareRequestController.createSeekerRequest);
     this.router.put(`${this.path}/seeker/:request_id`, authMiddleware, validationMiddleware(CreateSeekerRequestDTO, 'body'), this.flatShareRequestController.updateSeekerRequest);
+
     this.router.post(`${this.path}/host`, authMiddleware, validationMiddleware(CreateHostRequestDTO, 'body'), this.flatShareRequestController.createHostRequest);
     this.router.get(`${this.path}`, this.flatShareRequestController.getAllRequests);
     this.router.get(`${this.path}/:request_id`, this.flatShareRequestController.getRequestDetails);
