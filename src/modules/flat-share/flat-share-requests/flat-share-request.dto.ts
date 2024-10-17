@@ -65,16 +65,13 @@ export class CreateSeekerRequestDTO {
 export class CreateHostRequestDTO {
   @IsNumber()
   @IsOptional()
-  // @Min(1)
   public bedrooms: number;
 
   @IsNumber()
-  // @Min(1)
   @IsOptional()
   public bathrooms: number;
 
   @IsNumber()
-  // @Min(1)
   @IsOptional()
   public toilets: number;
 
@@ -91,9 +88,6 @@ export class CreateHostRequestDTO {
   @ArrayMaxSize(30)
   @IsOptional()
   public house_rules: string[];
-
-  // @IsEnum(AvailabilityStatus)
-  // public availability_status: AvailabilityStatus;
 
   @IsNumber()
   @IsOptional()

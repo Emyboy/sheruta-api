@@ -47,7 +47,7 @@ export default class FlatShareRequestController {
         page,
         limit,
         sort,
-        populate: ['user', 'user_info', 'flat_share_profile', 'location', 'service', 'category', 'amenities', 'property_type', 'state']
+        populate: ['user', 'user_info', 'flat_share_profile', 'location', 'service', 'category', 'amenities', 'property_type', 'state', 'payment_type']
       });
 
       return res.status(200).json({
