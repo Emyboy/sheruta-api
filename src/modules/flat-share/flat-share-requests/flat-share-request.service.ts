@@ -179,4 +179,16 @@ export default class FlatShareRequestService {
     return this.flatShareRequest.findById(request_id);
   }
 
+  public deleteRequest = async (request_id: string, user_id: string): Promise<FlatShareRequest> => {
+    const request = await this.flatShareRequest.findOne({
+      _id: request_id, user: user_id
+    });
+
+    if (!request) {
+      throw new HttpException(404, "Request not found");
+    }
+
+    return this.flatShareRequest.findByIdAndDelete(request_id);
+  }
+
 }

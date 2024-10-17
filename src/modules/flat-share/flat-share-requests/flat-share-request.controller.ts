@@ -99,4 +99,16 @@ export default class FlatShareRequestController {
     }
   }
 
+  public deleteRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const { request_id } = req.params;
+      await this.flatShareRequestService.deleteRequest(request_id, req?._user?._id);
+
+      return res.status(200).json({ message: "Request deleted successfully" });
+    } catch (error) {
+      logger.error('DELETE REQUEST ERROR:::', error);
+      next(error);
+    }
+  }
+
 }

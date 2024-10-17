@@ -15,12 +15,17 @@ export default class FlatShareRequestRoute implements Routes {
   }
 
   private initializeRoutes() {
+    this.router.get(`${this.path}`, this.flatShareRequestController.getAllRequests);
+    this.router.get(`${this.path}/:request_id`, this.flatShareRequestController.getRequestDetails);
+    this.router.delete(`${this.path}/:request_id`, authMiddleware, this.flatShareRequestController.deleteRequest);
+
+    //seeker
     this.router.post(`${this.path}/seeker`, authMiddleware, validationMiddleware(CreateSeekerRequestDTO, 'body'), this.flatShareRequestController.createSeekerRequest);
     this.router.put(`${this.path}/seeker/:request_id`, authMiddleware, validationMiddleware(CreateSeekerRequestDTO, 'body'), this.flatShareRequestController.updateSeekerRequest);
 
+    //host
     this.router.post(`${this.path}/host`, authMiddleware, validationMiddleware(CreateHostRequestDTO, 'body'), this.flatShareRequestController.createHostRequest);
-    this.router.get(`${this.path}`, this.flatShareRequestController.getAllRequests);
-    this.router.get(`${this.path}/:request_id`, this.flatShareRequestController.getRequestDetails);
+    this.router.put(`${this.path}/host/:request_id`, authMiddleware, validationMiddleware(CreateHostRequestDTO, 'body'), this.flatShareRequestController.updateHostRequest);
   }
 }
 
