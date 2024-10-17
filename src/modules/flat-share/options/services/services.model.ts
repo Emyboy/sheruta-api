@@ -3,6 +3,7 @@ import { model, Schema, Document } from 'mongoose';
 export interface Services {
   _id: string;
   name: string;
+  description: string;
   is_published: boolean;
   slug: string;
 }
@@ -14,6 +15,10 @@ const servicesSchema: Schema = new Schema<Services>(
       required: true,
       minlength: 2,
       maxlength: 100,
+    },
+    description: {
+      type: String,
+      default: null
     },
     is_published: {
       type: Boolean,

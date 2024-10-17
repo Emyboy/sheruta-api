@@ -1,4 +1,4 @@
-import { IsString, MinLength, MaxLength, IsBoolean } from 'class-validator';
+import { IsString, MinLength, MaxLength, IsBoolean, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class OptionsDTO {
@@ -32,4 +32,8 @@ export class OptionsDTO {
     return value;
   })
   public slug: string;
+
+  @IsString()
+  @IsOptional()
+  public description: string;
 }
