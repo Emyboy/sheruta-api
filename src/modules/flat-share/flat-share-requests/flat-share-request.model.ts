@@ -18,7 +18,7 @@ export enum AvailabilityStatus {
 
 export enum PaymentType {
   MONTHLY = 'monthly',
-  YEARLY = 'yearly',
+  ANNUALLY = 'annually',
   WEEKLY = 'weekly',
   DAILY = 'daily'
 }

@@ -136,4 +136,7 @@ export class CreateHostRequestDTO {
   @MinLength(2)
   @MaxLength(100)
   public google_location_text: string;
+
+  @IsArray()
+  public amenities: string[];
 }
