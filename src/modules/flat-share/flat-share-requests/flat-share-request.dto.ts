@@ -280,3 +280,39 @@ export class UpdateHostRequestDTO {
   @IsOptional()
   public amenities: string[];
 }
+
+
+export class SearchRequestDTO {
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value?.trim().toLowerCase())
+  public budget?: string; // Expects a budget range, e.g., "10000-50000"
+
+  @IsOptional()
+  @IsString()
+  public service?: string;
+
+  @IsOptional()
+  @IsEnum(PaymentType)
+  public payment_type?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  public location?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  public state?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  public page?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  public limit?: number;
+}

@@ -9,12 +9,18 @@ import { logger } from "@/utils/logger";
 import { hostToSeekerContent, seekerToHostContent } from "./flat-share-request.content";
 import NotificationService from "@/modules/notifications/notifications.service";
 import { NotificationTypes } from "@/config";
+import servicesModel from "../options/services/services.model";
+import locationModel from "../options/locations/locations.model";
+import stateModel from "../options/state/state.model";
 
 export default class FlatShareRequestService {
   private flatShareRequest = FlatShareRequestModel;
   private flatShareProfile = flatShareProfileModel;
   private userInfo = userInfoModel;
   private notifications = new NotificationService();
+  private services = servicesModel;
+  private locations = locationModel;
+  private states = stateModel;
 
   public createSeekerRequest = async ({ data, user }: { data: CreateSeekerRequestDTO, user: User }): Promise<FlatShareRequest> => {
     const flatShareProfile = await this.flatShareProfile.findOne({ user: user._id });
@@ -179,7 +185,7 @@ export default class FlatShareRequestService {
     return this.flatShareRequest.findById(request_id);
   }
 
-  public deleteRequest = async (request_id: string, user_id: string): Promise<FlatShareRequest> => {
+  public deleteRequest = async ({ request_id, user_id }: { request_id: string, user_id: string; from_cron?: boolean; }): Promise<FlatShareRequest> => {
     const request = await this.flatShareRequest.findOne({
       _id: request_id, user: user_id
     });
@@ -188,7 +194,57 @@ export default class FlatShareRequestService {
       throw new HttpException(404, "Request not found");
     }
 
+    //todo: send email to user that their request has been deleted if from cron
+
     return this.flatShareRequest.findByIdAndDelete(request_id);
   }
+
+  public searchRequest = async ({ budget, service, payment_type, location, state, page, limit }:
+    { budget?: string; service?: string; payment_type?: string; location?: string; state?: string; page: number; limit: number }): Promise<any> => {
+
+    let query: any = {};
+
+    if (budget) {
+      const [minBudget, maxBudget] = budget.split('-').map(Number);
+      query.rent = { $gte: minBudget, $lte: maxBudget };
+    }
+
+    if (service) {
+      const serviceDoc = await this.services.findOne({ slug: service }).select('_id');
+      if (serviceDoc) {
+        query.service = serviceDoc._id;
+      }
+    }
+
+    if (payment_type) {
+      query.payment_type = payment_type;
+    }
+
+    if (location) {
+      const locationDoc = await this.locations.findOne({ slug: location }).select('_id');
+      if (locationDoc) {
+        query.location = locationDoc._id;
+      }
+    }
+
+    if (state) {
+      const stateDoc = await this.states.findOne({ slug: state }).select('_id');
+      if (stateDoc) {
+        query.state = stateDoc._id;
+      }
+    }
+
+    const sort = { availability_status: 1, createdAt: -1 };
+
+    const result = await this.flatShareRequest.paginate(query, {
+      page,
+      limit,
+      sort,
+      populate: ['user', 'user_info', 'flat_share_profile', 'location', 'service', 'category', 'amenities', 'property_type', 'state', 'payment_type']
+    });
+
+    return result;
+  }
+
 
 }

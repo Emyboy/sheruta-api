@@ -102,7 +102,7 @@ export default class FlatShareRequestController {
   public deleteRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const { request_id } = req.params;
-      await this.flatShareRequestService.deleteRequest(request_id, req?._user?._id);
+      await this.flatShareRequestService.deleteRequest({ request_id, user_id: req?._user?._id });
 
       return res.status(200).json({ message: "Request deleted successfully" });
     } catch (error) {
@@ -110,5 +110,37 @@ export default class FlatShareRequestController {
       next(error);
     }
   }
+
+  public searchRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const { page = 1, limit = 10, budget, service, payment_type, location, state } = req.query;
+
+      const pageNum = parseInt(page as string) || 1;
+      const limitNum = parseInt(limit as string) || 10;
+
+      const result = await this.flatShareRequestService.searchRequest({
+        budget: budget as string,
+        service: service as string,
+        payment_type: payment_type as string,
+        location: location as string,
+        state: state as string,
+        page: pageNum,
+        limit: limitNum
+      });
+
+      return res.status(200).json({
+        data: result.docs,
+        currentPage: result.page,
+        totalPages: result.totalPages,
+        totalItems: result.totalDocs,
+        message: "Requests searched successfully"
+      });
+    } catch (error) {
+      logger.error('SEARCH REQUEST ERROR:::', error);
+      next(error);
+    }
+  }
+
+
 
 }
