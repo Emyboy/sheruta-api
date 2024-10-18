@@ -34,7 +34,7 @@ class UserService {
         throw new HttpException(404, 'user not found');
       }
 
-      const flat_share_profile = await this.flatShareProfile.findOne({ user: user_id }).populate('location').populate('state').populate('interests').populate('habits');
+      const flat_share_profile = await this.flatShareProfile.findOne({ user: user_id }).populate('location').populate('state').populate('interests').populate('habits').populate('work_industry');
       const user_info = await this.user_info.findOne({ user: user_id });
       const user_settings = await this.user_settings.findOne({ user: user_id });
 
