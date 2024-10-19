@@ -66,7 +66,11 @@ class UsersController {
   ) => {
     try {
       const { user_id } = req.params;
-      const user = await this.userService.getUserProfile(user_id);
+      const userId: any = await getUserIDFromHeaders(req);
+      const user = await this.userService.getUserProfile({
+        profile_id: user_id,
+        user_id: userId,
+      });
       res.status(200).json({ user });
     } catch (error) {
       next(error);
@@ -96,7 +100,7 @@ class UsersController {
         flatShareProfile,
         wallet,
         notifications,
-        messages
+        messages,
       ] = await Promise.all([
         this.user.findById(userId),
         this.userSettings.findOne({ user: userId }),

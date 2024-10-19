@@ -1,6 +1,6 @@
 import { NotificationTypes } from "@/config";
 import notificationsModel from "./notifications.model";
-import { subDays } from "date-fns";
+import { subDays, subHours } from "date-fns";
 import flatShareProfileModel from "../flat-share/flat-share-profile/flat-share-profile.model";
 import userSettingModel from "../user-settings/user-settings.model";
 import { HttpException } from "@/exceptions/HttpException";
@@ -11,25 +11,41 @@ export default class NotificationService {
   private userSettings = userSettingModel;
 
   public create = async (
-    { receiver_id, sender_id, type }: {
+    {
+      receiver_id,
+      sender_id,
+      type,
+      delayBy,
+    }: {
       sender_id: string;
       receiver_id: string;
       type: NotificationTypes;
+      delayBy?: {
+        count: number;
+        unit: "hours" | "days";
+      };
     },
   ) => {
     try {
-      const threeDaysAgo = subDays(new Date(), 3);
+      const now = new Date();
+      let delayTime = now;
+
+      if (delayBy) {
+        delayTime = delayBy.unit === "hours"
+          ? subHours(now, delayBy.count)
+          : subDays(now, delayBy.count);
+      }
 
       const existingNotification = await this.notifications.findOne({
         sender: sender_id,
         receiver: receiver_id,
         trigger_type: type,
-        createdAt: { $gte: threeDaysAgo },
+        createdAt: { $gte: delayTime },
       });
 
       if (existingNotification) {
         console.info(
-          `\n\nNotification already exists for type: ${type} from sender: ${sender_id} within the last 3 days.\n\n`,
+          `\n\nNotification already exists for type: ${type} from sender: ${sender_id} within the delay window.\n\n`,
         );
         return;
       }
@@ -44,12 +60,12 @@ export default class NotificationService {
       await this.notifications.create({
         sender: sender_id,
         trigger_type: type,
-
         receiver: receiver_id,
         receiver_flat_share_profile: flatShareProfile?._id,
         receiver_user_settings: receiverSettings?._id,
         message: this.notificationMessage(type),
       });
+      console.log("\n\nNotification created successfully\n\n");
     } catch (error) {
       console.log("\n\nNOTIFICATION CREATION ERROR:::", error);
       throw new HttpException(500, "Notification creation failed");
