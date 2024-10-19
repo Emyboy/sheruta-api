@@ -26,4 +26,28 @@ export default class MessagesController {
       next(error);
     }
   };
+
+  public getConversationMessages = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const user = req._user;
+      const { conversation_id } = req.params;
+      const { page, limit } = req.query;
+
+      const messages = await this.messages.getMessagesByConversationId({
+        conversation_id,
+        user_id: user._id,
+        page: +page,
+        limit: +limit,
+      });
+
+      res.status(200).json({ data: messages });
+    } catch (error) {
+      console.log("GET CONVERSATION MESSAGES ERROR", error);
+      next(error);
+    }
+  };
 }

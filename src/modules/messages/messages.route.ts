@@ -21,5 +21,10 @@ export default class MessagesRoute implements Routes {
       validationMiddleware(DirectMessageDTO, "body"),
       this.controller.createMessage,
     );
+    this.router.get(
+      `${this.path}/:conversation_id`,
+      authMiddleware,
+      this.controller.getConversationMessages,
+    );
   }
 }

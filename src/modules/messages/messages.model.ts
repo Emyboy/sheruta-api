@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { PaginateModel, Schema } from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 export interface Message extends mongoose.Document {
   sender: mongoose.Types.ObjectId;
@@ -40,12 +41,13 @@ const messageSchema = new Schema<Message>(
     timestamps: true,
   },
 );
-
 messageSchema.index({ conversation: 1 });
 messageSchema.index({ sender: 1 });
 messageSchema.index({ receiver: 1 });
 messageSchema.index({ request: 1 });
 
-const MessageModel = mongoose.model<Message>("Messages", messageSchema);
+messageSchema.plugin(mongoosePaginate);
+
+const MessageModel = mongoose.model<Message, PaginateModel<Message>>("Messages", messageSchema);
 
 export default MessageModel;
