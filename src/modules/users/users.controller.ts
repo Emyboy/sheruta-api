@@ -9,9 +9,6 @@ import amenitiesModel from "../flat-share/options/amenities/amenities.model";
 import servicesModel from "../flat-share/options/services/services.model";
 import locationModel from "../flat-share/options/locations/locations.model";
 import stateModel from "../flat-share/options/state/state.model";
-import { SECRET_KEY } from "@/config";
-import { verify } from "jsonwebtoken";
-import mongoose from "mongoose";
 import workIndustryModel from "../flat-share/options/work_industry/work-industry.model";
 import walletModel from "../wallet/wallet.model";
 import categoriesModel from "../flat-share/options/categories/categories.model";
@@ -19,6 +16,7 @@ import habitsModel from "../flat-share/options/habits/habits.model";
 import interestModel from "../flat-share/options/interests/interests.model";
 import propertyTypesModel from "../flat-share/options/property_types/property-types.model";
 import notificationsModel from "../notifications/notifications.model";
+import { getUserIDFromHeaders } from "@/utils/auth";
 
 class UsersController {
   public userService = new userService();
@@ -78,50 +76,40 @@ class UsersController {
     next: NextFunction,
   ) => {
     try {
-      const Authorization = req.cookies["Authorization"] ||
-        (req.header("Authorization")
-          ? req.header("Authorization").split("Bearer ")[1]
-          : null);
+      const userId = await getUserIDFromHeaders(req);
 
       let response: any = {
         user_data: null,
       };
 
-      if (Authorization) {
-        const secretKey: string = SECRET_KEY;
-        const verificationResponse =
-          (await verify(Authorization, secretKey)) as DataStoredInToken;
-        const userId = new mongoose.Types.ObjectId(verificationResponse._id);
+      this.user.findOneAndUpdate({ _id: userId }, {
+        last_seen: new Date().toJSON(),
+      });
 
-        this.user.findOneAndUpdate({ _id: userId }, {
-          last_seen: new Date().toJSON(),
-        });
-
-        const [
-          user,
-          userSettings,
-          userInfo,
-          flatShareProfile,
-          wallet,
-          notifications,
-        ] = await Promise.all([
-          this.user.findById(userId),
-          this.userSettings.findOne({ user: userId }),
-          this.userInfo.findOne({ user: userId }),
-          this.flatShareProfile.findOne({ user: userId }),
-          this.wallet.findOne({ user: userId }),
-          this.notifications.find({ receiver: userId, read: false }).limit(20)
-            .sort({ createdAt: -1 }),
-        ]);
-        response.user_data = {
-          user,
-          user_settings: userSettings,
-          user_info: userInfo,
-          flat_share_profile: flatShareProfile,
-          wallet,
-          notifications,
-        };
-      }
+      const [
+        user,
+        userSettings,
+        userInfo,
+        flatShareProfile,
+        wallet,
+        notifications,
+      ] = await Promise.all([
+        this.user.findById(userId),
+        this.userSettings.findOne({ user: userId }),
+        this.userInfo.findOne({ user: userId }),
+        this.flatShareProfile.findOne({ user: userId }),
+        this.wallet.findOne({ user: userId }),
+        this.notifications.find({ receiver: userId, read: false }).limit(20)
+          .sort({ createdAt: -1 }),
+      ]);
+      response.user_data = {
+        user,
+        user_settings: userSettings,
+        user_info: userInfo,
+        flat_share_profile: flatShareProfile,
+        wallet,
+        notifications,
+      };
 
       const [
         locations,

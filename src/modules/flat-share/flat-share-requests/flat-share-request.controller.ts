@@ -3,6 +3,7 @@ import FlatShareRequestService from "./flat-share-request.service";
 import { RequestWithUser } from "@/modules/auth/auth.interface";
 import { NextFunction, Response } from "express";
 import FlatShareRequestModel from "./flat-share-request.model";
+import { getUserIDFromHeaders } from "@/utils/auth";
 
 export default class FlatShareRequestController {
   public flatShareRequestService = new FlatShareRequestService();
@@ -93,11 +94,13 @@ export default class FlatShareRequestController {
   ) => {
     try {
       const { request_id } = req.params;
+      const userID: any = await getUserIDFromHeaders(req);
+
       const result = await this.flatShareRequestService.getRequestDetails(
         {
           request_id,
-          user_id: req?._user?._id,
-        }
+          user_id: userID,
+        },
       );
 
       return res.status(200).json({

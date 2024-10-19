@@ -155,7 +155,7 @@ export default class FlatShareRequestService {
 
   public getRequestDetails = async ({ request_id, user_id }: {
     request_id: string;
-    user_id?: string | undefined;
+    user_id?: string | null;
   }): Promise<FlatShareRequest> => {
     const request = await this.flatShareRequest.findById(request_id)
       .populate("user")
