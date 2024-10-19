@@ -1,4 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
+import { Document, model, Schema } from "mongoose";
 
 export interface Amenities {
   _id: string;
@@ -32,6 +32,9 @@ const amenitiesSchema: Schema = new Schema<Amenities>(
   },
 );
 
-const amenitiesModel = model<Amenities & Document>('Amenities', amenitiesSchema);
+const amenitiesModel = model<Amenities & Document>(
+  "Amenities",
+  amenitiesSchema,
+);
 
 export default amenitiesModel;

@@ -1,4 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
+import { Document, model, Schema } from "mongoose";
 
 export interface PropertyTypes {
   _id: string;
@@ -32,6 +32,9 @@ const propertyTypesSchema: Schema = new Schema<PropertyTypes>(
   },
 );
 
-const propertyTypesModel = model<PropertyTypes & Document>('PropertyTypes', propertyTypesSchema);
+const propertyTypesModel = model<PropertyTypes & Document>(
+  "PropertyTypes",
+  propertyTypesSchema,
+);
 
 export default propertyTypesModel;

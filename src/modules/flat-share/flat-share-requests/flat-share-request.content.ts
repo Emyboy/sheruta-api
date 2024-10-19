@@ -3,8 +3,12 @@ import { useDefaultEmailLayout } from "@/utils/email";
 import { FlatShareRequest } from "./flat-share-request.model";
 import { CLIENT_URL } from "@/config";
 
-
-export const seekerToHostContent = ({ requestData, seekerData }: { requestData: FlatShareRequest, seekerData: User }) => {
+export const seekerToHostContent = (
+  { requestData, seekerData }: {
+    requestData: FlatShareRequest;
+    seekerData: User;
+  },
+) => {
   const content = `
     <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
       Hi, <strong>${seekerData.first_name}</strong> is looking for a space to share in ${requestData.location.name}. Here are the details of their requirements:
@@ -23,11 +27,18 @@ export const seekerToHostContent = ({ requestData, seekerData }: { requestData: 
       The Sheruta NG Team
     </p>
   `;
-  return useDefaultEmailLayout(content, `New Flatmate Request in ${requestData.location.name}`);
+  return useDefaultEmailLayout(
+    content,
+    `New Flatmate Request in ${requestData.location.name}`,
+  );
 };
 
-export const hostToSeekerContent = ({ hostData, requestData }: { requestData: FlatShareRequest, hostData: User }) => {
-  const flatImage = requestData.image_urls.length > 0 ? requestData.image_urls[0] : '';
+export const hostToSeekerContent = (
+  { hostData, requestData }: { requestData: FlatShareRequest; hostData: User },
+) => {
+  const flatImage = requestData.image_urls.length > 0
+    ? requestData.image_urls[0]
+    : "";
   const content = `
     <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
       Hi there, <strong>${hostData.first_name}</strong> just posted a space for hare in ${requestData.location.name} that matches your preferences.
@@ -51,6 +62,8 @@ export const hostToSeekerContent = ({ hostData, requestData }: { requestData: Fl
       The Sheruta NG Team
     </p>
   `;
-  return useDefaultEmailLayout(content, `New Flat Available in ${requestData.location.name}`);
+  return useDefaultEmailLayout(
+    content,
+    `New Flat Available in ${requestData.location.name}`,
+  );
 };
-

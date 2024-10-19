@@ -1,9 +1,9 @@
-import { NotificationTypes } from '@/config';
-import { model, Schema, Document } from 'mongoose';
-import { User } from '../users/users.interface';
-import { FlatShareProfile } from '../flat-share/flat-share-profile/flat-share-profile.model';
-import { UserSettings } from '../user-settings/user-settings.model';
-import { UserInfo } from '../user-info/user-info.model';
+import { NotificationTypes } from "@/config";
+import { Document, model, Schema } from "mongoose";
+import { User } from "../users/users.interface";
+import { FlatShareProfile } from "../flat-share/flat-share-profile/flat-share-profile.model";
+import { UserSettings } from "../user-settings/user-settings.model";
+import { UserInfo } from "../user-info/user-info.model";
 
 export interface Notifications {
   _id: string;
@@ -25,29 +25,29 @@ const notificationsSchema: Schema = new Schema<Notifications>(
     trigger_type: {
       type: String,
       enum: NotificationTypes,
-      required: true
+      required: true,
     },
     sender: {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: "Users",
       required: true,
     },
     receiver: {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: "Users",
       required: true,
     },
     receiver_flat_share_profile: {
       type: Schema.Types.ObjectId,
-      ref: 'FlatShareProfiles',
+      ref: "FlatShareProfiles",
       required: true,
-      select: false
+      select: false,
     },
     receiver_user_settings: {
       type: Schema.Types.ObjectId,
-      ref: 'UserSettings',
+      ref: "UserSettings",
       required: true,
-      select: false
+      select: false,
     },
     seen: {
       type: Boolean,
@@ -57,13 +57,15 @@ const notificationsSchema: Schema = new Schema<Notifications>(
       type: String,
       required: true,
     },
-
   },
   {
     timestamps: true,
   },
 );
 
-const notificationsModel = model<Notifications & Document>('Notifications', notificationsSchema);
+const notificationsModel = model<Notifications & Document>(
+  "Notifications",
+  notificationsSchema,
+);
 
 export default notificationsModel;

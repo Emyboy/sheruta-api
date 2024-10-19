@@ -1,19 +1,19 @@
 import {
-  IsString,
-  MinLength,
-  MaxLength,
-  IsNumber,
-  Min,
-  IsArray,
   ArrayMaxSize,
-  IsOptional,
   ArrayMinSize,
+  IsArray,
+  IsEnum,
+  IsMongoId,
+  IsNumber,
   IsObject,
-  IsEnum
-} from 'class-validator';
-import { Transform } from 'class-transformer';
-import { PaymentType } from './flat-share-request.model';
-
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+  MinLength,
+} from "class-validator";
+import { Transform } from "class-transformer";
+import { PaymentType } from "./flat-share-request.model";
 
 export class CreateSeekerRequestDTO {
   @IsString()
@@ -23,14 +23,18 @@ export class CreateSeekerRequestDTO {
     if (!value) return value;
 
     value = value.trim().toLowerCase();
-    value = value.replace(/\s+/g, ' ');
-    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    value = value.replace(/\s+/g, " ");
+    value = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
+      />/g,
+      "&gt;",
+    );
 
     return value;
   })
   public description: string;
 
   @IsString()
+  @IsMongoId()
   public service: string;
 
   @IsNumber()
@@ -40,11 +44,13 @@ export class CreateSeekerRequestDTO {
   @IsString()
   @MinLength(2)
   @MaxLength(100)
+  @IsMongoId()
   public state: string;
 
   @IsString()
   @MinLength(2)
   @MaxLength(100)
+  @IsMongoId()
   public location: string;
 
   @IsObject()
@@ -58,7 +64,6 @@ export class CreateSeekerRequestDTO {
   @IsString()
   @IsEnum(PaymentType)
   payment_type: string;
-
 }
 export class UpdateSeekerRequestDTO {
   @IsOptional()
@@ -69,8 +74,11 @@ export class UpdateSeekerRequestDTO {
     if (!value) return value;
 
     value = value.trim().toLowerCase();
-    value = value.replace(/\s+/g, ' ');
-    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    value = value.replace(/\s+/g, " ");
+    value = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
+      />/g,
+      "&gt;",
+    );
 
     return value;
   })
@@ -78,6 +86,7 @@ export class UpdateSeekerRequestDTO {
 
   @IsString()
   @IsOptional()
+  @IsMongoId()
   public service: string;
 
   @IsNumber()
@@ -89,12 +98,14 @@ export class UpdateSeekerRequestDTO {
   @MinLength(2)
   @MaxLength(100)
   @IsOptional()
+  @IsMongoId()
   public state: string;
 
   @IsString()
   @MinLength(2)
   @MaxLength(100)
   @IsOptional()
+  @IsMongoId()
   public location: string;
 
   @IsObject()
@@ -111,9 +122,7 @@ export class UpdateSeekerRequestDTO {
   @IsEnum(PaymentType)
   @IsOptional()
   payment_type: string;
-
 }
-
 
 export class CreateHostRequestDTO {
   @IsNumber()
@@ -159,7 +168,6 @@ export class CreateHostRequestDTO {
   public service: string;
 
   @IsString()
-  @IsOptional()
   public category: string;
 
   @IsString()
@@ -167,11 +175,11 @@ export class CreateHostRequestDTO {
   public property_type: string;
 
   @IsString()
-  @IsOptional()
+  @IsMongoId()
   public location: string;
 
   @IsString()
-  @IsOptional()
+  @IsMongoId()
   public state: string;
 
   @IsString()
@@ -243,6 +251,7 @@ export class UpdateHostRequestDTO {
 
   @IsString()
   @IsOptional()
+  @IsMongoId()
   public category: string;
 
   @IsString()
@@ -251,10 +260,12 @@ export class UpdateHostRequestDTO {
 
   @IsString()
   @IsOptional()
+  @IsMongoId()
   public location: string;
 
   @IsString()
   @IsOptional()
+  @IsMongoId()
   public state: string;
 
   @IsString()
@@ -280,7 +291,6 @@ export class UpdateHostRequestDTO {
   @IsOptional()
   public amenities: string[];
 }
-
 
 export class SearchRequestDTO {
   @IsOptional()

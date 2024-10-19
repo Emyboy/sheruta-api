@@ -7,6 +7,6 @@ export interface User {
   email: string;
   last_seen?: Date;
   avatar_url?: string;
-  auth_provider: 'google' | 'facebook' | 'local';
-  account_status: 'active' | 'suspended' | 'deactivated';
+  auth_provider: "google" | "facebook" | "local";
+  account_status: "active" | "suspended" | "deactivated";
 }

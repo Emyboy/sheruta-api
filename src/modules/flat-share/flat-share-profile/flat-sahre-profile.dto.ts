@@ -1,6 +1,24 @@
-import { IsOptional, IsString, IsNumber, IsBoolean, IsEnum, ValidateNested, ArrayMinSize, ArrayMaxSize, IsArray, Min, Max, MaxLength } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  ValidateNested,
+} from "class-validator";
 // import { Type } from 'class-transformer';
-import { EmploymentStatus, GenderPreference, PaymentType, Religion } from './flat-share-profile.model';
+import {
+  EmploymentStatus,
+  GenderPreference,
+  PaymentType,
+  Religion,
+} from "./flat-share-profile.model";
 // import { EmploymentStatus, GenderPreference, PaymentType, Religion } from './enum';
 
 export class AgePreferenceDTO {
@@ -102,6 +120,4 @@ export class UpdateFlatShareProfileDTO {
   @IsOptional()
   @IsString()
   twitter: string;
-
-
 }

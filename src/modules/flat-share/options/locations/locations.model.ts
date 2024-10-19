@@ -1,4 +1,4 @@
-import { model, Schema, Document, SchemaDefinitionProperty } from 'mongoose';
+import { Document, model, Schema, SchemaDefinitionProperty } from "mongoose";
 
 export interface Locations {
   _id: string;
@@ -34,7 +34,7 @@ const stateSchema: Schema = new Schema<Locations>(
     },
     state: {
       type: Schema.Types.ObjectId,
-      ref: 'States',
+      ref: "States",
       required: true,
     },
     has_group: {
@@ -63,6 +63,6 @@ const stateSchema: Schema = new Schema<Locations>(
   },
 );
 
-const locationModel = model<Locations & Document>('Locations', stateSchema);
+const locationModel = model<Locations & Document>("Locations", stateSchema);
 
 export default locationModel;

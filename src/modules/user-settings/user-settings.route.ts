@@ -15,6 +15,11 @@ export default class UserSettingsRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.put(`${this.path}`, authMiddleware, validationMiddleware(UpdateUserSettingsDTO, 'body'), this.userSettingsController.updateSettings);
+    this.router.put(
+      `${this.path}`,
+      authMiddleware,
+      validationMiddleware(UpdateUserSettingsDTO, "body"),
+      this.userSettingsController.updateSettings,
+    );
   }
 }

@@ -1,5 +1,5 @@
-import { model, Schema, Document } from 'mongoose';
-import { User } from '@/modules/users/users.interface';
+import { Document, model, Schema } from "mongoose";
+import { User } from "@/modules/users/users.interface";
 
 const userSchema: Schema = new Schema<User>(
   {
@@ -41,13 +41,13 @@ const userSchema: Schema = new Schema<User>(
 
     account_status: {
       type: String,
-      enum: ['active', 'suspended', 'deactivated'],
-      default: 'active',
+      enum: ["active", "suspended", "deactivated"],
+      default: "active",
     },
     auth_provider: {
       type: String,
-      enum: ['google', 'facebook', 'local'],
-      default: 'local',
+      enum: ["google", "facebook", "local"],
+      default: "local",
     },
   },
   {
@@ -55,13 +55,13 @@ const userSchema: Schema = new Schema<User>(
   },
 );
 
-userSchema.pre('save', function (next) {
-  if (this.isModified('token')) {
+userSchema.pre("save", function (next) {
+  if (this.isModified("token")) {
     this.token_expiry = Date.now();
   }
   next();
 });
 
-const userModel = model<User & Document>('Users', userSchema);
+const userModel = model<User & Document>("Users", userSchema);
 
 export default userModel;

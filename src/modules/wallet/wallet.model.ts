@@ -1,5 +1,5 @@
-import { model, Schema, Document } from 'mongoose';
-import { User } from '@/modules/users/users.interface';
+import { Document, model, Schema } from "mongoose";
+import { User } from "@/modules/users/users.interface";
 
 export interface Wallet extends Document {
   total_credit: number;
@@ -19,7 +19,7 @@ const walletSchema: Schema = new Schema<Wallet>(
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: "Users",
       required: true,
       unique: true,
     },
@@ -29,6 +29,6 @@ const walletSchema: Schema = new Schema<Wallet>(
   },
 );
 
-const walletModel = model<Wallet & Document>('Wallets', walletSchema);
+const walletModel = model<Wallet & Document>("Wallets", walletSchema);
 
 export default walletModel;

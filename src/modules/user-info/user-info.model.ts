@@ -1,6 +1,6 @@
-import { model, Schema, Document } from 'mongoose';
-import { User } from '../users/users.interface';
-import { UserSettings } from '../user-settings/user-settings.model';
+import { Document, model, Schema } from "mongoose";
+import { User } from "../users/users.interface";
+import { UserSettings } from "../user-settings/user-settings.model";
 
 export interface UserInfo extends Document {
   date_of_birth: Date;
@@ -17,13 +17,13 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: "Users",
       required: true,
-      select: false
+      select: false,
     },
     date_of_birth: {
       type: Date,
-      default: null
+      default: null,
     },
     done_kyc: {
       type: Boolean,
@@ -32,7 +32,7 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
     gender: {
       type: String,
       enum: ["male", "female", null],
-      default: null
+      default: null,
     },
     is_verified: {
       type: Boolean,
@@ -47,7 +47,7 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
     },
     whatsapp_phone_number: {
       type: String,
-      default: null
+      default: null,
     },
   },
   {
@@ -55,6 +55,6 @@ const userInfoSchema: Schema = new Schema<UserInfo>(
   },
 );
 
-const userInfoModel = model<UserInfo>('UserInfos', userInfoSchema);
+const userInfoModel = model<UserInfo>("UserInfos", userInfoSchema);
 
 export default userInfoModel;

@@ -15,7 +15,16 @@ export default class UserInfoRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.put(`${this.path}`, authMiddleware, validationMiddleware(UpdateUserInfoDTO, 'body'), this.userInfoController.updateUserInfo);
-    this.router.post(`${this.path}/kyc/complete`, authMiddleware, this.userInfoController.completeKYC);
+    this.router.put(
+      `${this.path}`,
+      authMiddleware,
+      validationMiddleware(UpdateUserInfoDTO, "body"),
+      this.userInfoController.updateUserInfo,
+    );
+    this.router.post(
+      `${this.path}/kyc/complete`,
+      authMiddleware,
+      this.userInfoController.completeKYC,
+    );
   }
 }

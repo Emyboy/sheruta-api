@@ -1,12 +1,12 @@
 import {
-  IsString,
-  MinLength,
-  MaxLength,
   IsBoolean,
   IsNumber,
-  IsOptional
-} from 'class-validator';
-import { Transform } from 'class-transformer';
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
+import { Transform } from "class-transformer";
 
 export class CreateLocationsDto {
   @IsString()
@@ -27,7 +27,7 @@ export class CreateLocationsDto {
   @MaxLength(100)
   @Transform(({ value }) => {
     if (!value) return value;
-    return value.trim().toLowerCase().replace(/\s+/g, '-');
+    return value.trim().toLowerCase().replace(/\s+/g, "-");
   })
   public slug: string;
 

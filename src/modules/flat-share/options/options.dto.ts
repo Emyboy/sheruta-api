@@ -1,5 +1,11 @@
-import { IsString, MinLength, MaxLength, IsBoolean, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
+import { Transform } from "class-transformer";
 
 export class OptionsDTO {
   @IsString()
@@ -9,8 +15,11 @@ export class OptionsDTO {
     if (!value) return value;
 
     value = value.trim();
-    value = value.replace(/\s+/g, ' ');
-    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    value = value.replace(/\s+/g, " ");
+    value = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
+      />/g,
+      "&gt;",
+    );
 
     return value;
   })
@@ -26,8 +35,8 @@ export class OptionsDTO {
     if (!value) return value;
 
     value = value.trim().toLowerCase();
-    value = value.replace(/\s+/g, '-');
-    value = value.replace(/[^a-z0-9-]/g, '');
+    value = value.replace(/\s+/g, "-");
+    value = value.replace(/[^a-z0-9-]/g, "");
 
     return value;
   })

@@ -1,4 +1,3 @@
-
 export const dbConnection = {
   url: process.env.MONGODB_URI,
   options: {

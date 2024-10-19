@@ -1,6 +1,5 @@
-import mongoose, { PaginateModel, Schema } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
-
+import mongoose, { PaginateModel, Schema } from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 export interface Conversation extends mongoose.Document {
   host: mongoose.Types.ObjectId;
@@ -13,25 +12,27 @@ const conversationSchema = new Schema<Conversation>(
   {
     host: {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: "Users",
       required: true,
     },
     members: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Users',
-        required: true
+        ref: "Users",
+        required: true,
       },
     ],
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 conversationSchema.plugin(mongoosePaginate);
 
-const ConversationModel = mongoose.model<Conversation, PaginateModel<Conversation>>('Conversations', conversationSchema);
-
+const ConversationModel = mongoose.model<
+  Conversation,
+  PaginateModel<Conversation>
+>("Conversations", conversationSchema);
 
 export default ConversationModel;

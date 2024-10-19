@@ -1,9 +1,9 @@
-import nodemailer from 'nodemailer';
-import { SMTP_PASS, SMTP_USER } from '@config';
-import { logger } from '@utils/logger';
+import nodemailer from "nodemailer";
+import { SMTP_PASS, SMTP_USER } from "@config";
+import { logger } from "@utils/logger";
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.zoho.com',
+  host: "smtp.zoho.com",
   port: 465,
   secure: true,
   auth: {
@@ -12,8 +12,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async ({ to, html, subject }: { to: string; subject: string; html: string }) => {
-  if(to){
+export const sendEmail = async (
+  { to, html, subject }: { to: string; subject: string; html: string },
+) => {
+  if (to) {
     try {
       logger.info(`\n Sending email to ${to}`);
       const mailOptions = {
@@ -24,17 +26,17 @@ export const sendEmail = async ({ to, html, subject }: { to: string; subject: st
       };
 
       const info = await transporter.sendMail(mailOptions);
-      logger.info('Email sent: %s', info.messageId);
+      logger.info("Email sent: %s", info.messageId);
       return info;
     } catch (error) {
-      logger.error('Error sending email:', error);
-      console.log(error)
+      logger.error("Error sending email:", error);
+      console.log(error);
       throw error;
     }
   }
 };
 
-export const useDefaultEmailLayout = (children: string, heading = 'Hello!') => {
+export const useDefaultEmailLayout = (children: string, heading = "Hello!") => {
   return `
     <div style="background-color: #111717; color: #98B0AE; font-family: Arial, sans-serif; padding: 5rem 20px 1rem 20px; max-width: 600px; margin: 0 auto; border-radius: 8px;">
       <div style="text-align: center; margin-bottom: 20px;">

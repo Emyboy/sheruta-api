@@ -1,8 +1,10 @@
-import { CLIENT_URL } from '@config';
-import { User } from '@/modules/users/users.interface';
-import { useDefaultEmailLayout } from '@utils/email';
+import { CLIENT_URL } from "@config";
+import { User } from "@/modules/users/users.interface";
+import { useDefaultEmailLayout } from "@utils/email";
 
-export const activateEmailContent = ({ activation_token, user }: { activation_token: string; user: User }) => {
+export const activateEmailContent = (
+  { activation_token, user }: { activation_token: string; user: User },
+) => {
   const content = `
     <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
       Thank you for signing up with us! Please click the button below to activate your email and complete your registration.
@@ -18,7 +20,9 @@ export const activateEmailContent = ({ activation_token, user }: { activation_to
   return useDefaultEmailLayout(content, `Hi, ${user.first_name}!`);
 };
 
-export const sendTokenEmailContent = ({ token, user }: { token: string; user: User }) => {
+export const sendTokenEmailContent = (
+  { token, user }: { token: string; user: User },
+) => {
   const content = `
     <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
       Hi, ${user.first_name}! Thank you for signing up with us. To verify your account, please use the verification code provided below.
@@ -43,7 +47,10 @@ export const sendTokenEmailContent = ({ token, user }: { token: string; user: Us
     </p>
   `;
 
-  return useDefaultEmailLayout(content, `Verify Your Account, ${user.first_name}`);
+  return useDefaultEmailLayout(
+    content,
+    `Verify Your Account, ${user.first_name}`,
+  );
 };
 
 export const welcomeEmailContent = ({ user }: { user: User }) => {
@@ -79,10 +86,15 @@ export const welcomeEmailContent = ({ user }: { user: User }) => {
     </p>
   `;
 
-  return useDefaultEmailLayout(content, `Welcome to Sheruta NG, ${user.first_name}!`);
+  return useDefaultEmailLayout(
+    content,
+    `Welcome to Sheruta NG, ${user.first_name}!`,
+  );
 };
 
-export const passwordResetEmailContent = ({ token, user }: { token: string; user: User }) => {
+export const passwordResetEmailContent = (
+  { token, user }: { token: string; user: User },
+) => {
   const content = `
     <p style="font-size: 16px; line-height: 1.5; color: #98B0AE;">
       Hi, ${user.first_name}! We received a request to reset your password. Please click the button below to reset your password.
@@ -95,5 +107,8 @@ export const passwordResetEmailContent = ({ token, user }: { token: string; user
     </div>
   `;
 
-  return useDefaultEmailLayout(content, `Password Reset Request, ${user.first_name}`);
-}
+  return useDefaultEmailLayout(
+    content,
+    `Password Reset Request, ${user.first_name}`,
+  );
+};

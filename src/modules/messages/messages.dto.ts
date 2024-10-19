@@ -1,12 +1,20 @@
+import {
+  IsMongoId,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 
-class DirectMessageDTO {
-  public content: string;
-
-  public sender_id: string;
-
-  public receiver_id: string;
-
+export class DirectMessageDTO {
+  @IsMongoId()
   public conversation_id: string;
 
-  public seen: boolean;
+  @IsString()
+  @MinLength(1)
+  @MaxLength(1000)
+  @Matches(/^[^<>]*$/, {
+    message: "Message content cannot contain HTML tags",
+  })
+  public content: string;
 }

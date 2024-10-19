@@ -10,7 +10,13 @@ export default class NotificationService {
   private flatShareProfile = flatShareProfileModel;
   private userSettings = userSettingModel;
 
-  public create = async ({ receiver_id, sender_id, type }: { sender_id: string; receiver_id: string; type: NotificationTypes; }) => {
+  public create = async (
+    { receiver_id, sender_id, type }: {
+      sender_id: string;
+      receiver_id: string;
+      type: NotificationTypes;
+    },
+  ) => {
     try {
       const threeDaysAgo = subDays(new Date(), 3);
 
@@ -22,12 +28,18 @@ export default class NotificationService {
       });
 
       if (existingNotification) {
-        console.info(`\n\nNotification already exists for type: ${type} from sender: ${sender_id} within the last 3 days.\n\n`);
+        console.info(
+          `\n\nNotification already exists for type: ${type} from sender: ${sender_id} within the last 3 days.\n\n`,
+        );
         return;
       }
 
-      const flatShareProfile = await this.flatShareProfile.findOne({ user: receiver_id });
-      const receiverSettings = await this.userSettings.findOne({ user: receiver_id });
+      const flatShareProfile = await this.flatShareProfile.findOne({
+        user: receiver_id,
+      });
+      const receiverSettings = await this.userSettings.findOne({
+        user: receiver_id,
+      });
 
       await this.notifications.create({
         sender: sender_id,
@@ -36,36 +48,37 @@ export default class NotificationService {
         receiver: receiver_id,
         receiver_flat_share_profile: flatShareProfile?._id,
         receiver_user_settings: receiverSettings?._id,
-        message: this.notificationMessage(type)
+        message: this.notificationMessage(type),
       });
     } catch (error) {
-      console.log('\n\nNOTIFICATION CREATION ERROR:::', error);
-      throw new HttpException(500, 'Notification creation failed');
+      console.log("\n\nNOTIFICATION CREATION ERROR:::", error);
+      throw new HttpException(500, "Notification creation failed");
     }
-  }
+  };
 
   private notificationMessage = (type: NotificationTypes): string => {
     switch (type) {
       case NotificationTypes.DEFAULT:
-        return 'You have a new notification';
+        return "You have a new notification";
       case NotificationTypes.PROFILE_VIEW:
-        return ' viewed your profile';
+        return " viewed your profile";
       case NotificationTypes.REQUEST_VIEW:
-        return ' viewed your request';
+        return " viewed your request";
       case NotificationTypes.CALL:
-        return ' tried calling you';
+        return " tried calling you";
       default:
-        return ' You have a new notification';
+        return " You have a new notification";
     }
-  }
+  };
 
   public markAllAsSeen = async (receiver_id: string) => {
     try {
-      await this.notifications.updateMany({ receiver: receiver_id }, { seen: true });
+      await this.notifications.updateMany({ receiver: receiver_id }, {
+        seen: true,
+      });
     } catch (error) {
-      console.log('\n\nMARK ALL AS SEEN ERROR:::', error);
-      throw new HttpException(500, 'Mark all as seen failed');
+      console.log("\n\nMARK ALL AS SEEN ERROR:::", error);
+      throw new HttpException(500, "Mark all as seen failed");
     }
-  }
-
+  };
 }

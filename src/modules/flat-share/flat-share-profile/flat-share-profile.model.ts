@@ -1,42 +1,42 @@
-import { User } from '@/modules/users/users.interface';
-import { model, Schema, Document } from 'mongoose';
-import { WorkIndustries } from '../options/work_industry/work-industry.model';
-import { Locations } from '../options/locations/locations.model';
-import { Interests } from '../options/interests/interests.model';
-import { Habits } from '../options/habits/habits.model';
-import { UserInfo } from '@/modules/user-info/user-info.model';
-import { States } from '../options/state/state.model';
-import { UserSettings } from '@/modules/user-settings/user-settings.model';
+import { User } from "@/modules/users/users.interface";
+import { Document, model, Schema } from "mongoose";
+import { WorkIndustries } from "../options/work_industry/work-industry.model";
+import { Locations } from "../options/locations/locations.model";
+import { Interests } from "../options/interests/interests.model";
+import { Habits } from "../options/habits/habits.model";
+import { UserInfo } from "@/modules/user-info/user-info.model";
+import { States } from "../options/state/state.model";
+import { UserSettings } from "@/modules/user-settings/user-settings.model";
 
 export enum EmploymentStatus {
-  EMPLOYED = 'employed',
-  STUDENT = 'student',
-  UNEMPLOYED = 'unemployed',
-  SELF_EMPLOYED = 'self_employed',
-  NULL = null
+  EMPLOYED = "employed",
+  STUDENT = "student",
+  UNEMPLOYED = "unemployed",
+  SELF_EMPLOYED = "self_employed",
+  NULL = null,
 }
 
 export enum GenderPreference {
-  MALE = 'male',
-  FEMALE = 'female',
-  NULL = null
+  MALE = "male",
+  FEMALE = "female",
+  NULL = null,
 }
 
 export enum PaymentType {
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
-  ANNUALLY = 'annually',
-  DAILY = 'daily',
-  BIANNUALLY = 'biannually',
+  WEEKLY = "weekly",
+  MONTHLY = "monthly",
+  ANNUALLY = "annually",
+  DAILY = "daily",
+  BIANNUALLY = "biannually",
 }
 
 export enum Religion {
-  CHRISTIANITY = 'christian',
-  ISLAM = 'muslim',
-  TRADITIONAL = 'traditional',
-  ATHEIST = 'atheist',
-  OTHER = 'other',
-  NULL = null
+  CHRISTIANITY = "christian",
+  ISLAM = "muslim",
+  TRADITIONAL = "traditional",
+  ATHEIST = "atheist",
+  OTHER = "other",
+  NULL = null,
 }
 
 export interface FlatShareProfile extends Document {
@@ -73,31 +73,31 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: "Users",
       required: true,
-      select: false
+      select: false,
     },
     user_info: {
       type: Schema.Types.ObjectId,
-      ref: 'UserInfos',
+      ref: "UserInfos",
       required: true,
-      select: false
+      select: false,
     },
     user_settings: {
       type: Schema.Types.ObjectId,
-      ref: 'UserSettings',
+      ref: "UserSettings",
       required: true,
-      select: false
+      select: false,
     },
     bio: {
       type: String,
       maxlength: 500,
-      default: null
+      default: null,
     },
     budget: {
       type: Number,
       min: 0,
-      default: 0
+      default: 0,
     },
     employment_status: {
       type: String,
@@ -106,28 +106,28 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     },
     facebook: {
       type: String,
-      default: null
+      default: null,
     },
     instagram: {
       type: String,
-      default: null
+      default: null,
     },
     linkedin: {
       type: String,
-      default: null
+      default: null,
     },
     occupation: {
       type: String,
-      default: null
+      default: null,
     },
     gender_preference: {
       type: String,
       enum: [...Object.values(GenderPreference), null],
-      default: null
+      default: null,
     },
     payment_type: {
       type: [{ type: String, enum: Object.values(PaymentType) }],
-      default: []
+      default: [],
     },
     age_preference: {
       type: {
@@ -137,16 +137,16 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
       default: {
         min: 18,
         max: 80,
-      }
+      },
     },
     religion: {
       type: String,
       enum: [...Object.values(Religion), null],
-      default: null
+      default: null,
     },
     seeking: {
       type: Boolean,
-      default: null
+      default: null,
     },
     verified: {
       type: Boolean,
@@ -154,34 +154,34 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     },
     work_industry: {
       type: Schema.Types.ObjectId,
-      ref: 'WorkIndustries',
-      default: null
+      ref: "WorkIndustries",
+      default: null,
     },
     location: {
       type: Schema.Types.ObjectId,
-      ref: 'Locations',
-      default: null
+      ref: "Locations",
+      default: null,
     },
     interests: {
-      type: [{ type: Schema.Types.ObjectId, ref: 'Interests' }],
-      default: []
+      type: [{ type: Schema.Types.ObjectId, ref: "Interests" }],
+      default: [],
     },
     habits: {
-      type: [{ type: Schema.Types.ObjectId, ref: 'Habits' }],
-      default: []
+      type: [{ type: Schema.Types.ObjectId, ref: "Habits" }],
+      default: [],
     },
     state: {
       type: Schema.Types.ObjectId,
-      ref: 'States',
-      default: null
+      ref: "States",
+      default: null,
     },
     tiktok: {
       type: String,
-      default: null
+      default: null,
     },
     twitter: {
       type: String,
-      default: null
+      default: null,
     },
   },
   {
@@ -189,6 +189,9 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
   },
 );
 
-const flatShareProfileModel = model<FlatShareProfile>('FlatShareProfiles', flatShareProfileSchema);
+const flatShareProfileModel = model<FlatShareProfile>(
+  "FlatShareProfiles",
+  flatShareProfileSchema,
+);
 
 export default flatShareProfileModel;

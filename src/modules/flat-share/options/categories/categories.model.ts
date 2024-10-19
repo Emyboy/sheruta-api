@@ -1,4 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
+import { Document, model, Schema } from "mongoose";
 
 export interface Categories {
   _id: string;
@@ -32,6 +32,9 @@ const categoriesSchema: Schema = new Schema<Categories>(
   },
 );
 
-const categoriesModel = model<Categories & Document>('Categories', categoriesSchema);
+const categoriesModel = model<Categories & Document>(
+  "Categories",
+  categoriesSchema,
+);
 
 export default categoriesModel;

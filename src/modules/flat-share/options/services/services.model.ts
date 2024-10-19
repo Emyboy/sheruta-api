@@ -1,4 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
+import { Document, model, Schema } from "mongoose";
 
 export interface Services {
   _id: string;
@@ -18,7 +18,7 @@ const servicesSchema: Schema = new Schema<Services>(
     },
     description: {
       type: String,
-      default: null
+      default: null,
     },
     is_published: {
       type: Boolean,
@@ -37,6 +37,6 @@ const servicesSchema: Schema = new Schema<Services>(
   },
 );
 
-const servicesModel = model<Services & Document>('Services', servicesSchema);
+const servicesModel = model<Services & Document>("Services", servicesSchema);
 
 export default servicesModel;

@@ -1,5 +1,14 @@
-import { IsEmail, IsString, MinLength, MaxLength, Matches, IsNumber, IsOptional, IsUrl } from 'class-validator';
-import { Transform } from 'class-transformer';
+import {
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  MaxLength,
+  MinLength,
+} from "class-validator";
+import { Transform } from "class-transformer";
 
 export class CreateUserDto {
   @IsEmail()
@@ -17,16 +26,16 @@ export class CreateUserDto {
 
   @IsString()
   @Matches(/^[a-zA-Z\s-]+$/, {
-    message: 'First name can only contain letters, spaces, and hyphens',
+    message: "First name can only contain letters, spaces, and hyphens",
   })
   @Transform(({ value }) => {
     if (!value) return value;
 
     // value = value.toLowerCase().trim();
     value = value.trim();
-    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, " ");
     // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    value = value.split(' ')[0];
+    value = value.split(" ")[0];
 
     return value;
   })
@@ -36,16 +45,16 @@ export class CreateUserDto {
 
   @IsString()
   @Matches(/^[a-zA-Z\s-]+$/, {
-    message: 'Last name can only contain letters, spaces, and hyphens',
+    message: "Last name can only contain letters, spaces, and hyphens",
   })
   @Transform(({ value }) => {
     if (!value) return value;
 
     // value = value.toLowerCase().trim();
     value = value.trim();
-    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, " ");
     // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    value = value.split(' ')[0];
+    value = value.split(" ")[0];
 
     return value;
   })
@@ -86,14 +95,13 @@ export class UpdateUserDTO {
     if (!value) return value;
 
     value = value.toLowerCase().trim();
-    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, " ");
     // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    value = value.split(' ')[0];
+    value = value.split(" ")[0];
 
     return value;
   })
   public first_name: string;
-
 
   @IsString()
   @IsOptional()
@@ -104,9 +112,9 @@ export class UpdateUserDTO {
     if (!value) return value;
 
     value = value.toLowerCase().trim();
-    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, " ");
     // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    value = value.split(' ')[0];
+    value = value.split(" ")[0];
 
     return value;
   })
@@ -121,9 +129,9 @@ export class UpdateUserDTO {
     if (!value) return value;
 
     value = value.toLowerCase().trim();
-    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, " ");
     // value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    value = value.split(' ')[0];
+    value = value.split(" ")[0];
 
     return value;
   })

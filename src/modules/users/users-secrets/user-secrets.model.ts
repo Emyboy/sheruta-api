@@ -1,5 +1,5 @@
-import { model, Schema, Document } from 'mongoose';
-import { User } from '@/modules/users/users.interface';
+import { Document, model, Schema } from "mongoose";
+import { User } from "@/modules/users/users.interface";
 
 export interface UserSecrets extends Document {
   activation_token: string;
@@ -34,20 +34,20 @@ const userSecretsSchema: Schema = new Schema<UserSecrets>(
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: "Users",
       required: true,
-      select: false
+      select: false,
     },
     otp: {
       type: String,
       default: null,
-    }
+    },
   },
   {
     timestamps: true,
   },
 );
 
-const userSecretsModel = model<UserSecrets>('UserSecrets', userSecretsSchema);
+const userSecretsModel = model<UserSecrets>("UserSecrets", userSecretsSchema);
 
 export default userSecretsModel;

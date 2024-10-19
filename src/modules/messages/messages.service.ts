@@ -1,35 +1,33 @@
+import { HttpException } from "@/exceptions/HttpException";
 import ConversationModel from "./conversations/conversations.model";
-import MessageModel from "./messages.model"
+import MessageModel from "./messages.model";
 
 export default class MessageService {
   private messages = MessageModel;
   private conversations = ConversationModel;
 
-  public sendDirectMessage = async ({ receiver_id, sender_id, content }: { sender_id: string; receiver_id: string; content: string; }) => {
-
-    const conversation = await this.conversations.findOne({
-      members: { $all: [sender_id, receiver_id] }
-    });
+  public sendDirectMessage = async (
+    { sender_id, content, conversation_id }: {
+      sender_id: string;
+      content: string;
+      conversation_id: string;
+    },
+  ) => {
+    const conversation = await this.conversations.findById(conversation_id);
 
     if (!conversation) {
-      const newConversation = await this.conversations.create({
-        host: sender_id,
-        members: [sender_id, receiver_id]
-      })
-      await this.messages.create({
-        sender: sender_id,
-        receiver: receiver_id,
-        content,
-        conversation: newConversation._id
-      })
+      throw new HttpException(404, "Conversation not found");
     } else {
       await this.messages.create({
         sender: sender_id,
-        receiver: receiver_id,
         content,
-        conversation: conversation._id
-      })
+        conversation: conversation._id,
+      });
     }
-  }
+  };
 
+  public getMessagesByConversationId = async (
+    {}: { conversation_id: string; user_id: string },
+  ) => {
+  };
 }

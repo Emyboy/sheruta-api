@@ -1,4 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
+import { Document, model, Schema } from "mongoose";
 
 export interface Interests {
   _id: string;
@@ -32,6 +32,6 @@ const interestSchema: Schema = new Schema<Interests>(
   },
 );
 
-const interestModel = model<Interests & Document>('Interests', interestSchema);
+const interestModel = model<Interests & Document>("Interests", interestSchema);
 
 export default interestModel;

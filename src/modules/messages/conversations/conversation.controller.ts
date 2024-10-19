@@ -2,35 +2,48 @@ import { RequestWithUser } from "@/modules/auth/auth.interface";
 import { NextFunction, Response } from "express";
 import ConversationModel from "./conversations.model";
 
-
 export default class ConversationsController {
   public conversations = ConversationModel;
 
-  public getConversationBetweenMembers = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public getConversationBetweenMembers = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req._user;
       const { receiver_id } = req.params;
 
-      let populate = '_id first_name last_seen avatar_url account_status'
+      let populate = "_id first_name last_seen avatar_url account_status";
 
       const conversation = await this.conversations.findOne({
-        members: { $all: [user._id, receiver_id] }
+        members: { $all: [user._id, receiver_id] },
       })
-        .populate('host', populate)
-        .populate('members', populate);
+        .populate("host", populate)
+        .populate("members", populate);
 
       if (!conversation || receiver_id === user._id) {
-        return res.status(200).json({ message: "Please try again", data: null });
+        return res.status(200).json({
+          message: "Please try again",
+          data: null,
+        });
       }
 
-      res.status(200).json({ data: conversation, message: "Conversation found" });
+      res.status(200).json({
+        data: conversation,
+        message: "Conversation found",
+      });
     } catch (error) {
-      console.log('GET CONVERSATION ERROR', error);
+      console.log("GET CONVERSATION ERROR", error);
       next(error);
     }
-  }
+  };
 
-  public createConversationsBetweenUsers = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public createConversationsBetweenUsers = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req._user;
       const { receiver_id } = req.params;
@@ -40,8 +53,8 @@ export default class ConversationsController {
       }
 
       const conversation = await this.conversations.findOne({
-        members: { $all: [user._id, receiver_id] }
-      }).populate('members', 'host');
+        members: { $all: [user._id, receiver_id] },
+      }).populate("members", "host");
 
       if (conversation) {
         return res.status(200).json({ data: conversation });
@@ -49,21 +62,25 @@ export default class ConversationsController {
 
       await this.conversations.create({
         host: user._id,
-        members: [user._id, receiver_id]
-      })
+        members: [user._id, receiver_id],
+      });
 
       const newConversation = await this.conversations.findOne({
-        members: { $all: [user._id, receiver_id] }
-      }).populate('members', 'host');
+        members: { $all: [user._id, receiver_id] },
+      }).populate("members", "host");
 
       res.status(201).json({ data: newConversation });
     } catch (error) {
-      console.log('CREATE CONVERSATION ERROR', error);
+      console.log("CREATE CONVERSATION ERROR", error);
       next(error as Error);
     }
-  }
+  };
 
-  public allUsersConversations = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public allUsersConversations = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req._user;
       const { page = 1, limit = 10 } = req.query;
@@ -72,20 +89,18 @@ export default class ConversationsController {
         page: parseInt(page as string, 10),
         limit: parseInt(limit as string, 10),
         sort: { createdAt: -1 },
-        populate: ['members', 'host']
+        populate: ["members", "host"],
       };
 
       const conversations = await this.conversations.paginate(
         { members: { $in: [user._id] } },
-        options
-      )
+        options,
+      );
 
       res.status(200).json({ conversations });
     } catch (error) {
-      console.log('ALL USERS CONVERSATIONS ERROR', error);
+      console.log("ALL USERS CONVERSATIONS ERROR", error);
       next(error as Error);
     }
-  }
-
-
+  };
 }

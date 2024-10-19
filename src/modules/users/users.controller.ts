@@ -1,25 +1,24 @@
-import { NextFunction, Response } from 'express';
-import userService from '@/modules/users/users.service';
-import { DataStoredInToken, RequestWithUser } from '../auth/auth.interface';
-import userSettingModel from '../user-settings/user-settings.model';
-import userModel from './users.model';
-import userInfoModel from '../user-info/user-info.model';
-import flatShareProfileModel from '../flat-share/flat-share-profile/flat-share-profile.model';
-import amenitiesModel from '../flat-share/options/amenities/amenities.model';
-import servicesModel from '../flat-share/options/services/services.model';
-import locationModel from '../flat-share/options/locations/locations.model';
-import stateModel from '../flat-share/options/state/state.model';
-import { SECRET_KEY } from '@/config';
-import { verify } from 'jsonwebtoken';
-import mongoose from 'mongoose';
-import workIndustryModel from '../flat-share/options/work_industry/work-industry.model';
-import walletModel from '../wallet/wallet.model';
-import categoriesModel from '../flat-share/options/categories/categories.model';
-import habitsModel from '../flat-share/options/habits/habits.model';
-import interestModel from '../flat-share/options/interests/interests.model';
-import propertyTypesModel from '../flat-share/options/property_types/property-types.model';
-import notificationsModel from '../notifications/notifications.model';
-
+import { NextFunction, Response } from "express";
+import userService from "@/modules/users/users.service";
+import { DataStoredInToken, RequestWithUser } from "../auth/auth.interface";
+import userSettingModel from "../user-settings/user-settings.model";
+import userModel from "./users.model";
+import userInfoModel from "../user-info/user-info.model";
+import flatShareProfileModel from "../flat-share/flat-share-profile/flat-share-profile.model";
+import amenitiesModel from "../flat-share/options/amenities/amenities.model";
+import servicesModel from "../flat-share/options/services/services.model";
+import locationModel from "../flat-share/options/locations/locations.model";
+import stateModel from "../flat-share/options/state/state.model";
+import { SECRET_KEY } from "@/config";
+import { verify } from "jsonwebtoken";
+import mongoose from "mongoose";
+import workIndustryModel from "../flat-share/options/work_industry/work-industry.model";
+import walletModel from "../wallet/wallet.model";
+import categoriesModel from "../flat-share/options/categories/categories.model";
+import habitsModel from "../flat-share/options/habits/habits.model";
+import interestModel from "../flat-share/options/interests/interests.model";
+import propertyTypesModel from "../flat-share/options/property_types/property-types.model";
+import notificationsModel from "../notifications/notifications.model";
 
 class UsersController {
   public userService = new userService();
@@ -41,7 +40,11 @@ class UsersController {
   public categories = categoriesModel;
   public propertyTypes = propertyTypesModel;
 
-  public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public updateUser = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const { _user } = req;
       await this.userService.update({
@@ -49,13 +52,17 @@ class UsersController {
         data: req.body,
       });
 
-      res.status(200).json({ message: 'User updated' });
+      res.status(200).json({ message: "User updated" });
     } catch (error) {
       next(error);
     }
   };
 
-  public getUserProfile = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public getUserProfile = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const { user_id } = req.params;
       const user = await this.userService.getUserProfile(user_id);
@@ -63,30 +70,48 @@ class UsersController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  public getUserDependencies = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public getUserDependencies = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
+      const Authorization = req.cookies["Authorization"] ||
+        (req.header("Authorization")
+          ? req.header("Authorization").split("Bearer ")[1]
+          : null);
 
-      let response:any = {
+      let response: any = {
         user_data: null,
-      }
+      };
 
-      if(Authorization) {
+      if (Authorization) {
         const secretKey: string = SECRET_KEY;
-        const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
+        const verificationResponse =
+          (await verify(Authorization, secretKey)) as DataStoredInToken;
         const userId = new mongoose.Types.ObjectId(verificationResponse._id);
 
-        this.user.findOneAndUpdate({ _id: userId }, { last_seen: new Date().toJSON() })
+        this.user.findOneAndUpdate({ _id: userId }, {
+          last_seen: new Date().toJSON(),
+        });
 
-        const [user, userSettings, userInfo, flatShareProfile, wallet, notifications] = await Promise.all([
+        const [
+          user,
+          userSettings,
+          userInfo,
+          flatShareProfile,
+          wallet,
+          notifications,
+        ] = await Promise.all([
           this.user.findById(userId),
           this.userSettings.findOne({ user: userId }),
           this.userInfo.findOne({ user: userId }),
           this.flatShareProfile.findOne({ user: userId }),
-          this.wallet.findOne({ user : userId }),
-          this.notifications.find({ receiver: userId, read: false }).limit(20).sort({ createdAt: -1 }),
+          this.wallet.findOne({ user: userId }),
+          this.notifications.find({ receiver: userId, read: false }).limit(20)
+            .sort({ createdAt: -1 }),
         ]);
         response.user_data = {
           user,
@@ -94,11 +119,21 @@ class UsersController {
           user_info: userInfo,
           flat_share_profile: flatShareProfile,
           wallet,
-          notifications
-        }
+          notifications,
+        };
       }
 
-      const [locations, states, amenities, services, categories, interests, habits, property_types, work_industries] = await Promise.all([
+      const [
+        locations,
+        states,
+        amenities,
+        services,
+        categories,
+        interests,
+        habits,
+        property_types,
+        work_industries,
+      ] = await Promise.all([
         this.location.find(),
         this.state.find(),
         this.amenities.find(),
@@ -121,7 +156,7 @@ class UsersController {
           interests,
           habits,
           property_types,
-          work_industries
+          work_industries,
         },
       });
     } catch (error) {
@@ -129,7 +164,6 @@ class UsersController {
       next(error);
     }
   };
-
 }
 
 export default UsersController;

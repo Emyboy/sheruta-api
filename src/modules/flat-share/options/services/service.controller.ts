@@ -1,19 +1,22 @@
-import { NextFunction, Request, Response } from 'express';
-import servicesModel from './services.model';
-
+import { NextFunction, Request, Response } from "express";
+import servicesModel from "./services.model";
 
 export default class ServiceController {
   private model = servicesModel;
 
   public create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const entryExists = await this.model.findOne({ slug: String(req.body.slug).trim().toLowerCase() });
+      const entryExists = await this.model.findOne({
+        slug: String(req.body.slug).trim().toLowerCase(),
+      });
       if (entryExists) {
-        return res.status(400).json({ message: `${req.body.slug} already exits` });
+        return res.status(400).json({
+          message: `${req.body.slug} already exits`,
+        });
       }
       const createdModel = new this.model(req.body);
       const newModel = await createdModel.save();
-      res.status(201).json({ data: newModel, message: 'created' });
+      res.status(201).json({ data: newModel, message: "created" });
     } catch (error) {
       next(error);
     }
@@ -22,7 +25,7 @@ export default class ServiceController {
   public get = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const amenities = await this.model.find();
-      res.status(200).json({ data: amenities, message: 'findAll' });
+      res.status(200).json({ data: amenities, message: "findAll" });
     } catch (error) {
       next(error);
     }
@@ -30,10 +33,14 @@ export default class ServiceController {
 
   public update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const updatedModel = await this.model.findByIdAndUpdate(req.params.id, req.body as any, {
-        new: true,
-      });
-      res.status(200).json({ data: updatedModel, message: 'updated' });
+      const updatedModel = await this.model.findByIdAndUpdate(
+        req.params.id,
+        req.body as any,
+        {
+          new: true,
+        },
+      );
+      res.status(200).json({ data: updatedModel, message: "updated" });
     } catch (error) {
       next(error);
     }
@@ -43,7 +50,7 @@ export default class ServiceController {
     try {
       //todo: check if there are requests using this entry and return bad request
       const deletedModel = await this.model.findByIdAndDelete(req.params.id);
-      res.status(200).json({ data: deletedModel, message: 'deleted' });
+      res.status(200).json({ data: deletedModel, message: "deleted" });
     } catch (error) {
       next(error);
     }

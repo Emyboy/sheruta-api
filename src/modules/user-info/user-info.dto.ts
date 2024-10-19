@@ -1,10 +1,17 @@
-import { IsString, MinLength, MaxLength, Matches, IsEnum, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from "class-validator";
+import { Transform } from "class-transformer";
 
 export enum Gender {
-  MALE = 'male',
-  FEMALE = 'female',
-  NULL = null
+  MALE = "male",
+  FEMALE = "female",
+  NULL = null,
 }
 
 export class UpdateUserInfoDTO {
@@ -14,7 +21,6 @@ export class UpdateUserInfoDTO {
     return value.toLowerCase();
   })
   public gender: Gender;
-
 
   @IsString()
   // @Matches(/^[0-9+()-]+$/, {
@@ -32,7 +38,7 @@ export class UpdateUserInfoDTO {
   @IsString()
   @IsOptional()
   @Matches(/^[0-9+()-]+$/, {
-    message: 'Whats app number is null or invalid',
+    message: "Whats app number is null or invalid",
   })
   @MinLength(8)
   @MaxLength(15)

@@ -1,4 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
+import { Document, model, Schema } from "mongoose";
 
 export interface Habits {
   _id: string;
@@ -32,6 +32,6 @@ const habitsSchema: Schema = new Schema<Habits>(
   },
 );
 
-const habitsModel = model<Habits & Document>('Habits', habitsSchema);
+const habitsModel = model<Habits & Document>("Habits", habitsSchema);
 
 export default habitsModel;

@@ -5,7 +5,6 @@ import authMiddleware from "@/modules/auth/auth.middleware";
 import validationMiddleware from "@/middlewares/validation.middleware";
 import { UpdateFlatShareProfileDTO } from "./flat-sahre-profile.dto";
 
-
 export default class FlatShareProfileRoute implements Routes {
   public path = "/flat-share-profile";
   public router = Router();
@@ -16,7 +15,11 @@ export default class FlatShareProfileRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.put(`${this.path}`, authMiddleware, validationMiddleware(UpdateFlatShareProfileDTO, 'body'), this.flatShareProfileController.updateFlatShareProfile);
+    this.router.put(
+      `${this.path}`,
+      authMiddleware,
+      validationMiddleware(UpdateFlatShareProfileDTO, "body"),
+      this.flatShareProfileController.updateFlatShareProfile,
+    );
   }
 }
-

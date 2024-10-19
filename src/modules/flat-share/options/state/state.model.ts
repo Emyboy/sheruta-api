@@ -1,4 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
+import { Document, model, Schema } from "mongoose";
 
 export interface States {
   _id: string;
@@ -32,6 +32,6 @@ const stateSchema: Schema = new Schema<States>(
   },
 );
 
-const stateModel = model<States & Document>('States', stateSchema);
+const stateModel = model<States & Document>("States", stateSchema);
 
 export default stateModel;

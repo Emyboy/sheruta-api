@@ -15,16 +15,16 @@ paths:
           description: User Registration Data
           required: true
           schema:
-            $ref: '#/definitions/userRegistration'
+            $ref: "#/definitions/userRegistration"
       responses:
         201:
-          description: 'Created'
+          description: "Created"
         400:
-          description: 'Bad Request'
+          description: "Bad Request"
         409:
-          description: 'Conflict - Email already exists'
+          description: "Conflict - Email already exists"
         500:
-          description: 'Server Error'
+          description: "Server Error"
 
   # [POST] auth/login
   /auth/login:
@@ -38,16 +38,16 @@ paths:
           description: User Login Data
           required: true
           schema:
-            $ref: '#/definitions/userLogin'
+            $ref: "#/definitions/userLogin"
       responses:
         200:
-          description: 'OK'
+          description: "OK"
         400:
-          description: 'Bad Request'
+          description: "Bad Request"
         401:
-          description: 'Wrong credentials'
+          description: "Wrong credentials"
         500:
-          description: 'Server Error'
+          description: "Server Error"
 
 # definitions
 definitions:

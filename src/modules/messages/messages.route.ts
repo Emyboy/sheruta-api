@@ -3,9 +3,10 @@ import { Router } from "express";
 import MessagesController from "./messages.controller";
 import authMiddleware from "../auth/auth.middleware";
 import validationMiddleware from "@/middlewares/validation.middleware";
+import { DirectMessageDTO } from "./messages.dto";
 
 export default class MessagesRoute implements Routes {
-  public path = '/messages';
+  public path = "/messages";
   public router = Router();
   public controller = new MessagesController();
 
@@ -14,6 +15,11 @@ export default class MessagesRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(`${this.path}/:conversation_id`, authMiddleware, validationMiddleware(DirectMessageDTO, 'body'), this.controller.createMessage);
+    this.router.post(
+      `${this.path}/dm`,
+      authMiddleware,
+      validationMiddleware(DirectMessageDTO, "body"),
+      this.controller.createMessage,
+    );
   }
 }

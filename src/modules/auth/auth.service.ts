@@ -1,22 +1,27 @@
-import { hash, compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
-import { SECRET_KEY } from '@config';
-import { CreateUserDto } from '@/modules/users/users.dto';
-import { HttpException } from '@exceptions/HttpException';
-import { DataStoredInToken, TokenData } from '@/modules/auth/auth.interface';
-import { User } from '@/modules/users/users.interface';
-import userModel from '@/modules/users/users.model';
-import { isEmpty } from '@utils/util';
-import userSecretsModel, { UserSecrets } from '@/modules/users/users-secrets/user-secrets.model';
-import { sendEmail } from '@utils/email';
-import { passwordResetEmailContent, sendTokenEmailContent, welcomeEmailContent } from '@/modules/auth/auth.content';
-import { generateOTP } from '@/utils/random';
-import crypto from 'crypto';
-import userSettingModel from '../user-settings/user-settings.model';
-import userInfoModel from '../user-info/user-info.model';
-import flatShareProfileModel from '../flat-share/flat-share-profile/flat-share-profile.model';
-import walletModel from '../wallet/wallet.model';
-
+import { compare, hash } from "bcrypt";
+import { sign } from "jsonwebtoken";
+import { SECRET_KEY } from "@config";
+import { CreateUserDto } from "@/modules/users/users.dto";
+import { HttpException } from "@exceptions/HttpException";
+import { DataStoredInToken, TokenData } from "@/modules/auth/auth.interface";
+import { User } from "@/modules/users/users.interface";
+import userModel from "@/modules/users/users.model";
+import { isEmpty } from "@utils/util";
+import userSecretsModel, {
+  UserSecrets,
+} from "@/modules/users/users-secrets/user-secrets.model";
+import { sendEmail } from "@utils/email";
+import {
+  passwordResetEmailContent,
+  sendTokenEmailContent,
+  welcomeEmailContent,
+} from "@/modules/auth/auth.content";
+import { generateOTP } from "@/utils/random";
+import crypto from "crypto";
+import userSettingModel from "../user-settings/user-settings.model";
+import userInfoModel from "../user-info/user-info.model";
+import flatShareProfileModel from "../flat-share/flat-share-profile/flat-share-profile.model";
+import walletModel from "../wallet/wallet.model";
 
 class AuthService {
   private users = userModel;
@@ -27,10 +32,17 @@ class AuthService {
   private wallet = walletModel;
 
   public async signup(userData: CreateUserDto): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
+    if (isEmpty(userData)) throw new HttpException(400, "request is empty");
 
-    const findUser: User = await this.users.findOne({ email: userData.email.trim().toLowerCase() });
-    if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
+    const findUser: User = await this.users.findOne({
+      email: userData.email.trim().toLowerCase(),
+    });
+    if (findUser) {
+      throw new HttpException(
+        409,
+        `This email ${userData.email} already exists`,
+      );
+    }
 
     const hashedPassword = await hash(userData.password, 10);
     const createUserData: User = await this.users.create({ ...userData });
@@ -45,16 +57,29 @@ class AuthService {
     return createUserData;
   }
 
-  public async login(userData: CreateUserDto): Promise<{ cookie: string; user: { email: string; _id: string } }> {
-    if (isEmpty(userData)) throw new HttpException(400, 'request is empty');
+  public async login(
+    userData: CreateUserDto,
+  ): Promise<{ cookie: string; user: { email: string; _id: string } }> {
+    if (isEmpty(userData)) throw new HttpException(400, "request is empty");
 
-    const findUser: User = await this.users.findOne({ email: userData.email.trim() });
-    if (!findUser || !findUser.email_verified) throw new HttpException(409, `Invalid email or password`);
+    const findUser: User = await this.users.findOne({
+      email: userData.email.trim(),
+    });
+    if (!findUser || !findUser.email_verified) {
+      throw new HttpException(409, `Invalid email or password`);
+    }
 
-    const userSecret: UserSecrets = await this.userSecrets.findOne({ user: findUser._id }).populate('password');
+    const userSecret: UserSecrets = await this.userSecrets.findOne({
+      user: findUser._id,
+    }).populate("password");
 
-    const isPasswordMatching: boolean = await compare(userData.password.trim(), userSecret.password.trim());
-    if (!isPasswordMatching) throw new HttpException(409, 'Incorrect email or password');
+    const isPasswordMatching: boolean = await compare(
+      userData.password.trim(),
+      userSecret.password.trim(),
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException(409, "Incorrect email or password");
+    }
 
     const tokenData = this.createToken(findUser);
     const cookie = this.createCookie(tokenData);
@@ -70,7 +95,9 @@ class AuthService {
 
   public sendOTP = async (email: string) => {
     const otp = generateOTP();
-    const user = await this.users.findOne({ email: email?.toLocaleLowerCase()?.trim() });
+    const user = await this.users.findOne({
+      email: email?.toLocaleLowerCase()?.trim(),
+    });
 
     if (user) {
       await this.userSecrets.findOneAndUpdate({ user: user._id }, {
@@ -78,7 +105,7 @@ class AuthService {
       });
 
       await sendEmail({
-        subject: 'Verify your email',
+        subject: "Verify your email",
         to: user.email.trim().toLowerCase(),
         html: sendTokenEmailContent({
           user: user,
@@ -86,19 +113,21 @@ class AuthService {
         }),
       });
     } else {
-      throw new HttpException(404, 'User not found');
+      throw new HttpException(404, "User not found");
     }
-  }
+  };
 
   public async verifyOTP(otp: string): Promise<User> {
-    if (isEmpty(otp)) throw new HttpException(400, 'request is empty');
+    if (isEmpty(otp)) throw new HttpException(400, "request is empty");
 
-    const userSecret = await this.userSecrets.findOne({ otp }).populate('user');
-    if (!userSecret) throw new HttpException(404, 'Token is invalid');
+    const userSecret = await this.userSecrets.findOne({ otp }).populate("user");
+    if (!userSecret) throw new HttpException(404, "Token is invalid");
 
     const findUser = await this.users.findById({ _id: userSecret.user._id });
 
-    if (!userSecret?.otp) throw new HttpException(400, 'Validation token has expired');
+    if (!userSecret?.otp) {
+      throw new HttpException(400, "Validation token has expired");
+    }
 
     findUser.email_verified = true;
     userSecret.otp = null;
@@ -107,7 +136,7 @@ class AuthService {
     await userSecret.save();
 
     await this.onboardUser({
-      type: 'flat_share',
+      type: "flat_share",
       user_id: findUser._id,
     });
 
@@ -119,7 +148,10 @@ class AuthService {
     const secretKey: string = SECRET_KEY;
     const expiresIn: number = 60 * 60 * 24 * 14;
 
-    return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
+    return {
+      expiresIn,
+      token: sign(dataStoredInToken, secretKey, { expiresIn }),
+    };
   }
 
   public createCookie(tokenData: TokenData): string {
@@ -128,31 +160,35 @@ class AuthService {
   }
 
   public async requestPasswordReset(email: string) {
-    const user = await this.users.findOne({ email: email?.toLocaleLowerCase()?.trim() });
-    const reset_token = crypto.randomBytes(20).toString('hex');
+    const user = await this.users.findOne({
+      email: email?.toLocaleLowerCase()?.trim(),
+    });
+    const reset_token = crypto.randomBytes(20).toString("hex");
 
     if (user) {
       await this.userSecrets.findOneAndUpdate({ user: user._id }, {
-        reset_token
+        reset_token,
       });
 
       await sendEmail({
-        subject: 'Password Reset',
+        subject: "Password Reset",
         to: user.email.trim().toLowerCase(),
         html: passwordResetEmailContent({
           token: reset_token,
-          user: user
+          user: user,
         }),
       });
     } else {
-      throw new HttpException(404, 'User not found');
+      throw new HttpException(404, "User not found");
     }
   }
 
   public async resetPassword(reset_token: string, password: string) {
-    const userSecret = await this.userSecrets.findOne({ reset_token }).populate('user');
+    const userSecret = await this.userSecrets.findOne({ reset_token }).populate(
+      "user",
+    );
 
-    if (!userSecret) throw new HttpException(404, 'Token is invalid');
+    if (!userSecret) throw new HttpException(404, "Token is invalid");
 
     const user = await this.users.findById({ _id: userSecret.user._id });
     const hashedPassword = await hash(password.trim(), 10);
@@ -166,30 +202,36 @@ class AuthService {
     return user;
   }
 
-  public async onboardUser({ type, user_id }: { user_id: string; type: 'flat_share' | 'others' }) {
+  public async onboardUser(
+    { type, user_id }: { user_id: string; type: "flat_share" | "others" },
+  ) {
     const findUser = await this.users.findById(user_id);
 
-    if (!findUser) throw new HttpException(404, 'User not found');
+    if (!findUser) throw new HttpException(404, "User not found");
 
     const userInfo = await this.userInfo.create({
       user: findUser._id,
-    })
+    });
 
     await this.wallet.create({ user: findUser._id });
 
     switch (type) {
-      case 'flat_share':
+      case "flat_share":
         let settings = await this.userSettings.create({
           user: findUser._id,
         });
-        await this.flatShareProfile.create({ user: findUser._id, user_info: userInfo._id, user_settings: settings._id });
+        await this.flatShareProfile.create({
+          user: findUser._id,
+          user_info: userInfo._id,
+          user_settings: settings._id,
+        });
         sendEmail({
-          subject: 'Welcome to the Sheruta Community',
+          subject: "Welcome to the Sheruta Community",
           to: findUser.email.trim().toLowerCase(),
           html: welcomeEmailContent({
             user: findUser,
           }),
-        })
+        });
         break;
       // for any other platform the user signs up for
       default:
