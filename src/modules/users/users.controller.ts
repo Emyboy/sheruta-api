@@ -17,6 +17,8 @@ import interestModel from "../flat-share/options/interests/interests.model";
 import propertyTypesModel from "../flat-share/options/property_types/property-types.model";
 import notificationsModel from "../notifications/notifications.model";
 import { getUserIDFromHeaders } from "@/utils/auth";
+import MessageModel from "../messages/messages.model";
+import mongoose from "mongoose";
 
 class UsersController {
   public userService = new userService();
@@ -28,6 +30,7 @@ class UsersController {
   private habits = habitsModel;
   private interests = interestModel;
   private notifications = notificationsModel;
+  private messages = MessageModel;
 
   //options
   public amenities = amenitiesModel;
@@ -93,14 +96,48 @@ class UsersController {
         flatShareProfile,
         wallet,
         notifications,
+        messages
       ] = await Promise.all([
         this.user.findById(userId),
         this.userSettings.findOne({ user: userId }),
         this.userInfo.findOne({ user: userId }),
         this.flatShareProfile.findOne({ user: userId }),
         this.wallet.findOne({ user: userId }),
-        this.notifications.find({ receiver: userId, read: false }).limit(20)
-          .sort({ createdAt: -1 }),
+        this.notifications.countDocuments({ receiver: userId, seen: false }),
+        this.messages.aggregate([
+          {
+            $match: {
+              //@ts-ignore
+              sender: { $ne: mongoose.Types.ObjectId(userId) },
+              seen: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "conversations",
+              localField: "conversation",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $match: {
+                    //@ts-ignore
+                    $or: [{ host: mongoose.Types.ObjectId(userId) }, {
+                      //@ts-ignore
+                      members: mongoose.Types.ObjectId(userId),
+                    }],
+                  },
+                },
+              ],
+              as: "conversation",
+            },
+          },
+          {
+            $match: { conversation: { $ne: [] } },
+          },
+          {
+            $count: "totalUnreadMessages",
+          },
+        ]),
       ]);
       response.user_data = {
         user,
@@ -109,6 +146,7 @@ class UsersController {
         flat_share_profile: flatShareProfile,
         wallet,
         notifications,
+        messages: messages[0].totalUnreadMessages,
       };
 
       const [
