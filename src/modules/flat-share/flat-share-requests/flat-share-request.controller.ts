@@ -94,8 +94,10 @@ export default class FlatShareRequestController {
     try {
       const { request_id } = req.params;
       const result = await this.flatShareRequestService.getRequestDetails(
-        request_id,
-        req?._user?._id,
+        {
+          request_id,
+          user_id: req?._user?._id,
+        }
       );
 
       return res.status(200).json({

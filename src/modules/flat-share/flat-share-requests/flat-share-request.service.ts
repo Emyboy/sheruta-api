@@ -153,10 +153,10 @@ export default class FlatShareRequestService {
     }
   };
 
-  public getRequestDetails = async (
-    request_id: string,
-    user_id?: string | undefined,
-  ): Promise<FlatShareRequest> => {
+  public getRequestDetails = async ({ request_id, user_id }: {
+    request_id: string;
+    user_id?: string | undefined;
+  }): Promise<FlatShareRequest> => {
     const request = await this.flatShareRequest.findById(request_id)
       .populate("user")
       .populate("user_info")
@@ -177,8 +177,10 @@ export default class FlatShareRequestService {
       $inc: { view_count: 1 },
     });
 
+    console.log("INCOMING USER ID", user_id);
+
     if (user_id) {
-      this.notifications.create({
+      await this.notifications.create({
         sender_id: user_id,
         receiver_id: request.user._id,
         type: NotificationTypes.REQUEST_VIEW,
