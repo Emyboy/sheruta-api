@@ -1,9 +1,10 @@
 import { NotificationTypes } from "@/config";
-import { Document, model, Schema } from "mongoose";
+import { Document, model, PaginateModel, Schema } from "mongoose";
 import { User } from "../users/users.interface";
 import { FlatShareProfile } from "../flat-share/flat-share-profile/flat-share-profile.model";
 import { UserSettings } from "../user-settings/user-settings.model";
 import { UserInfo } from "../user-info/user-info.model";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 export interface Notifications {
   _id: string;
@@ -63,7 +64,9 @@ const notificationsSchema: Schema = new Schema<Notifications>(
   },
 );
 
-const notificationsModel = model<Notifications & Document>(
+notificationsSchema.plugin(mongoosePaginate);
+
+const notificationsModel = model<Notifications & PaginateModel<Notifications>>(
   "Notifications",
   notificationsSchema,
 );

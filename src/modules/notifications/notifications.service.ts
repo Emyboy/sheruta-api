@@ -97,4 +97,33 @@ export default class NotificationService {
       throw new HttpException(500, "Mark all as seen failed");
     }
   };
+
+  public getAllUserNotifications = async (
+    receiver_id: string,
+    page: number = 1,
+    limit: number = 10
+  ) => {
+    try {
+      const skip = (page - 1) * limit;
+      const notifications = await this.notifications
+        .find({ receiver: receiver_id })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+      const totalNotifications = await this.notifications.countDocuments({
+        receiver: receiver_id,
+      });
+
+      return {
+        notifications,
+        total: totalNotifications,
+        page,
+        pages: Math.ceil(totalNotifications / limit),
+      };
+    } catch (error) {
+      console.log("\n\nGET ALL USER NOTIFICATIONS ERROR:::", error);
+      throw new HttpException(500, "Get all user notifications failed");
+    }
+  };
 }

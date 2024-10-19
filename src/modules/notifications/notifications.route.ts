@@ -18,5 +18,10 @@ export default class NotificationsRoute implements Routes {
       authMiddleware,
       this.notificationController.markAllAsSeen,
     );
+    this.router.get(
+      `${this.path}`,
+      authMiddleware,
+      this.notificationController.getAllUserNotifications,
+    );
   }
 }
