@@ -150,7 +150,7 @@ class UsersController {
         flat_share_profile: flatShareProfile,
         wallet,
         notifications,
-        messages: messages[0].totalUnreadMessages,
+        messages: messages[0]?.totalUnreadMessages || 0,
       };
 
       const [
