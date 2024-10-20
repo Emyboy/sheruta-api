@@ -17,6 +17,7 @@ const errorMiddleware = (
     );
     res.status(status).json({ message });
   } catch (error) {
+    console.log('ERROR MIDDLEWARE ERROR:::', error);
     next(error);
   }
 };
