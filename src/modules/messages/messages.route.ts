@@ -26,5 +26,10 @@ export default class MessagesRoute implements Routes {
       authMiddleware,
       this.controller.getConversationMessages,
     );
+    this.router.delete(
+      `${this.path}/:message_id`,
+      authMiddleware,
+      this.controller.deleteMessage,
+    );
   }
 }

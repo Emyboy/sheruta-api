@@ -50,4 +50,22 @@ export default class MessagesController {
       next(error);
     }
   };
+
+  public deleteMessage = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const user = req._user;
+      const { message_id } = req.params;
+
+      await this.messages.deleteUserMessage({ user_id: user._id, message_id });
+
+      res.status(200).json({ message: "Message deleted successfully" });
+    } catch (error) {
+      console.log("DELETE MESSAGE ERROR", error);
+      next(error);
+    }
+  };
 }
