@@ -20,15 +20,15 @@ export enum NotificationTypes {
   REQUEST_VIEW = "request_view",
   CALL = "call",
 }
-console.log('ALL ENVS:::', {
-  CLIENT_URL,
-  SMTP_USER,
-  SMTP_PASS,
-  NODE_ENV,
-  PORT,
-  SECRET_KEY,
-  LOG_FORMAT,
-  LOG_DIR,
-  ORIGIN,
-  MONGODB_URI
-})
+// console.log('ALL ENVS:::', {
+//   CLIENT_URL,
+//   SMTP_USER,
+//   SMTP_PASS,
+//   NODE_ENV,
+//   PORT,
+//   SECRET_KEY,
+//   LOG_FORMAT,
+//   LOG_DIR,
+//   ORIGIN,
+//   MONGODB_URI
+// })
