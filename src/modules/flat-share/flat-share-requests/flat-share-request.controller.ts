@@ -11,7 +11,7 @@ export default class FlatShareRequestController {
   public createSeekerRequest = async (
     req: RequestWithUser,
     res: Response,
-    next,
+    next: NextFunction,
   ) => {
     try {
       const { _user } = req;
@@ -219,4 +219,28 @@ export default class FlatShareRequestController {
       next(error);
     }
   };
+
+  public registerCaller = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const { _user } = req;
+      const { receiver_id, request_id } = req.body;
+
+      if (!receiver_id || !request_id) {
+        return res.status(400).json({ message: "receiver_id and request_id are required" });
+      }
+
+      const result = await this.flatShareRequestService.registerCaller({
+        receiver_id,
+        sender_id: _user._id,
+        request_id,
+      });
+
+      return res.status(201).json({ data: result, message: "Caller registered" });
+    } catch (error) {
+      logger.error("REGISTER CALLER ERROR::::", error);
+      next(error);
+    }
+  }
+
+
 }

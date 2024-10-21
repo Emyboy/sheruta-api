@@ -26,6 +26,12 @@ export default class NotificationService {
       };
     },
   ) => {
+    console.log('INCOMING :::', {
+      receiver_id,
+      sender_id,
+      type,
+      delayBy,
+    })
     try {
       const now = new Date();
       let delayTime = now;

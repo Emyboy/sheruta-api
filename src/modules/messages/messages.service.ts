@@ -1,10 +1,13 @@
 import { HttpException } from "@/exceptions/HttpException";
 import ConversationModel from "./conversations/conversations.model";
 import MessageModel from "./messages.model";
+import NotificationService from "../notifications/notifications.service";
+import { NotificationTypes } from "@/config";
 
 export default class MessageService {
   private messages = MessageModel;
   private conversations = ConversationModel;
+  private notifications = new NotificationService();
 
   public sendDirectMessage = async (
     { sender_id, content, conversation_id }: {
@@ -13,7 +16,7 @@ export default class MessageService {
       conversation_id: string;
     },
   ) => {
-    const conversation = await this.conversations.findById(conversation_id);
+    const conversation = await this.conversations.findById(conversation_id).populate("members");
 
     if (!conversation) {
       throw new HttpException(404, "Conversation not found");
@@ -23,6 +26,16 @@ export default class MessageService {
         content,
         conversation: conversation._id,
       });
+      await this.notifications.create({
+        //@ts-ignore
+        receiver_id: conversation.members.filter((member) => member._id !== sender_id)[0]._id,
+        sender_id,
+        type: NotificationTypes.MESSAGE,
+        delayBy: {
+          count: 1,
+          unit: 'hours'
+        }
+      })
     }
   };
 

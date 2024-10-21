@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import userService from "@/modules/users/users.service";
-import { DataStoredInToken, RequestWithUser } from "../auth/auth.interface";
+import { RequestWithUser } from "../auth/auth.interface";
 import userSettingModel from "../user-settings/user-settings.model";
 import userModel from "./users.model";
 import userInfoModel from "../user-info/user-info.model";
@@ -19,6 +19,7 @@ import notificationsModel from "../notifications/notifications.model";
 import { getUserIDFromHeaders } from "@/utils/auth";
 import MessageModel from "../messages/messages.model";
 import mongoose from "mongoose";
+import { NotificationTypes } from "@/config";
 
 class UsersController {
   public userService = new userService();
@@ -107,7 +108,7 @@ class UsersController {
         this.userInfo.findOne({ user: userId }),
         this.flatShareProfile.findOne({ user: userId }),
         this.wallet.findOne({ user: userId }),
-        this.notifications.countDocuments({ receiver: userId, seen: false }),
+        this.notifications.countDocuments({ receiver: userId, seen: false, trigger_type: { $ne: NotificationTypes.MESSAGE } }),
         this.messages.aggregate([
           {
             $match: {
@@ -190,7 +191,7 @@ class UsersController {
         },
       });
     } catch (error) {
-      console.log(error);
+      console.log("USER DEPENDENCY ERROR:::",error);
       next(error);
     }
   };

@@ -21,6 +21,7 @@ import { NotificationTypes } from "@/config";
 import servicesModel from "../options/services/services.model";
 import locationModel from "../options/locations/locations.model";
 import stateModel from "../options/state/state.model";
+import userModel from "@/modules/users/users.model";
 
 export default class FlatShareRequestService {
   private flatShareRequest = FlatShareRequestModel;
@@ -177,8 +178,6 @@ export default class FlatShareRequestService {
       $inc: { view_count: 1 },
     });
 
-    console.log("INCOMING USER ID", user_id);
-
     if (user_id) {
       await this.notifications.create({
         sender_id: user_id,
@@ -320,5 +319,24 @@ export default class FlatShareRequestService {
     });
 
     return result;
+  };
+
+  public registerCaller = async (
+    { receiver_id, sender_id, request_id }: {
+      sender_id: string;
+      receiver_id: string;
+      request_id: string;
+    },
+  ) => {
+    await this.notifications.create({
+      sender_id,
+      receiver_id,
+      type: NotificationTypes.CALL,
+      delayBy: { count: 5, unit: "hours" },
+    });
+
+    await this.flatShareRequest.findByIdAndUpdate(request_id, {
+      $inc: { call_count: 1 },
+    }, { new: true });
   };
 }

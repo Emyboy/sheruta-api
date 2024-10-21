@@ -39,6 +39,11 @@ export default class FlatShareRequestRoute implements Routes {
       authMiddleware,
       this.flatShareRequestController.deleteRequest,
     );
+    this.router.post(
+      `${this.path}/call`,
+      authMiddleware,
+      this.flatShareRequestController.registerCaller,
+    )
 
     //seeker
     this.router.post(

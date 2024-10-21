@@ -19,6 +19,7 @@ export enum NotificationTypes {
   PROFILE_VIEW = "profile_view",
   REQUEST_VIEW = "request_view",
   CALL = "call",
+  MESSAGE = "message",
 }
 // console.log('ALL ENVS:::', {
 //   CLIENT_URL,
