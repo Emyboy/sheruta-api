@@ -69,23 +69,26 @@ export default class NotificationService {
         user: receiver_id,
       });
       const receiver = await this.users.findOne({ _id: receiver_id });
+      const sender = await this.users.findOne({ _id: sender_id });
 
-      await this.notifications.create({
-        sender: sender_id,
-        trigger_type: type,
-        receiver: receiver_id,
-        receiver_flat_share_profile: flatShareProfile?._id,
-        receiver_user_settings: receiverSettings?._id,
-        message: this.notificationMessage(type),
-      });
-      await sendEmail({
-        subject: "Notification",
-        to: receiver.email.trim().toLowerCase(),
-        html: platformActivityContent({
-          user: receiver,
-        }),
-      });
-      console.log("\n\nNotification created successfully\n\n");
+      if (!sender.email.includes("sheruta.ng") && receiver.account_status === "active") {
+        await this.notifications.create({
+          sender: sender_id,
+          trigger_type: type,
+          receiver: receiver_id,
+          receiver_flat_share_profile: flatShareProfile?._id,
+          receiver_user_settings: receiverSettings?._id,
+          message: this.notificationMessage(type),
+        });
+        await sendEmail({
+          subject: "Notification",
+          to: receiver.email.trim().toLowerCase(),
+          html: platformActivityContent({
+            user: receiver,
+          }),
+        });
+        console.log("\n\nNotification created successfully\n\n");
+      }
     } catch (error) {
       console.log("\n\nNOTIFICATION CREATION ERROR:::", error);
       throw new HttpException(500, "Notification creation failed");
@@ -121,7 +124,7 @@ export default class NotificationService {
   public getAllUserNotifications = async (
     receiver_id: string,
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
   ) => {
     try {
       const skip = (page - 1) * limit;
