@@ -17,11 +17,11 @@ export const sendEmail = async (
 ) => {
   if (to) {
     try {
-      logger.info(`\n Sending email to ${to}`);
+      logger.info(`\n\n Sending email to ${to}`);
       const mailOptions = {
         from: `"Emeka from Sheruta" <${SMTP_USER}>`,
         to: to.toLocaleLowerCase().trim(),
-        subject,
+        subject: subject + " | Sheruta Flat Share",
         html,
       };
 

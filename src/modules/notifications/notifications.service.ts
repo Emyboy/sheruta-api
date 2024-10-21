@@ -1,14 +1,18 @@
 import { NotificationTypes } from "@/config";
 import notificationsModel from "./notifications.model";
-import { subDays, subHours } from "date-fns";
+import { subDays, subHours, subMinutes } from "date-fns";
 import flatShareProfileModel from "../flat-share/flat-share-profile/flat-share-profile.model";
 import userSettingModel from "../user-settings/user-settings.model";
 import { HttpException } from "@/exceptions/HttpException";
+import { sendEmail } from "@/utils/email";
+import userModel from "../users/users.model";
+import { platformActivityContent } from "./notifications.content";
 
 export default class NotificationService {
   private notifications = notificationsModel;
   private flatShareProfile = flatShareProfileModel;
   private userSettings = userSettingModel;
+  private users = userModel;
 
   public create = async (
     {
@@ -22,24 +26,26 @@ export default class NotificationService {
       type: NotificationTypes;
       delayBy?: {
         count: number;
-        unit: "hours" | "days";
+        unit: "minutes" | "hours" | "days";
       };
     },
   ) => {
-    console.log('INCOMING :::', {
-      receiver_id,
-      sender_id,
-      type,
-      delayBy,
-    })
     try {
       const now = new Date();
       let delayTime = now;
 
       if (delayBy) {
-        delayTime = delayBy.unit === "hours"
-          ? subHours(now, delayBy.count)
-          : subDays(now, delayBy.count);
+        switch (delayBy.unit) {
+          case "minutes":
+            delayTime = subMinutes(now, delayBy.count);
+            break;
+          case "hours":
+            delayTime = subHours(now, delayBy.count);
+            break;
+          case "days":
+            delayTime = subDays(now, delayBy.count);
+            break;
+        }
       }
 
       const existingNotification = await this.notifications.findOne({
@@ -62,6 +68,7 @@ export default class NotificationService {
       const receiverSettings = await this.userSettings.findOne({
         user: receiver_id,
       });
+      const receiver = await this.users.findOne({ _id: receiver_id });
 
       await this.notifications.create({
         sender: sender_id,
@@ -70,6 +77,13 @@ export default class NotificationService {
         receiver_flat_share_profile: flatShareProfile?._id,
         receiver_user_settings: receiverSettings?._id,
         message: this.notificationMessage(type),
+      });
+      await sendEmail({
+        subject: "Notification",
+        to: receiver.email.trim().toLowerCase(),
+        html: platformActivityContent({
+          user: receiver,
+        }),
       });
       console.log("\n\nNotification created successfully\n\n");
     } catch (error) {

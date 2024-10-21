@@ -32,8 +32,8 @@ export default class MessageService {
         sender_id,
         type: NotificationTypes.MESSAGE,
         delayBy: {
-          count: 1,
-          unit: 'hours'
+          count: 3,
+          unit: 'minutes'
         }
       })
     }
