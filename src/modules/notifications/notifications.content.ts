@@ -19,7 +19,7 @@ export const platformActivityContent = ({ user }: { user: User }) => {
     <div style="text-align: center;">
       <a href="${CLIENT_URL}/notification"
          style="display: inline-block; padding: 15px 25px; margin-top: 20px; font-size: 16px; background-color: #0AA365; color: #ffffff; text-decoration: none; border-radius: 5px;">
-        Log in to Your Account
+        View Activity
       </a>
     </div>
 
