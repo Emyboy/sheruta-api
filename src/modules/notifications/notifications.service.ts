@@ -130,6 +130,8 @@ export default class NotificationService {
       const skip = (page - 1) * limit;
       const notifications = await this.notifications
         .find({ receiver: receiver_id })
+        .populate("receiver")
+        .populate("sender")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
