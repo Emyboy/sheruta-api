@@ -178,7 +178,7 @@ export default class FlatShareRequestService {
       $inc: { view_count: 1 },
     });
 
-    if (user_id) {
+    if (user_id && user_id !== request.user._id) {
       await this.notifications.create({
         sender_id: user_id,
         receiver_id: request.user._id,

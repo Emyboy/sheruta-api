@@ -59,7 +59,7 @@ class UserService {
         user: profile_id,
       });
 
-      if (user_id) {
+      if (user_id && user_id !== profile_id) {
         this.notifications.create({
           sender_id: user_id,
           receiver_id: profile_id,

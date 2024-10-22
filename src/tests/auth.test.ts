@@ -18,9 +18,12 @@ describe("Testing Auth", () => {
       const userData: CreateUserDto = {
         email: "test@email.com",
         password: "q1w2e3r4!",
+        first_name: "John",
+        last_name: "Doe"
       };
 
       const authRoute = new AuthRoute();
+      //@ts-ignore
       const users = authRoute.authController.authService.users;
 
       users.findOne = jest.fn().mockReturnValue(null);
@@ -43,6 +46,8 @@ describe("Testing Auth", () => {
       const userData: CreateUserDto = {
         email: "test@email.com",
         password: "q1w2e3r4!",
+        first_name: "John",
+        last_name: "Doe"
       };
 
       const authRoute = new AuthRoute();
