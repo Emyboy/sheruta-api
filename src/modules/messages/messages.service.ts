@@ -26,6 +26,7 @@ export default class MessageService {
         content,
         conversation: conversation._id,
       });
+      await this.conversations.findOneAndUpdate({ _id: conversation_id }, { updatedAt: new Date() });
       await this.notifications.create({
         //@ts-ignore
         receiver_id: conversation.members.filter((member) => member._id !== sender_id)[0]._id,

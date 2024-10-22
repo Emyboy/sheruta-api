@@ -1,9 +1,11 @@
 import { RequestWithUser } from "@/modules/auth/auth.interface";
 import { NextFunction, Response } from "express";
 import ConversationModel from "./conversations.model";
+import messagesModel from '@/modules/messages/messages.model';
 
 export default class ConversationsController {
   public conversations = ConversationModel;
+  private messages = messagesModel;
 
   public getConversationBetweenMembers = async (
     req: RequestWithUser,
@@ -97,7 +99,22 @@ export default class ConversationsController {
         options,
       );
 
-      res.status(200).json({ conversations });
+      const conversationsWithUnread = await Promise.all(
+        conversations.docs.map(async (conversation) => {
+          const unreadMessages = await this.messages.countDocuments({
+            conversation: conversation._id,
+            seen: false,
+            sender: { $ne: user._id },
+          });
+
+          return {
+            ...conversation.toObject(),
+            unread_messages: unreadMessages || 0,
+          };
+        })
+      );
+
+      res.status(200).json({ conversations: conversationsWithUnread });
     } catch (error) {
       console.log("ALL USERS CONVERSATIONS ERROR", error);
       next(error as Error);
