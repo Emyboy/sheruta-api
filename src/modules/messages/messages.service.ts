@@ -72,6 +72,16 @@ export default class MessageService {
     return messages;
   };
 
+  public markAllUserUnreadMessagesAsRead = async ({conversation_id, user_id}:{ user_id: string, conversation_id: string; }) => {
+    await this.messages.updateMany({
+      sender: { $ne: user_id },
+      conversation: conversation_id,
+      seen: false,
+    }, {
+      seen: true,
+    });
+  }
+
   public deleteUserMessage = async ({message_id, user_id}:{user_id:string, message_id:string}) => {
     const message = await this.messages.findOne({
       _id: message_id,

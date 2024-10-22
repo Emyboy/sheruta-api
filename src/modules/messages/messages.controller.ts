@@ -68,4 +68,18 @@ export default class MessagesController {
       next(error);
     }
   };
+
+  public markAllUserUnreadMessagesAsRead = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const user = req._user;
+      await this.messages.markAllUserUnreadMessagesAsRead({
+        user_id: user._id,
+        conversation_id: req.params.conversation_id
+      });
+      res.status(200).json({ message: "All unread messages marked as read" });
+    } catch (error) {
+      console.log("MARK ALL UNREAD MESSAGES AS READ ERROR", error);
+      next(error);
+    }
+  }
 }
