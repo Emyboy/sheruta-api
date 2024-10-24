@@ -18,7 +18,7 @@ import { PaymentType } from "./flat-share-request.model";
 export class CreateSeekerRequestDTO {
   @IsString()
   @MinLength(10)
-  @MaxLength(500)
+  @MaxLength(2000)
   @Transform(({ value }) => {
     if (!value) return value;
 
@@ -69,7 +69,7 @@ export class UpdateSeekerRequestDTO {
   @IsOptional()
   @IsString()
   @MinLength(10)
-  @MaxLength(500)
+  @MaxLength(2000)
   @Transform(({ value }) => {
     if (!value) return value;
 
@@ -143,7 +143,7 @@ export class CreateHostRequestDTO {
 
   @IsString()
   @MinLength(10)
-  @MaxLength(500)
+  @MaxLength(2000)
   public description: string;
 
   @IsArray()
@@ -222,7 +222,7 @@ export class UpdateHostRequestDTO {
 
   @IsString()
   @MinLength(10)
-  @MaxLength(500)
+  @MaxLength(2000)
   @IsOptional()
   public description: string;
 
