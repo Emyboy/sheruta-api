@@ -26,5 +26,10 @@ export default class UserInfoRoute implements Routes {
       authMiddleware,
       this.userInfoController.completeKYC,
     );
+    this.router.post(
+      `${this.path}/nin/verify`,
+      authMiddleware,
+      this.userInfoController.verifyNIN
+    )
   }
 }
