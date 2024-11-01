@@ -21,15 +21,10 @@ export enum NotificationTypes {
   CALL = "call",
   MESSAGE = "message",
 }
-// console.log('ALL ENVS:::', {
-//   CLIENT_URL,
-//   SMTP_USER,
-//   SMTP_PASS,
-//   NODE_ENV,
-//   PORT,
-//   SECRET_KEY,
-//   LOG_FORMAT,
-//   LOG_DIR,
-//   ORIGIN,
-//   MONGODB_URI
-// })
+export const creditTable = {
+  CREATE_CONVERSATION: 300,
+  SPACE_RESERVATION: 5000,
+  VIRTUAL_INSPECTION: 1000,
+  ID_VERIFICATION: 500,
+  CALL: 100
+}

@@ -2,6 +2,8 @@ import { Routes } from "@/interfaces/routes.interface";
 import { Router } from "express";
 import ConversationsController from "./conversation.controller";
 import authMiddleware from "@/modules/auth/auth.middleware";
+import { validateCredit } from "@/modules/wallet/transactions/transaction.middleware";
+import { creditTable } from "@/config";
 
 export default class ConversationRoute implements Routes {
   public path = "/conversations";
@@ -21,6 +23,7 @@ export default class ConversationRoute implements Routes {
     this.router.post(
       `${this.path}/:receiver_id`,
       authMiddleware,
+      validateCredit(creditTable.CREATE_CONVERSATION),
       this.controller.createConversationsBetweenUsers,
     );
     this.router.get(
