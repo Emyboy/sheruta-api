@@ -19,6 +19,7 @@ import FlatShareRequestRoute from "./modules/flat-share/flat-share-requests/flat
 import NotificationsRoute from "./modules/notifications/notifications.route";
 import ConversationRoute from "./modules/messages/conversations/conversations.route";
 import MessagesRoute from "./modules/messages/messages.route";
+import TransactionRoute from "./modules/wallet/transactions/transaction.route";
 
 validateEnv();
 
@@ -42,6 +43,7 @@ const app = new App([
   new NotificationsRoute(),
   new ConversationRoute(),
   new MessagesRoute(),
+  new TransactionRoute()
 ]);
 
 app.listen();
