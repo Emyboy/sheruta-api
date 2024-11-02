@@ -22,10 +22,10 @@ export enum NotificationTypes {
   MESSAGE = "message",
 }
 export const creditTable = {
-  CREATE_CONVERSATION: 300,
+  CREATE_CONVERSATION: 0,
   SPACE_RESERVATION: 5000,
   VIRTUAL_INSPECTION: 1000,
   ID_VERIFICATION: 500,
   CALL: 100,
-  PROMOTION: 100
+  PROMOTION: 450
 }

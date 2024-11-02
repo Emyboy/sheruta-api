@@ -20,6 +20,7 @@ import NotificationsRoute from "./modules/notifications/notifications.route";
 import ConversationRoute from "./modules/messages/conversations/conversations.route";
 import MessagesRoute from "./modules/messages/messages.route";
 import TransactionRoute from "./modules/wallet/transactions/transaction.route";
+import PromotionRoute from "./modules/promotions/promotions.route";
 
 validateEnv();
 
@@ -43,7 +44,8 @@ const app = new App([
   new NotificationsRoute(),
   new ConversationRoute(),
   new MessagesRoute(),
-  new TransactionRoute()
+  new TransactionRoute(),
+  new PromotionRoute(),
 ]);
 
 app.listen();

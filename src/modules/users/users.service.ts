@@ -51,9 +51,15 @@ class UserService {
 
       const flat_share_profile = await this.flatShareProfile.findOne({
         user: profile_id,
-      }).populate("location").populate("state").populate("interests").populate(
-        "habits",
-      ).populate("work_industry");
+      })
+        .populate("location")
+        .populate("state")
+        .populate("interests")
+        .populate(
+          "habits",
+        )
+        .populate("work_industry");
+
       const user_info = await this.user_info.findOne({ user: profile_id });
       const user_settings = await this.user_settings.findOne({
         user: profile_id,
@@ -67,7 +73,7 @@ class UserService {
           delayBy: {
             count: 4,
             unit: "hours",
-          }
+          },
         });
       }
 
