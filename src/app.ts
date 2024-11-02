@@ -15,6 +15,7 @@ import errorMiddleware from "@middlewares/error.middleware";
 import { logger, stream } from "@utils/logger";
 import { extractUsersCSV } from "./data/data";
 
+
 class App {
   public app: express.Application;
   public env: string;

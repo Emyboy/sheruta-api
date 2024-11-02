@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { RequestWithUser } from "../auth/auth.interface";
 import PromotionService from "./promotions.service";
-import promotionModel from "./promotions.model";
+import promotionModel, { PromotionStatus } from "./promotions.model";
 
 
 export default class PromotionController {
@@ -63,7 +63,9 @@ export default class PromotionController {
 
   public getAllPromotions = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const promotions = await this.promotionModel.find()
+      const promotions = await this.promotionModel.find({
+        status: PromotionStatus.ACTIVE
+      })
         .populate('service')
         .populate('request')
         .populate('location')
