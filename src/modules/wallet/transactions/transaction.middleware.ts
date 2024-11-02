@@ -1,5 +1,4 @@
-
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import walletModel from "@/modules/wallet/wallet.model";
 import { HttpException } from "@exceptions/HttpException";
 import { RequestWithUser } from "@/modules/auth/auth.interface";
@@ -17,10 +16,11 @@ export const validateCredit = (requiredAmount: number) => async (req: RequestWit
       return next(new HttpException(400, `Insufficient credits. Required: ${requiredAmount}, Available: ${userWallet.total_credit}`));
     }
 
+    userWallet.total_credit -= requiredAmount;
+    await userWallet.save();
+
     next();
   } catch (error) {
-    next(new HttpException(500, "Error validating credits"));
+    next(new HttpException(500, "Error validating and deducting credits"));
   }
 };
-
-

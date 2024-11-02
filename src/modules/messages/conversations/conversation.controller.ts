@@ -3,9 +3,11 @@ import { NextFunction, Response } from "express";
 import ConversationModel from "./conversations.model";
 import messagesModel from '@/modules/messages/messages.model';
 
+
 export default class ConversationsController {
   public conversations = ConversationModel;
   private messages = messagesModel;
+
 
   public getConversationBetweenMembers = async (
     req: RequestWithUser,
