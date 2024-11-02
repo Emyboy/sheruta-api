@@ -39,6 +39,14 @@ export enum Religion {
   NULL = null,
 }
 
+enum MaritalStatus {
+  SINGLE = "single",
+  MARRIED = "married",
+  DIVORCED = "divorced",
+  WIDOWED = "widowed",
+  NULL = null,
+}
+
 export interface FlatShareProfile extends Document {
   bio: string;
   budget: number | null;
@@ -67,6 +75,15 @@ export interface FlatShareProfile extends Document {
   state: States;
   tiktok: string | null;
   twitter: string | null;
+
+  company_name: string;
+  company_address: string;
+  supervisor_name: string;
+  supervisor_number: string;
+  marital_status: MaritalStatus | null;
+
+  state_of_origin: string;
+  nspokenlang: string;
 }
 
 const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
@@ -180,6 +197,31 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
       default: null,
     },
     twitter: {
+      type: String,
+      default: null,
+    },
+    company_name: {
+      type: String,
+      default: null,
+    },
+    company_address: {
+      type: String,
+      default: null,
+    },
+    supervisor_name: {
+      type: String,
+      default: null,
+    },
+    supervisor_number: {
+      type: String,
+      default: null,
+    },
+    marital_status: {
+      type: String,
+      enum: [...Object.values(MaritalStatus), null],
+      default: null,
+    },
+    state_of_origin: {
       type: String,
       default: null,
     },

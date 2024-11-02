@@ -13,6 +13,7 @@ import { dbConnection } from "@databases";
 import { Routes } from "@interfaces/routes.interface";
 import errorMiddleware from "@middlewares/error.middleware";
 import { logger, stream } from "@utils/logger";
+import { extractUsersCSV } from "./data/data";
 
 class App {
   public app: express.Application;
@@ -60,9 +61,10 @@ class App {
         set("debug", true);
       }
 
-      console.log("Connecting to MongoDB", dbConnection);
-
       await connect(dbConnection.url);
+      setTimeout(() => {
+        extractUsersCSV()
+      }, 3000);
     } catch (error) {
       console.log("DB CONNECTION ERROR:::", error);
     }
