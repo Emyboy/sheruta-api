@@ -27,5 +27,15 @@ export default class PromotionRoute implements Routes {
       validateCredit(creditTable.PROMOTION),
       this.promotionController.requestPromotion,
     );
+    this.router.get(
+      `${this.path}`,
+      authMiddleware,
+      this.promotionController.getAllUserPromotions,
+    );
+    this.router.get(
+      `${this.path}/all`,
+      authMiddleware,
+      this.promotionController.getAllPromotions,
+    );
   }
 }
