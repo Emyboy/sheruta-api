@@ -14,47 +14,55 @@ export default class TransactionController {
     next: NextFunction,
   ) => {
     try {
-      const { email } = req._user;
       const { transaction_id: paymentRef, amount, type } = req.body;
 
-      console.log('INCOMING PAYMENT VERIFICATION DATA:::', {
-        email,
-        paymentRef,
-        amount,
-        type,
-      })
-
-      // const response = await axios.get(
-      //   `https://api.paystack.co/transaction/verify/${paymentRef}`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-      //     },
-      //   },
-      // );
-
-      // // const { status, data } = response.data;
-
-      // console.log("PAYSTACK RESPONSE:::", response.data);
-
-      if (
-        amount && email && paymentRef
-      ) {
-        const wallet = await this.wallet.findById(req._user._id);
-        await transactionModel.create({
-          amount: Number(amount),
-          transaction_id: paymentRef,
-          user: req._user._id,
-          wallet: wallet._id,
+      if (!type || !amount || !paymentRef) {
+        return res.status(400).json({
+          message: "Invalid transaction data",
+          data: null,
         });
+      }
+      const wallet = await this.wallet.findOne({ user: req._user._id });
 
+      const existingTransaction = await this.transactions.findOne({
+        transaction_id: paymentRef,
+      });
+
+      if (existingTransaction) {
+        return res.status(400).json({
+          message: "Transaction already validated",
+          data: wallet,
+        });
+      }
+
+      const response = await axios.get(
+        `https://api.paystack.co/transaction/verify/${paymentRef}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          },
+        },
+      );
+
+      const { status, data } = response.data;
+
+      console.log("INCOMING :::", {
+        status,
+        amount,
+        paymentRef,
+        type,
+      });
+
+      if (status === true && data.status === "success") {
         if (wallet) {
           await this.transactions.create({
             user: req._user._id,
             amount,
             type,
             wallet: wallet._id,
+            transaction_id: paymentRef,
           });
+
           switch (type) {
             case TransactionType.DEFAULT:
               wallet.total_deposit += Number(amount);
@@ -72,8 +80,8 @@ export default class TransactionController {
           data: wallet,
         });
       } else {
-        res.status(200).json({
-          message: "Transaction wasn't found",
+        res.status(404).json({
+          message: "Transaction verification failed",
           data: null,
         });
       }
