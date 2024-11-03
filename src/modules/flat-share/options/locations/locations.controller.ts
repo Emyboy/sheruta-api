@@ -55,4 +55,13 @@ export default class LocationsController {
       next(error);
     }
   };
+
+  public getLocationByRank = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let items = await this.model.find({ rank: { $gt: 0 } }).sort({ rank: 1 }).populate('state').limit(10);
+      res.status(200).json({ data: items, message: "findOne" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
