@@ -23,5 +23,16 @@ export default class ReservationController {
     }
   }
 
+  public getUserReservation = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const user = req._user;
+      const reservations = await this.reservationService.getUserReservation(user._id);
+
+      res.status(200).json({ data: reservations, message: "findAll" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }
 

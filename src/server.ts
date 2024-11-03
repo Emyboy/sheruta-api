@@ -21,6 +21,7 @@ import ConversationRoute from "./modules/messages/conversations/conversations.ro
 import MessagesRoute from "./modules/messages/messages.route";
 import TransactionRoute from "./modules/wallet/transactions/transaction.route";
 import PromotionRoute from "./modules/promotions/promotions.route";
+import ReservationRoute from "./modules/reservations/reservations.route";
 
 validateEnv();
 
@@ -46,6 +47,7 @@ const app = new App([
   new MessagesRoute(),
   new TransactionRoute(),
   new PromotionRoute(),
+  new ReservationRoute()
 ]);
 
 app.listen();
