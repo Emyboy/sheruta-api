@@ -63,9 +63,9 @@ class App {
       }
 
       await connect(dbConnection.url);
-      // setTimeout(() => {
-      //   extractUsersCSV()
-      // }, 3000);
+      setTimeout(() => {
+        // extractUsersCSV()
+      }, 3000);
     } catch (error) {
       console.log("DB CONNECTION ERROR:::", error);
     }

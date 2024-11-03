@@ -1,6 +1,12 @@
 import { cancelExpiredPromotions } from "./promotion.cron";
 import cron from "node-cron";
 
+/**
+ * - set host requests to unavailable
+ * - handle inspections
+ * - set reservation to expired
+ */
+
 export const startCronTasks = () => {
   // Run at the 8th hour of every day (08:00)
   cron.schedule("0 8 * * *", () => {

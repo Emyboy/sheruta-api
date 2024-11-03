@@ -64,7 +64,6 @@ export interface FlatShareProfile extends Document {
   } | null;
   religion: Religion | null;
   seeking: boolean | null;
-  verified: boolean;
   work_industry: WorkIndustries | null;
   location?: Locations;
   interests: Interests[];
@@ -164,10 +163,6 @@ const flatShareProfileSchema: Schema = new Schema<FlatShareProfile>(
     seeking: {
       type: Boolean,
       default: null,
-    },
-    verified: {
-      type: Boolean,
-      default: false,
     },
     work_industry: {
       type: Schema.Types.ObjectId,

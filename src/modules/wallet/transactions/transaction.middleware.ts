@@ -13,6 +13,10 @@ export const validateCredit = (requiredAmount: number) => async (req: RequestWit
     }
 
     if (userWallet.total_credit < requiredAmount) {
+      console.log('WHAT THEY HAVE :::', {
+        total_credit: userWallet.total_credit,
+        requiredAmount
+      });
       return next(new HttpException(400, `Insufficient credits. Required: ${requiredAmount}, Available: ${userWallet.total_credit}`));
     }
 
