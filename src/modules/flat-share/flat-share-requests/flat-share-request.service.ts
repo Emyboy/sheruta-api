@@ -21,7 +21,8 @@ import { NotificationTypes } from "@/config";
 import servicesModel from "../options/services/services.model";
 import locationModel from "../options/locations/locations.model";
 import stateModel from "../options/state/state.model";
-import userModel from "@/modules/users/users.model";
+import LocationService from "../options/locations/locations.service";
+
 
 export default class FlatShareRequestService {
   private flatShareRequest = FlatShareRequestModel;
@@ -31,6 +32,7 @@ export default class FlatShareRequestService {
   private services = servicesModel;
   private locations = locationModel;
   private states = stateModel;
+  private locationService = new LocationService();
 
   public createSeekerRequest = async (
     { data, user }: { data: CreateSeekerRequestDTO; user: User },
@@ -53,6 +55,7 @@ export default class FlatShareRequestService {
     });
 
     this.broadcastRequest(flatShareRequest._id);
+    this.locationService.increaseRank(data.location)
 
     return flatShareRequest;
   };
@@ -79,6 +82,7 @@ export default class FlatShareRequestService {
     });
 
     this.broadcastRequest(flatShareRequest._id);
+    this.locationService.increaseRank(data.location)
 
     return flatShareRequest;
   };
@@ -186,6 +190,8 @@ export default class FlatShareRequestService {
       });
     }
 
+    this.locationService.increaseRank(request.location._id)
+
     return request;
   };
 
@@ -287,6 +293,7 @@ export default class FlatShareRequestService {
       const locationDoc = await this.locations.findOne({ slug: location })
         .select("_id");
       if (locationDoc) {
+        this.locationService.increaseRank(locationDoc._id)
         query.location = locationDoc._id;
       }
     }

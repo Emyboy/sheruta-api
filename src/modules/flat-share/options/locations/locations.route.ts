@@ -34,6 +34,10 @@ class LocationsRoute implements Routes {
       authMiddleware,
       this.controller.update,
     );
+    this.router.get(
+      `${this.path}/ranking`,
+      this.controller.getLocationByRank,
+    );
   }
 }
 
