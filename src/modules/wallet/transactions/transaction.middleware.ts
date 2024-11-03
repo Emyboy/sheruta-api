@@ -8,6 +8,11 @@ export const validateCredit = (requiredAmount: number) => async (req: RequestWit
     const userId = req._user._id;
     const userWallet = await walletModel.findOne({ user: userId });
 
+    console.log('\n\n INCOMING WALLET VALIDATION DATA :::', {
+      userId,
+      userWallet
+    })
+
     if (!userWallet) {
       return next(new HttpException(404, "Wallet not found for the user"));
     }
