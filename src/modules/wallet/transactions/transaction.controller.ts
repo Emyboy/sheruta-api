@@ -38,7 +38,7 @@ export default class TransactionController {
       // console.log("PAYSTACK RESPONSE:::", response.data);
 
       if (
-        amount && email
+        amount && email && paymentRef
       ) {
         const wallet = await this.wallet.findById(req._user._id);
         await transactionModel.create({
