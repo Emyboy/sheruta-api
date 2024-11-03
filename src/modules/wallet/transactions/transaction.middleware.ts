@@ -10,7 +10,8 @@ export const validateCredit = (requiredAmount: number) => async (req: RequestWit
 
     console.log('\n\n INCOMING WALLET VALIDATION DATA :::', {
       userId,
-      userWallet
+      userWallet,
+      body: req.body,
     })
 
     if (!userWallet) {
