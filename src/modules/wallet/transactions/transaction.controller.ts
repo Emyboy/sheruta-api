@@ -17,6 +17,13 @@ export default class TransactionController {
       const { email } = req._user;
       const { transaction_id: paymentRef, amount, type } = req.body;
 
+      console.log('INCOMING PAYMENT VERIFICATION DATA:::', {
+        email,
+        paymentRef,
+        amount,
+        type,
+      })
+
       const response = await axios.get(
         `https://api.paystack.co/transaction/verify/${paymentRef}`,
         {
@@ -26,19 +33,20 @@ export default class TransactionController {
         },
       );
 
-      const { status, data } = response.data;
+      // const { status, data } = response.data;
+
+      console.log("PAYSTACK RESPONSE:::", response.data);
 
       if (
-        status === "success" && data.amount === amount &&
-        data.customer.email === email
+        response.data
       ) {
+        const wallet = await this.wallet.findById(req._user._id);
         await transactionModel.create({
-          amount: data.amount,
+          amount: Number(amount),
           transaction_id: paymentRef,
           user: req._user._id,
+          wallet: wallet._id,
         });
-
-        const wallet = await this.wallet.findById(req._user._id);
 
         if (wallet) {
           await this.transactions.create({
@@ -49,11 +57,11 @@ export default class TransactionController {
           });
           switch (type) {
             case TransactionType.DEFAULT:
-              wallet.total_deposit += data.amount;
+              wallet.total_deposit += Number(amount);
               await wallet.save();
               break;
             case TransactionType.CREDIT:
-              wallet.total_credit += data.amount;
+              wallet.total_credit += Number(amount);
               await wallet.save();
               break;
           }
