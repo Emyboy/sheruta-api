@@ -24,21 +24,21 @@ export default class TransactionController {
         type,
       })
 
-      const response = await axios.get(
-        `https://api.paystack.co/transaction/verify/${paymentRef}`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-          },
-        },
-      );
+      // const response = await axios.get(
+      //   `https://api.paystack.co/transaction/verify/${paymentRef}`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+      //     },
+      //   },
+      // );
 
-      // const { status, data } = response.data;
+      // // const { status, data } = response.data;
 
-      console.log("PAYSTACK RESPONSE:::", response.data);
+      // console.log("PAYSTACK RESPONSE:::", response.data);
 
       if (
-        response.data
+        amount && email
       ) {
         const wallet = await this.wallet.findById(req._user._id);
         await transactionModel.create({
@@ -69,7 +69,7 @@ export default class TransactionController {
 
         res.status(200).json({
           message: "Transaction validated and recorded successfully",
-          data: response?.data?.data,
+          data: wallet,
         });
       } else {
         res.status(200).json({
