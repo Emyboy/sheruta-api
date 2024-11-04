@@ -22,7 +22,7 @@ import servicesModel from "../options/services/services.model";
 import locationModel from "../options/locations/locations.model";
 import stateModel from "../options/state/state.model";
 import LocationService from "../options/locations/locations.service";
-
+import reservationModel, { ReservationStatus } from "@/modules/reservations/reservations.model";
 
 export default class FlatShareRequestService {
   private flatShareRequest = FlatShareRequestModel;
@@ -33,6 +33,7 @@ export default class FlatShareRequestService {
   private locations = locationModel;
   private states = stateModel;
   private locationService = new LocationService();
+  private reservations = reservationModel;
 
   public createSeekerRequest = async (
     { data, user }: { data: CreateSeekerRequestDTO; user: User },
@@ -55,7 +56,7 @@ export default class FlatShareRequestService {
     });
 
     this.broadcastRequest(flatShareRequest._id);
-    this.locationService.increaseRank(data.location)
+    this.locationService.increaseRank(data.location);
 
     return flatShareRequest;
   };
@@ -82,7 +83,7 @@ export default class FlatShareRequestService {
     });
 
     this.broadcastRequest(flatShareRequest._id);
-    this.locationService.increaseRank(data.location)
+    this.locationService.increaseRank(data.location);
 
     return flatShareRequest;
   };
@@ -161,7 +162,7 @@ export default class FlatShareRequestService {
   public getRequestDetails = async ({ request_id, user_id }: {
     request_id: string;
     user_id?: string | null;
-  }): Promise<FlatShareRequest> => {
+  }) => {
     const request = await this.flatShareRequest.findById(request_id)
       .populate("user")
       .populate("user_info")
@@ -182,17 +183,18 @@ export default class FlatShareRequestService {
       $inc: { view_count: 1 },
     });
 
-    if (user_id && user_id !== request.user._id) {
-      await this.notifications.create({
-        sender_id: user_id,
-        receiver_id: request.user._id,
-        type: NotificationTypes.REQUEST_VIEW,
-      });
-    }
+    this.locationService.increaseRank(request.location._id);
 
-    this.locationService.increaseRank(request.location._id)
+    const reservation = await this.reservations.findOne({
+      request: request_id,
+      user: user_id,
+      status: ReservationStatus.ACTIVE
+    });
 
-    return request;
+    return {
+      reservation,
+      request
+    };
   };
 
   public updateSeekerRequest = async (
@@ -293,7 +295,7 @@ export default class FlatShareRequestService {
       const locationDoc = await this.locations.findOne({ slug: location })
         .select("_id");
       if (locationDoc) {
-        this.locationService.increaseRank(locationDoc._id)
+        this.locationService.increaseRank(locationDoc._id);
         query.location = locationDoc._id;
       }
     }

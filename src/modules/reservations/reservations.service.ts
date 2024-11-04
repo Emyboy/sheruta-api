@@ -5,10 +5,14 @@ import reservationModel, {
   ReservationType,
 } from "./reservations.model";
 import { addDays } from "date-fns";
+import { sendEmail } from "@/utils/email";
+import { spaceReservedEmailContent } from "./reservation.content";
+import userModel from "../users/users.model";
 
 export default class ReservationService {
   private reservation = reservationModel;
   private flatShareRequest = FlatShareRequestModel;
+  private users = userModel;
 
   public createRequestReservation = async (
     { request_id, user_id, days }: {
@@ -17,7 +21,14 @@ export default class ReservationService {
       days: number;
     },
   ) => {
-    const theRequest = await this.flatShareRequest.findById(request_id);
+    const theRequest = await this.flatShareRequest.findById(request_id)
+      .populate("user");
+    if (!theRequest) {
+      throw new HttpException(404, "Request not found");
+    }
+
+    const seeker = await this.users.findById(user_id);
+    const host = await this.users.findById(theRequest.user._id);
 
     await this.reservation.create({
       request: theRequest._id,
@@ -26,9 +37,15 @@ export default class ReservationService {
       type: ReservationType.SPACE,
     });
 
-    if (!theRequest) {
-      throw new HttpException(404, "Request not found");
-    }
+    await sendEmail({
+        subject: `Your Space Has Been Reserved by ${seeker.first_name}`,
+        to: host.email.trim().toLowerCase(),
+        html: spaceReservedEmailContent({
+          host,
+          seeker
+        }),
+      });
+
   };
 
   public settReservationsAsExpired = async () => {
@@ -39,6 +56,6 @@ export default class ReservationService {
   };
 
   public getUserReservation = async (user_id: string) => {
-    return this.reservation.find({ user: user_id });
+    return this.reservation.find({ user: user_id }).populate('user').populate('request');
   };
 }

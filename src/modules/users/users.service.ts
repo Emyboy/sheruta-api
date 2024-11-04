@@ -11,6 +11,7 @@ import userSettingModel, {
 import { HttpException } from "@/exceptions/HttpException";
 import NotificationService from "../notifications/notifications.service";
 import { NotificationTypes } from "@/config";
+import FlatShareRequestModel from "../flat-share/flat-share-requests/flat-share-request.model";
 
 class UserService {
   public users = userModel;
@@ -18,6 +19,7 @@ class UserService {
   public user_info = userInfoModel;
   public user_settings = userSettingModel;
   private notifications = new NotificationService();
+  private requests = FlatShareRequestModel;
 
   public update = async (
     { data, user_id }: { user_id: string; data: UpdateUserDTO },
@@ -36,12 +38,7 @@ class UserService {
 
   public getUserProfile = async (
     { profile_id, user_id }: { profile_id: string; user_id?: string | null },
-  ): Promise<{
-    user: User;
-    flat_share_profile: FlatShareProfile;
-    user_info: UserInfo;
-    user_settings: UserSettings;
-  }> => {
+  ) => {
     try {
       const user = await this.users.findOne({ _id: profile_id });
 
@@ -64,8 +61,15 @@ class UserService {
       const user_settings = await this.user_settings.findOne({
         user: profile_id,
       });
+      const requests = await this.requests.find({
+        user: profile_id,
+      });
 
-      if (user_id && user_id !== profile_id) {
+      if (user_id != profile_id) {
+        console.log("PROFILE VIEW NOTIFICATION ID DIFFERENCE",{
+          user_id,
+          profile_id,
+        })
         this.notifications.create({
           sender_id: user_id,
           receiver_id: profile_id,
@@ -77,7 +81,7 @@ class UserService {
         });
       }
 
-      return { user, flat_share_profile, user_info, user_settings };
+      return { user, flat_share_profile, user_info, user_settings, requests };
     } catch (error) {
       throw error;
     }
