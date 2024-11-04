@@ -75,6 +75,10 @@ export default class PromotionController {
         .populate('service')
         .populate('request')
         .populate('location')
+        .populate('state')
+        .populate('flat_share_profile')
+        .populate('user_settings')
+        .populate('user_info')
 
       return res.status(200).json({ data: promotions })
     } catch (error) {
