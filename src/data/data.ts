@@ -63,9 +63,9 @@ const parseCSV = (data: string): Promise<any[]> => {
 const createUser = async (csvUser: CSVUser, oldUserInfo: CSVUserInfo) => {
   try {
 
-    if (!csvUser.email || !csvUser.password || !csvUser.last_name) {
-      return false;
-    }
+    // if (!csvUser.email || !csvUser.password || !csvUser.last_name) {
+    //   return false;
+    // }
 
     const newUser = await userModel.create({
       first_name: String(csvUser.first_name).toLowerCase().trim(),
@@ -76,8 +76,6 @@ const createUser = async (csvUser: CSVUser, oldUserInfo: CSVUserInfo) => {
       account_status: "active",
       auth_provider: "local",
     });
-
-    console.log('CREATED USER:::', newUser.email);
 
     await userSecretsModel.create({
       user: newUser._id,
@@ -126,19 +124,34 @@ const createUser = async (csvUser: CSVUser, oldUserInfo: CSVUserInfo) => {
   }
 };
 
+let totalItemsMoved = 0;
+let totalItemsSkipped = 0;
+
 const processBatch = async (batch: CSVUser[], userInfos: CSVUserInfo[]) => {
   const promises = batch.map(async (csvUser) => {
     const oldUserInfo = userInfos.find(info => info.id.trim() === csvUser.id.trim());
 
     if (!csvUser.email || !csvUser.password || csvUser.confirmed !== "true" ||
         !oldUserInfo || !csvUser.last_name || !csvUser.is_verified) {
+      totalItemsSkipped++;
+
+      console.log('Skipped User:', {
+        email: csvUser.email,
+        passwordPresent: !!csvUser.password,
+        confirmed: csvUser.confirmed,
+        oldUserInfoFound: !!oldUserInfo,
+        lastName: csvUser.last_name,
+        isVerified: csvUser.is_verified
+      });
       return false;
     }
 
-    return createUser(csvUser, oldUserInfo);
+    const isCreated = await createUser(csvUser, oldUserInfo);
+    if (isCreated) totalItemsMoved++;
+    return isCreated;
   });
 
-  return Promise.all(promises);
+  await Promise.all(promises);
 };
 
 export const extractUsersCSV = async () => {
@@ -163,11 +176,13 @@ export const extractUsersCSV = async () => {
     for (let i = 0; i < csvUsers.length; i += BATCH_SIZE) {
       const batch = csvUsers.slice(i, i + BATCH_SIZE);
       await processBatch(batch, csvUserInfos);
-      console.log(`Processed batch ${i / BATCH_SIZE + 1} of ${Math.ceil(csvUsers.length / BATCH_SIZE)} `);
-      console.log('Total number of users :::', users.length);
+      console.log(`\n\n\n Processed batch ${i / BATCH_SIZE + 1} of ${Math.ceil(csvUsers.length / BATCH_SIZE)}`);
     }
 
     console.log('CSV import completed successfully');
+    console.log('Total number of users moved:', totalItemsMoved);
+    console.log('Total number of users skipped:', totalItemsSkipped);
+    console.log('Number of users in CSV:', csvUsers.length);
   } catch (error) {
     console.error('Error processing CSV:', error);
   }
