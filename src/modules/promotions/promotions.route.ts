@@ -4,6 +4,8 @@ import PromotionController from "./promotions.controller";
 import authMiddleware from "../auth/auth.middleware";
 import { validateCredit } from "../wallet/transactions/transaction.middleware";
 import { creditTable } from "@/config";
+import validationMiddleware from "@/middlewares/validation.middleware";
+import { CreateProfilePromotionDTO } from "./promotion.dto";
 
 export default class PromotionRoute implements Routes {
   public path = "/promotions";
@@ -18,6 +20,7 @@ export default class PromotionRoute implements Routes {
     this.router.post(
       `${this.path}/profile`,
       authMiddleware,
+      validationMiddleware(CreateProfilePromotionDTO, "body"),
       validateCredit(creditTable.PROMOTION),
       this.promotionController.profilePromotion,
     );

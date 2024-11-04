@@ -12,13 +12,15 @@ export default class PromotionController {
   public profilePromotion = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const user = req._user;
-      const { days, pitch, service_id } = req.body;
+      const { days, pitch, service } = req.body;
+
+      console.log('CREATING PROMOTION :::', req.body)
 
       await this.promotion.promoteProfile({
         days,
         user_id: user._id,
         pitch,
-        service_id
+        service_id: service
       })
 
       return res.status(201).json({ message: "Promotion created" })
