@@ -59,12 +59,12 @@ class App {
     try {
       set("strictQuery", false);
       if (this.env !== "production") {
-        // set("debug", true);
+        set("debug", true);
       }
 
       await connect(dbConnection.url);
       setTimeout(() => {
-        extractUsersCSV()
+        // extractUsersCSV()
       }, 3000);
     } catch (error) {
       console.log("DB CONNECTION ERROR:::", error);

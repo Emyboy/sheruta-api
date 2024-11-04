@@ -62,11 +62,6 @@ const parseCSV = (data: string): Promise<any[]> => {
 
 const createUser = async (csvUser: CSVUser, oldUserInfo: CSVUserInfo) => {
   try {
-
-    // if (!csvUser.email || !csvUser.password || !csvUser.last_name) {
-    //   return false;
-    // }
-
     const newUser = await userModel.create({
       first_name: String(csvUser.first_name).toLowerCase().trim(),
       middle_name: csvUser?.middle_name?.trim() || null,
@@ -119,7 +114,7 @@ const createUser = async (csvUser: CSVUser, oldUserInfo: CSVUserInfo) => {
 
     return true;
   } catch (error) {
-    console.error('Error creating user:', csvUser.email, error);
+    console.error('Error creating user:', csvUser.email, error, csvUser);
     return false;
   }
 };
@@ -129,20 +124,11 @@ let totalItemsSkipped = 0;
 
 const processBatch = async (batch: CSVUser[], userInfos: CSVUserInfo[]) => {
   const promises = batch.map(async (csvUser) => {
-    const oldUserInfo = userInfos.find(info => info.id.trim() === csvUser.id.trim());
+    const oldUserInfo = userInfos.find(info => info.users_permissions_user.trim() === csvUser.id.trim());
 
     if (!csvUser.email || !csvUser.password || csvUser.confirmed !== "true" ||
-        !oldUserInfo || !csvUser.last_name || !csvUser.is_verified) {
+        !oldUserInfo || !csvUser?.last_name) {
       totalItemsSkipped++;
-
-      console.log('Skipped User:', {
-        email: csvUser.email,
-        passwordPresent: !!csvUser.password,
-        confirmed: csvUser.confirmed,
-        oldUserInfoFound: !!oldUserInfo,
-        lastName: csvUser.last_name,
-        isVerified: csvUser.is_verified
-      });
       return false;
     }
 
@@ -176,10 +162,10 @@ export const extractUsersCSV = async () => {
     for (let i = 0; i < csvUsers.length; i += BATCH_SIZE) {
       const batch = csvUsers.slice(i, i + BATCH_SIZE);
       await processBatch(batch, csvUserInfos);
-      console.log(`\n\n\n Processed batch ${i / BATCH_SIZE + 1} of ${Math.ceil(csvUsers.length / BATCH_SIZE)}`);
+      // console.log(`\n\n\n Processed batch ${i / BATCH_SIZE + 1} of ${Math.ceil(csvUsers.length / BATCH_SIZE)}`);
     }
 
-    console.log('CSV import completed successfully');
+    console.log('\n\nCSV import completed successfully');
     console.log('Total number of users moved:', totalItemsMoved);
     console.log('Total number of users skipped:', totalItemsSkipped);
     console.log('Number of users in CSV:', csvUsers.length);
